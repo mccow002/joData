@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>joData</title>
+        <script src="joData.js"></script>
+    </head>
+    <body>
+        <script>
+            (function () {
+                var test = new joData('http://google.com');
+                test.orderBy('test').desc().asc().toString();
+            })();
+        </script>
+    </body>
+</html>
