@@ -140,6 +140,7 @@
 
     joData.prototype.resetFilter = function () {
         this.FilterSettings = null;
+        return this;
     };
 
     var filterObj = function (filterObj, logicalOperator) {
@@ -260,6 +261,10 @@
         return strComps.join(' ');
     };
 
+    joData.FilterClause.prototype.isEmpty = function () {
+        return this.property === '';
+    }
+
     function formatValue(value) {
         if (typeof value === 'string')
             return "'" + value + "'";
@@ -342,6 +347,8 @@
 
     //String Functions
     joData.FilterClause.prototype.Substringof = function (value, property) {
+        this.property = property;
+
         this.components.push(function () {
             return 'substringof(\'' + value + '\',' + property + ')';
         });
@@ -350,6 +357,8 @@
     };
 
     joData.FilterClause.prototype.Endswith = function (value, property) {
+        this.property = property;
+
         this.components.push(function () {
             return 'endswith(' + property + ',\'' + value + '\')';
         });
@@ -358,6 +367,8 @@
     };
 
     joData.FilterClause.prototype.Startswith = function (value, property) {
+        this.property = property;
+
         this.components.push(function () {
             return 'startswith(' + property + ',\'' + value + '\')';
         });
@@ -366,6 +377,8 @@
     };
 
     joData.FilterClause.prototype.Length = function (property) {
+        this.property = property;
+
         this.components.push(function () {
             return 'length(' + property + ')';
         });
@@ -374,6 +387,8 @@
     };
 
     joData.FilterClause.prototype.Indexof = function (value, property) {
+        this.property = property;
+
         this.components.push(function () {
             return 'indexof(' + property + ',\'' + value + '\')';
         });
@@ -382,6 +397,8 @@
     };
 
     joData.FilterClause.prototype.Replace = function (property, find, replace) {
+        this.property = property;
+
         this.components.push(function () {
             return 'replace(' + property + ',\'' + find + '\',\'' + replace + '\')';
         });
@@ -390,6 +407,8 @@
     };
 
     joData.FilterClause.prototype.Substring = function (property, position, length) {
+        this.property = property;
+
         this.components.push(function () {
             var comps = [property, position];
             if (typeof length !== 'undefined')
@@ -402,6 +421,8 @@
     };
 
     joData.FilterClause.prototype.ToLower = function (property) {
+        this.property = property;
+
         this.components.push(function () {
             return 'tolower(' + property + ')';
         });
@@ -410,6 +431,8 @@
     };
 
     joData.FilterClause.prototype.ToUpper = function (property) {
+        this.property = property;
+
         this.components.push(function () {
             return 'toupper(' + property + ')';
         });
@@ -418,6 +441,8 @@
     };
 
     joData.FilterClause.prototype.Trim = function (property) {
+        this.property = property;
+
         this.components.push(function () {
             return 'trim(' + property + ')';
         });
@@ -444,7 +469,7 @@
         else if (typeof this.defaults.SkipDefault !== 'undefined' && this.defaults.SkipDefault !== null)
             components.push(this.defaults.SkipDefault.toString());
 
-        if (this.SelectSettings !== null)
+        if (this.SelectSettings !== null) 
             components.push(this.SelectSettings.toString());
 
         if (this.FilterSettings !== null)
@@ -452,7 +477,9 @@
         else if (typeof this.defaults.FilterDefaults !== 'undefined' && this.defaults.FilterDefaults !== null)
             components.push(this.defaults.FilterDefaults.toString());
 
-        return url + '?' + components.join('&');
+        return components.length > 0 ?
+            url + '?' + components.join('&') :
+            url;
     };
 
     return this;
