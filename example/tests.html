@@ -10,6 +10,7 @@
                 test.orderBy('test')
                     .top(5)
                     .skip(10)
+                    .select(['Name', 'Address'])
                     .andFilter(new joData.filterClause()
                                         .Property('TestProp')
                                         .Eq(5))

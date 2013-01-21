@@ -61,6 +61,17 @@
         return this;
     };
 
+    joData.prototype.select = function (select) {
+        this.SelectSettings = this.SelectSettings || {};
+        this.SelectSettings.Select = select;
+
+        this.SelectSettings.toString = function () {
+            return '$select=' + this.Select.join(',');
+        };
+
+        return this;
+    }
+
     var filterObj = function (filterObj, logicalOperator) {
         this.filterObj = filterObj;
         this.logicalOperator = null;
@@ -301,6 +312,9 @@
 
         if (this.SkipSettings !== null)
             components.push(this.SkipSettings.toString());
+
+        if (this.SelectSettings !== null)
+            components.push(this.SelectSettings.toString());
 
         if (this.FilterSettings !== null)
             components.push(this.FilterSettings.toString());
