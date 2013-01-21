@@ -1,13 +1,23 @@
 <html>
     <head>
         <title>joData</title>
-        <script src="joData.js"></script>
+        <script src="../src/joData.js"></script>
     </head>
     <body>
         <script>
             (function () {
                 var test = new joData('http://google.com');
-                test.orderBy('test').desc().asc().toString();
+                test.orderBy('test')
+                    .top(5)
+                    .skip(10)
+                    .andFilter(new joData.filterClause()
+                                        .Property('TestProp')
+                                        .Eq(5))
+                    .andFilter(new joData.filterClause()
+                                        .ToLower('Name')
+                                        .Eq('derp'));
+                    //.orFilter(new joData.filterClause().Property('Amount').Add(5).Eq(10));
+                alert(test.toString());
             })();
         </script>
     </body>
