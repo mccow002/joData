@@ -7,17 +7,23 @@
         <script>
             (function () {
                 var test = new joData('http://google.com');
+                test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
+                test.setOrderByDefault('AccountNumber', 'desc');
                 test.orderBy('test')
                     .top(5)
                     .skip(10)
                     .select(['Name', 'Address'])
-                    .andFilter(new joData.filterClause()
+                    .andFilter(new joData.FilterClause()
                                         .Property('TestProp')
                                         .Eq(5))
-                    .andFilter(new joData.filterClause()
+                    .andFilter(new joData.FilterClause()
                                         .ToLower('Name')
                                         .Eq('derp'));
-                    //.orFilter(new joData.filterClause().Property('Amount').Add(5).Eq(10));
+                //.orFilter(new joData.filterClause().Property('Amount').Add(5).Eq(10));
+
+                //test.resetOrderBy();
+                test.resetSelect();
+                //test.resetFilter();
                 alert(test.toString());
             })();
         </script>

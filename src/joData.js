@@ -1,5 +1,5 @@
-(function () {
-    this.joData = function (baseUri) {
+(function (window) {
+    window.joData = function (baseUri) {
         this.baseUri = baseUri;
 
         this.OrderBySettings = null;
@@ -7,70 +7,140 @@
         this.SkipSettings = null;
         this.FilterSettings = null;
         this.SelectSettings = null;
+
+        this.defaults = {};
     };
 
     joData.prototype.baseUri = '';
 
-    joData.prototype.orderBy = function (property) {
-        var settings = this.OrderBySettings || {};
-        settings.Property = property;
-        this.OrderBySettings = settings;
+    joData.prototype.setOrderByDefault = function (property, order) {
+        var orderByDefaults = {
+            Property: property,
+            toString: function () {
+                return orderByToString(this.Property, this.Order);
+            }
+        };
 
+        if (typeof order !== 'undefined')
+            orderByDefaults.Order = order;
+
+        this.defaults.OrderByDefault = orderByDefaults;
+        return this;
+    };
+
+    joData.prototype.orderBy = function (property) {
+        this.OrderBySettings = this.OrderBySettings || {};
+        this.OrderBySettings.Property = property;
+        
         this.desc = function () {
-            settings.Order = 'desc';
+            this.OrderBySettings.Order = 'desc';
             return this;
         };
 
         this.asc = function () {
-            settings.Order = 'asc';
+            this.OrderBySettings.Order = 'asc';
             return this;
         };
 
-        this.OrderBySettings.toString = function () {
-            var qsValue = '$orderby=' + this.Property;
-            if (typeof this.Order !== 'undefined')
-                qsValue += ' ' + this.Order;
-
-            return qsValue;
+        this.resetOrderBy = function () {
+            this.OrderBySettings = null;
         };
 
+        this.OrderBySettings.toString = function () {
+            return orderByToString(this.Property, this.Order);
+        };
+
+        return this;
+    };
+
+    function orderByToString(property, order){
+        var qsValue = '$orderby=' + property;
+        if (typeof order !== 'undefined')
+            qsValue += ' ' + order;
+
+        return qsValue;
+    }
+
+    joData.prototype.setTopDefault = function (top) {
+        var topDefault = {
+            Top: top,
+            toString: function () {
+                return topToString(this.Top);
+            }
+        };
+
+        this.defaults.TopDefault = topDefault;
         return this;
     };
 
     joData.prototype.top = function (top) {
-        var settings = this.TopSettings || {};
-        settings.Top = top;
-        this.TopSettings = settings;
+        this.TopSettings = this.TopSettings || {};
+        this.TopSettings.Top = top;
+
+        this.resetTop = function () {
+            this.TopSettings = null;
+        };
 
         this.TopSettings.toString = function () {
-            return '$top=' + this.Top;
+            return topToString(this.Top);
         };
 
         return this;
     };
 
+    function topToString(top) {
+        return '$top=' + top;
+    }
+
+    joData.prototype.setSkipDefault = function (skip) {
+        var skipDefault = {
+            Skip: skip,
+            toString: function () {
+                return skipToString(this.Skip);
+            }
+        };
+
+        this.defaults.SkipDefault = skipDefault;
+        return this;
+    };
+
     joData.prototype.skip = function (skip) {
-        var settings = this.SkipSettings || {};
-        settings.Skip = skip;
-        this.SkipSettings = settings;
+        this.SkipSettings = this.SkipSettings || {};
+        this.SkipSettings.Skip = skip;
+
+        this.resetSkip = function () {
+            this.SkipSettings = null;
+        };
 
         this.SkipSettings.toString = function () {
-            return '$skip=' + this.Skip;
+            return skipToString(this.Skip);
         };
 
         return this;
+    };
+
+    function skipToString(skip) {
+        return '$skip=' + skip;
     };
 
     joData.prototype.select = function (select) {
         this.SelectSettings = this.SelectSettings || {};
         this.SelectSettings.Select = select;
 
+        this.resetSelect = function () {
+            this.SelectSettings = null;
+        };
+
         this.SelectSettings.toString = function () {
             return '$select=' + this.Select.join(',');
         };
 
         return this;
-    }
+    };
+
+    joData.prototype.resetFilter = function () {
+        this.FilterSettings = null;
+    };
 
     var filterObj = function (filterObj, logicalOperator) {
         this.filterObj = filterObj;
@@ -79,38 +149,82 @@
             this.logicalOperator = logicalOperator;
 
         return this;
-    }
+    };
+
+    joData.prototype.defaultFilter = function (filterClause) {
+        this.defaults.FilterDefaults = this.defaults.FilterDefaults || CreateDefaultFilterSettings();
+        this.defaults.FilterDefaults.filters.push(new filterObj(filterClause));
+
+        return this;
+    };
+
+    joData.prototype.defaultAndFilter = function (filterClause) {
+        this.defaults.FilterDefaults = this.defaults.FilterDefaults || CreateDefaultFilterSettings();
+        this.defaults.FilterDefaults.filters.push(new filterObj(filterClause, 'and'));
+
+        return this;
+    };
+
+    joData.prototype.defaultOrFilter = function (filterClause) {
+        this.defaults.FilterDefaults = this.defaults.FilterDefaults || CreateDefaultFilterSettings();
+        this.defaults.FilterDefaults.filters.push(new filterObj(filterClause, 'or'));
+
+        return this;
+    };
 
     joData.prototype.filter = function (filterClause) {
-        this.FilterSettings = this.FilterSettings || CreateFilterSettings();
+        this.FilterSettings = this.FilterSettings || CreateFilterSettings(this.defaults.FilterDefaults);
         settings.filters.push(new filterObj(filterClause));
 
         return this;
     };
 
     joData.prototype.andFilter = function (filterClause) {
-        this.FilterSettings = this.FilterSettings || CreateFilterSettings();
+        this.FilterSettings = this.FilterSettings || CreateFilterSettings(this.defaults.FilterDefaults);
         this.FilterSettings.filters.push(new filterObj(filterClause, 'and'));
         return this;
     };
 
     joData.prototype.orFilter = function (filterClause) {
-        this.FilterSettings = this.FilterSettings || CreateFilterSettings();
+        this.FilterSettings = this.FilterSettings || CreateFilterSettings(this.defaults.FilterDefaults);
         this.FilterSettings.filters.push(new filterObj(filterClause, 'or'));
         return this;
     };
 
-    function CreateFilterSettings() {
+    function CreateDefaultFilterSettings() {
+        var filterDefaults = { filters: [] };
+
+        filterDefaults.toString = function () {
+            var filter = '$filter=';
+            for (var i = 0; i < this.filters.length; i++) {
+                filter += writeFilter(this.filters[i], i);
+            }
+            return filter;
+        }
+
+        return filterDefaults;
+    }
+
+    function CreateFilterSettings(filterDefaults) {
         var filterSettings = { filters: [] };
 
         filterSettings.toString = function () {
-            var filter = '$filter=';
-            for (var i = 0; i < this.filters.length; i++) {
-                var filterClause = this.filters[i];
-                if ((typeof filterClause.logicalOperator !== 'undefined' && filterClause.logicalOperator !== null) && i > 0)
-                    filter += ' ' + filterClause.logicalOperator + ' ';
+            var allFilters = [];
 
-                filter += filterClause.filterObj.toString();
+            if (typeof filterDefaults !== 'undefined') {
+                for (var i = 0; i < filterDefaults.filters.length; i++) {
+                    allFilters.push(filterDefaults.filters[i]);
+                }
+            }
+
+            for (var i = 0; i < this.filters.length; i++) {
+                allFilters.push(this.filters[i]);
+            }
+
+            var filter = '$filter=';
+
+            for (var i = 0; i < allFilters.length; i++) {
+                filter += writeFilter(allFilters[i], i)
             }
 
             return filter;
@@ -119,7 +233,18 @@
         return filterSettings;
     }
 
-    joData.filterClause = function () { 
+    var writeFilter = function (filterClause, i) {
+        var filter = '';
+        if ((typeof filterClause.logicalOperator !== 'undefined' && filterClause.logicalOperator !== null) && i > 0)
+            filter += ' ' + filterClause.logicalOperator + ' ';
+        else if (i < 0 && (typeof filterClause.logicalOperator === 'undefined' || filterClause.logicalOperator === null))
+            filter += ' and ';
+
+        filter += filterClause.filterObj.toString();
+        return filter;
+    }
+
+    joData.FilterClause = function () { 
         this.property = '';
         this.value = '';
         this.components = [];
@@ -127,7 +252,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.toString = function () {
+    joData.FilterClause.prototype.toString = function () {
         var strComps = [];
         for (var i = 0; i < this.components.length; i++) {
             strComps.push(this.components[i]());
@@ -160,7 +285,7 @@
         return filterClause;
     }
 
-    joData.filterClause.prototype.Property = function (property) {
+    joData.FilterClause.prototype.Property = function (property) {
         this.property = property;
         this.components.push(function () {
             return property;
@@ -170,53 +295,53 @@
     };
 
     //Arithmetic Methods
-    joData.filterClause.prototype.Add = function (amount) {
+    joData.FilterClause.prototype.Add = function (amount) {
         return addArithmeticOperator(amount, 'add', this);
     };
 
-    joData.filterClause.prototype.Sub = function (amount) {
+    joData.FilterClause.prototype.Sub = function (amount) {
         return addArithmeticOperator(amount, 'sub', this);
     };
 
-    joData.filterClause.prototype.Mul = function (amount) {
+    joData.FilterClause.prototype.Mul = function (amount) {
         return addArithmeticOperator(amount, 'mul', this);
     };
 
-    joData.filterClause.prototype.Div = function (amount) {
+    joData.FilterClause.prototype.Div = function (amount) {
         return addArithmeticOperator(amount, 'div', this);
     };
 
-    joData.filterClause.prototype.Mod = function (amount) {
+    joData.FilterClause.prototype.Mod = function (amount) {
         return addArithmeticOperator(amount, 'mod', this);
     };
 
     //Logical Operators
-    joData.filterClause.prototype.Eq = function (value) {
+    joData.FilterClause.prototype.Eq = function (value) {
         return addLogicalOperator(value, 'eq', this);
     };
 
-    joData.filterClause.prototype.Ne = function (value) {
+    joData.FilterClause.prototype.Ne = function (value) {
         return addLogicalOperator(value, 'ne', this);
     };
 
-    joData.filterClause.prototype.Gt = function (value) {
+    joData.FilterClause.prototype.Gt = function (value) {
         return addLogicalOperator(value, 'gt', this);
     };
 
-    joData.filterClause.prototype.Ge = function (value) {
+    joData.FilterClause.prototype.Ge = function (value) {
         return addLogicalOperator(value, 'ge', this);
     };
 
-    joData.filterClause.prototype.Lt = function (value) {
+    joData.FilterClause.prototype.Lt = function (value) {
         return addLogicalOperator(value, 'lt', this);
     };
 
-    joData.filterClause.prototype.Le = function (value) {
+    joData.FilterClause.prototype.Le = function (value) {
         return addLogicalOperator(value, 'le', this);
     };
 
     //String Functions
-    joData.filterClause.prototype.Substringof = function (value, property) {
+    joData.FilterClause.prototype.Substringof = function (value, property) {
         this.components.push(function () {
             return 'substringof(\'' + value + '\',' + property + ')';
         });
@@ -224,7 +349,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.Endswith = function (value, property) {
+    joData.FilterClause.prototype.Endswith = function (value, property) {
         this.components.push(function () {
             return 'endswith(' + property + ',\'' + value + '\')';
         });
@@ -232,7 +357,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.Startswith = function (value, property) {
+    joData.FilterClause.prototype.Startswith = function (value, property) {
         this.components.push(function () {
             return 'startswith(' + property + ',\'' + value + '\')';
         });
@@ -240,7 +365,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.Length = function (property) {
+    joData.FilterClause.prototype.Length = function (property) {
         this.components.push(function () {
             return 'length(' + property + ')';
         });
@@ -248,7 +373,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.Indexof = function (value, property) {
+    joData.FilterClause.prototype.Indexof = function (value, property) {
         this.components.push(function () {
             return 'indexof(' + property + ',\'' + value + '\')';
         });
@@ -256,7 +381,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.Replace = function (property, find, replace) {
+    joData.FilterClause.prototype.Replace = function (property, find, replace) {
         this.components.push(function () {
             return 'replace(' + property + ',\'' + find + '\',\'' + replace + '\')';
         });
@@ -264,7 +389,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.Substring = function (property, position, length) {
+    joData.FilterClause.prototype.Substring = function (property, position, length) {
         this.components.push(function () {
             var comps = [property, position];
             if (typeof length !== 'undefined')
@@ -276,7 +401,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.ToLower = function (property) {
+    joData.FilterClause.prototype.ToLower = function (property) {
         this.components.push(function () {
             return 'tolower(' + property + ')';
         });
@@ -284,7 +409,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.ToUpper = function (property) {
+    joData.FilterClause.prototype.ToUpper = function (property) {
         this.components.push(function () {
             return 'toupper(' + property + ')';
         });
@@ -292,7 +417,7 @@
         return this;
     };
 
-    joData.filterClause.prototype.Trim = function (property) {
+    joData.FilterClause.prototype.Trim = function (property) {
         this.components.push(function () {
             return 'trim(' + property + ')';
         });
@@ -306,18 +431,26 @@
         
         if (this.OrderBySettings !== null)
             components.push(this.OrderBySettings.toString());
+        else if (typeof this.defaults.OrderByDefault !== 'undefined' && this.defaults.OrderByDefault !== null)
+            components.push(this.defaults.OrderByDefault.toString());
 
         if (this.TopSettings !== null)
             components.push(this.TopSettings.toString());
+        else if (typeof this.defaults.TopDefault !== 'undefined' && this.defaults.TopDefault !== null)
+            components.push(this.defaults.TopDefault.toString());
 
         if (this.SkipSettings !== null)
             components.push(this.SkipSettings.toString());
+        else if (typeof this.defaults.SkipDefault !== 'undefined' && this.defaults.SkipDefault !== null)
+            components.push(this.defaults.SkipDefault.toString());
 
         if (this.SelectSettings !== null)
             components.push(this.SelectSettings.toString());
 
         if (this.FilterSettings !== null)
             components.push(this.FilterSettings.toString());
+        else if (typeof this.defaults.FilterDefaults !== 'undefined' && this.defaults.FilterDefaults !== null)
+            components.push(this.defaults.FilterDefaults.toString());
 
         return url + '?' + components.join('&');
     };
