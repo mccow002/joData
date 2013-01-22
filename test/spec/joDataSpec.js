@@ -100,7 +100,7 @@ describe('joData', function(){
 	describe('filter', function(){
 		it('should cause a $filter query string parameter to appear upon toString', function(){
 			var j = new joData('http://foo.bar');
-			j.filter(new joData.FilterClause().Property('prop1').Eq('val1'));
+			j.filter(new joData.FilterClause('prop1').Eq('val1'));
 			
 			expect(j.toString()).toEqual("http://foo.bar?$filter=prop1 eq 'val1'");
 		
@@ -109,8 +109,8 @@ describe('joData', function(){
 		it('should allow for joining conditions with a logical or', function(){
 			var j = new joData('http://foo.bar');
 			
-			var filter1 = new joData.FilterClause().Property('prop1').Eq('val1');
-			var filter2 = new joData.FilterClause().Property('prop2').Eq('val2');
+			var filter1 = new joData.FilterClause('prop1').Eq('val1');
+			var filter2 = new joData.FilterClause('prop2').Eq('val2');
 			
 			j.filter(filter1).orFilter(filter2);
 			
@@ -120,8 +120,8 @@ describe('joData', function(){
 		it('should allow for joining conditions with a logical and', function(){
 			var j = new joData('http://foo.bar');
 			
-			var filter1 = new joData.FilterClause().Property('prop1').Eq('val1');
-			var filter2 = new joData.FilterClause().Property('prop2').Eq('val2');
+			var filter1 = new joData.FilterClause('prop1').Eq('val1');
+			var filter2 = new joData.FilterClause('prop2').Eq('val2');
 			
 			j.filter(filter1).andFilter(filter2);
 			
@@ -132,8 +132,8 @@ describe('joData', function(){
 			xit('only uses the most recent filter (did you mean to use orFilter or andFilter?)', function(){
 				var j = new joData('http://foo.bar');
 			
-				var filter1 = new joData.FilterClause().Property('prop1').Eq('val1');
-				var filter2 = new joData.FilterClause().Property('prop2').Eq('val2');
+				var filter1 = new joData.FilterClause('prop1').Eq('val1');
+				var filter2 = new joData.FilterClause('prop2').Eq('val2');
 				
 				j.filter(filter1);
 				j.filter(filter2);
@@ -149,8 +149,8 @@ describe('joData', function(){
 		it('causes complete amnesia of previous filters', function(){
 			var j = new joData('http://foo.bar');
 			
-			var filter1 = new joData.FilterClause().Property('prop1').Eq('val1');
-			var filter2 = new joData.FilterClause().Property('prop2').Eq('val2');
+			var filter1 = new joData.FilterClause('prop1').Eq('val1');
+			var filter2 = new joData.FilterClause('prop2').Eq('val2');
 			
 			j.filter(filter1).andFilter(filter2);
 			
@@ -163,35 +163,35 @@ describe('joData', function(){
 	describe('filter string helpers', function(){
 		it('supports lowering a filter property', function(){
 			var j = new joData('http://foo.bar');
-			j.filter(new joData.FilterClause().ToLower('prop1').Eq('val1'));
+			j.filter(new joData.FilterClause('prop1').ToLower().Eq('val1'));
 			
 			expect(j.toString()).toEqual("http://foo.bar?$filter=tolower(prop1) eq 'val1'");
 		});
 		
 		it('supports uppering a filter property', function(){
 			var j = new joData('http://foo.bar');
-			j.filter(new joData.FilterClause().ToUpper('prop1').Eq('val1'));
+			j.filter(new joData.FilterClause('prop1').ToUpper().Eq('val1'));
 			
 			expect(j.toString()).toEqual("http://foo.bar?$filter=toupper(prop1) eq 'val1'");
 		});
 		
 		it('supports substringof to check that a filter property contains a string', function(){
 			var j = new joData('http://foo.bar');
-			j.filter(new joData.FilterClause().Substringof('over 9000', 'prop1').Eq(true));
+			j.filter(new joData.FilterClause('prop1').Substringof('over 9000').Eq(true));
 			
 			expect(j.toString()).toEqual("http://foo.bar?$filter=substringof('over 9000',prop1) eq true");
 		});
 		
 		it('supports substring with a length to check a part of a filter property', function(){
 			var j = new joData('http://foo.bar');
-			j.filter(new joData.FilterClause().Substring('prop1', 4, 9).Eq('over 9000'));
+			j.filter(new joData.FilterClause('prop1').Substring(4, 9).Eq('over 9000'));
 			
 			expect(j.toString()).toEqual("http://foo.bar?$filter=substring(prop1,4,9) eq 'over 9000'");
 		});
 		
 		it('supports substring without a length to check the rest of a filter property', function(){
 			var j = new joData('http://foo.bar');
-			j.filter(new joData.FilterClause().Substring('prop1', 4).Eq('over 9000!'));
+			j.filter(new joData.FilterClause('prop1').Substring(4).Eq('over 9000!'));
 			
 			expect(j.toString()).toEqual("http://foo.bar?$filter=substring(prop1,4) eq 'over 9000!'");
 		});
@@ -200,7 +200,7 @@ describe('joData', function(){
 	describe('filter arithmetic helpers', function(){
 		it('supports the add expression', function(){
 			var j = new joData('http://foo.bar');
-			j.filter(new joData.FilterClause().Property('prop1').Add(9000).Eq(9001));
+			j.filter(new joData.FilterClause('prop1').Add(9000).Eq(9001));
 			
 			expect(j.toString()).toEqual("http://foo.bar?$filter=prop1 add 9000 eq 9001");
 		});
@@ -209,7 +209,7 @@ describe('joData', function(){
 	describe('filter logical operators', function(){
 		it('supports the greater than expression', function(){
 			var j = new joData('http://foo.bar');
-			j.filter(new joData.FilterClause().Property('powerLevel').Gt(9001));
+			j.filter(new joData.FilterClause('powerLevel').Gt(9001));
 			
 			expect(j.toString()).toEqual("http://foo.bar?$filter=powerLevel gt 9001");
 		});

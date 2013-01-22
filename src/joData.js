@@ -31,7 +31,7 @@
     joData.prototype.orderBy = function (property) {
         this.OrderBySettings = this.OrderBySettings || {};
         this.OrderBySettings.Property = property;
-        
+
         this.desc = function () {
             this.OrderBySettings.Order = 'desc';
             return this;
@@ -53,7 +53,7 @@
         return this;
     };
 
-    function orderByToString(property, order){
+    function orderByToString(property, order) {
         var qsValue = '$orderby=' + property;
         if (typeof order !== 'undefined')
             qsValue += ' ' + order;
@@ -245,9 +245,11 @@
         return filter;
     }
 
-    joData.FilterClause = function () { 
-        this.property = '';
+    joData.FilterClause = function (property) {
+        this.property = property;
         this.value = '';
+        this.isEmpty = true;
+        this.propertyIncluded = false;
         this.components = [];
 
         return this;
@@ -255,6 +257,10 @@
 
     joData.FilterClause.prototype.toString = function () {
         var strComps = [];
+
+        if (!this.propertyIncluded)
+            strComps.push(this.property);
+
         for (var i = 0; i < this.components.length; i++) {
             strComps.push(this.components[i]());
         }
@@ -262,7 +268,7 @@
     };
 
     joData.FilterClause.prototype.isEmpty = function () {
-        return this.property === '';
+        return this.isEmpty;
     }
 
     function formatValue(value) {
@@ -274,6 +280,7 @@
 
     function addLogicalOperator(value, operator, filterClause) {
         filterClause.value = value;
+        filterClause.isEmpty = false;
 
         filterClause.components.push(function () {
             return operator + ' ' + formatValue(value);
@@ -290,14 +297,14 @@
         return filterClause;
     }
 
-    joData.FilterClause.prototype.Property = function (property) {
-        this.property = property;
-        this.components.push(function () {
-            return property;
-        });
+    //    joData.FilterClause.prototype.Property = function (property) {
+    //        this.property = property;
+    //        this.components.push(function () {
+    //            return property;
+    //        });
 
-        return this;
-    };
+    //        return this;
+    //    };
 
     //Arithmetic Methods
     joData.FilterClause.prototype.Add = function (amount) {
@@ -346,71 +353,71 @@
     };
 
     //String Functions
-    joData.FilterClause.prototype.Substringof = function (value, property) {
-        this.property = property;
-
+    joData.FilterClause.prototype.Substringof = function (value) {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'substringof(\'' + value + '\',' + property + ')';
+            return 'substringof(\'' + value + '\',' + that.property + ')';
         });
 
         return this;
     };
 
-    joData.FilterClause.prototype.Endswith = function (value, property) {
-        this.property = property;
-
+    joData.FilterClause.prototype.Endswith = function (value) {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'endswith(' + property + ',\'' + value + '\')';
+            return 'endswith(' + that.property + ',\'' + value + '\')';
         });
 
         return this;
     };
 
-    joData.FilterClause.prototype.Startswith = function (value, property) {
-        this.property = property;
-
+    joData.FilterClause.prototype.Startswith = function (value) {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'startswith(' + property + ',\'' + value + '\')';
+            return 'startswith(' + that.property + ',\'' + value + '\')';
         });
 
         return this;
     };
 
-    joData.FilterClause.prototype.Length = function (property) {
-        this.property = property;
-
+    joData.FilterClause.prototype.Length = function () {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'length(' + property + ')';
+            return 'length(' + that.property + ')';
         });
 
         return this;
     };
 
-    joData.FilterClause.prototype.Indexof = function (value, property) {
-        this.property = property;
-
+    joData.FilterClause.prototype.Indexof = function (value) {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'indexof(' + property + ',\'' + value + '\')';
+            return 'indexof(' + that.property + ',\'' + value + '\')';
         });
 
         return this;
     };
 
-    joData.FilterClause.prototype.Replace = function (property, find, replace) {
-        this.property = property;
-
+    joData.FilterClause.prototype.Replace = function (find, replace) {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'replace(' + property + ',\'' + find + '\',\'' + replace + '\')';
+            return 'replace(' + that.property + ',\'' + find + '\',\'' + replace + '\')';
         });
 
         return this;
     };
 
-    joData.FilterClause.prototype.Substring = function (property, position, length) {
-        this.property = property;
-
+    joData.FilterClause.prototype.Substring = function (position, length) {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            var comps = [property, position];
+            var comps = [that.property, position];
             if (typeof length !== 'undefined')
                 comps.push(length);
 
@@ -420,31 +427,31 @@
         return this;
     };
 
-    joData.FilterClause.prototype.ToLower = function (property) {
-        this.property = property;
-
+    joData.FilterClause.prototype.ToLower = function () {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'tolower(' + property + ')';
+            return 'tolower(' + that.property + ')';
         });
 
         return this;
     };
 
-    joData.FilterClause.prototype.ToUpper = function (property) {
-        this.property = property;
-
+    joData.FilterClause.prototype.ToUpper = function () {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'toupper(' + property + ')';
+            return 'toupper(' + that.property + ')';
         });
 
         return this;
     };
 
-    joData.FilterClause.prototype.Trim = function (property) {
-        this.property = property;
-
+    joData.FilterClause.prototype.Trim = function () {
+        this.propertyIncluded = true;
+        var that = this;
         this.components.push(function () {
-            return 'trim(' + property + ')';
+            return 'trim(' + that.property + ')';
         });
 
         return this;
@@ -453,7 +460,7 @@
     joData.prototype.toString = function () {
         var url = this.baseUri;
         var components = [];
-        
+
         if (this.OrderBySettings !== null)
             components.push(this.OrderBySettings.toString());
         else if (typeof this.defaults.OrderByDefault !== 'undefined' && this.defaults.OrderByDefault !== null)
@@ -469,7 +476,7 @@
         else if (typeof this.defaults.SkipDefault !== 'undefined' && this.defaults.SkipDefault !== null)
             components.push(this.defaults.SkipDefault.toString());
 
-        if (this.SelectSettings !== null) 
+        if (this.SelectSettings !== null)
             components.push(this.SelectSettings.toString());
 
         if (this.FilterSettings !== null)

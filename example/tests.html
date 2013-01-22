@@ -7,24 +7,25 @@
         <script>
             (function () {
                 var test = new joData('http://google.com');
+                test.filter(new joData.FilterClause('prop1').Startswith('p').Eq('derp'));
                 //test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
                 //test.setOrderByDefault('AccountNumber', 'desc');
 
                 //test.orderBy('AccountName').asc();
-                test.resetFilter();
-                test.orderBy('test')
-                    //.top(5)
-                    //.skip(10)
-                    //.select(['Name', 'Address'])
-                    .orFilter(new joData.FilterClause()
-                                        .Substringof('dg', 'TestProp1')
-                                        .Eq(true))
-                    .orFilter(new joData.FilterClause()
-                                        .Substringof('dg', 'TestProp2')
-                                        .Eq(true))
-                .orFilter(new joData.FilterClause()
-                                        .Substringof('dg', 'TestProp3')
-                                        .Eq(true));
+                //                test.resetFilter();
+                //                test.orderBy('test')
+                //                    //.top(5)
+                //                    //.skip(10)
+                //                    //.select(['Name', 'Address'])
+                //                    .orFilter(new joData.FilterClause()
+                //                                        .Substringof('dg', 'TestProp1')
+                //                                        .Eq(true))
+                //                    .orFilter(new joData.FilterClause()
+                //                                        .Substringof('dg', 'TestProp2')
+                //                                        .Eq(true))
+                //                .orFilter(new joData.FilterClause()
+                //                                        .Substringof('dg', 'TestProp3')
+                //                                        .Eq(true));
 
                 //test.resetOrderBy();
                 //test.resetSelect();
