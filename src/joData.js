@@ -297,15 +297,6 @@
         return filterClause;
     }
 
-    //    joData.FilterClause.prototype.Property = function (property) {
-    //        this.property = property;
-    //        this.components.push(function () {
-    //            return property;
-    //        });
-
-    //        return this;
-    //    };
-
     //Arithmetic Methods
     joData.FilterClause.prototype.Add = function (amount) {
         return addArithmeticOperator(amount, 'add', this);
