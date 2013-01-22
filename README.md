@@ -36,6 +36,7 @@ Order by is a singleton property, so you can call .orderBy as many times as you 
 	query.orderBy('PropertyName');
 
 Output: 
+
 	'$orderby=PropertyName'
 
 ####.asc(), .desc()
@@ -50,6 +51,7 @@ Which ever order is called last will be the one that wins, so writing
 	query.orderBy('PropertyName').asc().desc()
 
 will result in 
+
 	'$orderby=PropertyName desc'
 
 ####.resetOrderBy()
@@ -67,6 +69,7 @@ Top is a singleton property, so you can call .top as many times as you like and 
 	query.top(10);
 
 Output: 
+
 	'$top=10'
 
 ####.resetTop()
@@ -84,6 +87,7 @@ Skip is a singleton property, so you can call .skip as many times as you like an
 	query.skip(5);
 
 Output: 
+
 	'$skip=5'
 
 ####.resetSkip()
@@ -103,6 +107,7 @@ select takes in an array of property names.
 	query.select(['Property1', 'Property2]);
 
 Output: 
+
 	'$select=Property1,Property2'
 
 ####.resetSelect()
@@ -127,13 +132,16 @@ Used to test if the FilterClause object is actually populated and ready to use. 
 	clause.isEmpty();
 
 Output:
+
 	'false'
 
 Not Empty FilterClause:
+
 	var clause = new joData.FilterClause('CustomerId').Eq(1);
 	clause.isEmpty();
 
 Output:
+
 	'true'
 
 ####.filter(clause)
@@ -155,6 +163,7 @@ Lastly, to add it to the query:
 	query.filter(clause);
 
 Output: 
+
 	'$filter=PropertyName eq 5'
 
 ####.andFilter(clause)
@@ -166,6 +175,7 @@ Adds a filter clause using the 'and' operator. joData is smart enough to know th
 		.andFilter(new joData.FilterClause('Property2').Eq(10));
 
 Output: 
+
 	'$filter=Property1 eq 5 and Property2 eq 10'
 
 ####.orFilter(clause)
@@ -177,8 +187,9 @@ Same as andFilter, except seperates the clauses with 'or'.
 		.andFilter(new joData.FilterClause('Property2').Eq(10));
 
 Output: 
+
 	'$filter=Property1 eq 5 or Property2 eq 10'
-	
+		
 ####Mixing filter methods
 
 You can mix the filter methods as you like.
@@ -189,6 +200,7 @@ You can mix the filter methods as you like.
 		.orFilter(new joData.FilterClause('p3').Eq(10));
 
 Output: 
+
 	'$filter=p1 eq 1 and p2 eq 5 or p3 eq 10'
 
 ####<a id="logical-operators"></a>Logical Operators  ##
@@ -201,6 +213,7 @@ Example:
 	query.filter(new joData.FilterData('PropertyName').Eq(10));
 
 Output:
+
 	'$filter=PropertyName eq 'test''
 	'$filter=PropertyName eq 10'
 
@@ -228,6 +241,7 @@ Usage:
 	query.filter(new joData.FilterClause('PropertyName').Add(5).Eq(10));
 
 Output: 
+
 	'$filter=PropertyName add 5 eq 10'
 
 ####String Functions
@@ -239,6 +253,7 @@ Supported String Methods:
 	query.filter(new joData.FilterClause('PropertyName').Substringof('test').Eq(true));
 
 Output: 
+
 	'$filter=substringof('test',PropertyName) eq true'
 
 #####Endswith(value)
@@ -246,6 +261,7 @@ Output:
 	query.filter(new joData.FilterClause('PropertyName').Endswith('test').Eq(true));
 
 Output: 
+
 	'$filter=endswith(PropertyName,'test') eq true'
 
 #####Startswith(value)
@@ -253,6 +269,7 @@ Output:
 	query.filter(new joData.FilterClause('PropertyName').Startswith('test').Eq(true));
 
 Output: 
+
 	'$filter=startswith(PropertyName,'test') eq true'
 
 #####Length()
@@ -260,6 +277,7 @@ Output:
 	query.filter(new joData.FilterClause('PropertyName').Length().Eq(10));
 
 Output: 
+
 	'$filter=length(PropertyName) eq 10'
 
 #####Indexof(value)
@@ -267,6 +285,7 @@ Output:
 	query.filter(new joData.FilterClause('PropertyName').Indexof('test').Eq(1));
 
 Output: 
+
 	'$filter=indexof(PropertyName,'test') eq 1'
 
 #####Replace(find, replace)
@@ -274,6 +293,7 @@ Output:
 	query.filter(new joData.FilterClause('PropertyName').Replace('test', 'bob').Eq('bob'));
 
 Output: 
+
 	'$filter=replace(PropertyName,'test','bob') eq 'bob''
 
 #####Substring(position, \[optional\] length)
@@ -283,11 +303,15 @@ length is an options parameter.
 	query.filter(new joData.FilterClause('PropertyName').Substring(1).Eq('test'));
 
 Output: 
+
 	'$filter=substring(PropertyName,1) eq 'test''
+
+With length param:
 
 	query.filter(new joData.FilterClause('PropertyName').Substring(1,2).Eq('test'));
 
 Output: 
+
 	'$filter=substring(PropertyName,1,2) eq 'test'
 
 #####ToLower(value)
@@ -295,6 +319,7 @@ Output:
 	query.filter(new joData.FilterClause('PropertyName').ToLower().Eq('test'));
 
 Output: 
+
 	'$filter=tolower(PropertyName) eq 'test''
 
 #####ToUpper(value)
@@ -302,6 +327,7 @@ Output:
 	query.filter(new joData.FilterClause('PropertyName').ToUpper().Eq('TEST'));
 
 Output: 
+
 	'$filter=toupper(PropertyName) eq 'TEST''
 
 #####Trim(value)
@@ -309,6 +335,7 @@ Output:
 	query.filter(new joData.FilterClause('PropertyName').Trim().Eq('test'));
 
 Output: 
+
 	'$filter=trim(PropertyName) eq 'TEST''
 
 ###Setting Defaults
@@ -320,6 +347,7 @@ All oData query options have the ability to set a default setting.
 	query.setOrderByDefault('PropertyName');
 
 Output:
+
 	'$orderby=PropertyName'
 
 Setting .orderBy will override the default. Calling .resetOrderBy() will restore the default.
@@ -330,12 +358,15 @@ Setting .orderBy will override the default. Calling .resetOrderBy() will restore
 		.asc();
 
 Output:
+
 	'$orderby=p2 asc
 
 Then, resetting will restore the default:
+
 	query.resetOrderBy();
 
 Output:
+
 	'$orderby=p1 desc'
 
 ####.setTopDefault(top)
@@ -343,6 +374,7 @@ Output:
 	query.setTopDefault(5);
 
 Output:
+
 	'$top=5'
 
 Setting .top will override the default. Calling .resetTop() will restore the default.
@@ -352,12 +384,15 @@ Setting .top will override the default. Calling .resetTop() will restore the def
 		.top(10);
 
 Output:
+
 	'$top=10
 
 Then, resetting will restore the default:
+
 	query.resetTop()
 
 Output:
+
 	'$top=5'
 
 ####.setSkipDefault(skip)
@@ -365,6 +400,7 @@ Output:
 	query.setSkipDefault(5);
 
 Output:
+
 	'$skip=5'
 
 Setting .skip will override the default. Calling .resetSkip() will restore the default.
@@ -374,12 +410,15 @@ Setting .skip will override the default. Calling .resetSkip() will restore the d
 		.skip(10);
 
 Output:
+
 	'$skip=10
 
 Then, resetting will restore the default:
+
 	query.resetSkip();
 
 Output:
+
 	'$skip=5'
 
 ####.defaultFilter(clause), .defaultAndFilter(clause), .defaultOrFilter(clause)
@@ -391,14 +430,17 @@ As for seperating default clauses with 'and' or 'or', .defaultAndFilter and .def
 	query.defaultFilter(new joData.FilterClause('Id').Eq(1));
 
 Output:
+
 	'$filter=Id eq 1'
 
 Adding a filter will merge it with the defaults:
+
 	query
 		.defaultFilter(new joData.FilterClause('Id').Eq(1))
 		.filter(new joData.FilterClause('Name').Eq('bob'));
 
 Output:
+
 	'$filter=Id eq 1 and Name eq 'bob''
 
 Unless specified with .orFilter(), default clauses will be seperated from the other clauses by 'and'.
@@ -410,6 +452,7 @@ Calling .resetFilter() will remove all filter clauses except for the defaults.
 		.filter(new joData.FilterClause('Name').Eq('bob'));
 
 Output:
+
 	'$filter=Id eq 1 and Name eq 'bob''
 
 Then reset the filters:
@@ -417,6 +460,7 @@ Then reset the filters:
 	query.resetFilter();
 
 Output:
+
 	'$filter=Id eq 1'
 
 
