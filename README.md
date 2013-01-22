@@ -121,7 +121,7 @@ The joData.FilterClause object represents an oData filter clause. It's construct
 
 #####.isEmpty()
 
-Used to test if the FilterClause object is actually populated and ready to use. Will not return true until one of the [Logical Operators][] have been called.
+Used to test if the FilterClause object is actually populated and ready to use. Will not return true until one of the [Logical Operators](#logical-operators) have been called.
 
 	var clause = new joData.FilterClause('CustomerId');
 	clause.isEmpty();
@@ -178,9 +178,7 @@ Same as andFilter, except seperates the clauses with 'or'.
 
 Output: 
 	'$filter=Property1 eq 5 or Property2 eq 10'
-
-###
-
+	
 ####Mixing filter methods
 
 You can mix the filter methods as you like.
@@ -193,7 +191,7 @@ You can mix the filter methods as you like.
 Output: 
 	'$filter=p1 eq 1 and p2 eq 5 or p3 eq 10'
 
-####Logical Operators
+####<a id="logical-operators"></a>Logical Operators  ##
 
 The Logical Operator is what completes a filter clause. They can take in a string, number, or boolean, and are smart enough to know whether or not to add quotes.
 
