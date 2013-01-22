@@ -175,7 +175,7 @@
 
     joData.prototype.filter = function (filterClause) {
         this.FilterSettings = this.FilterSettings || CreateFilterSettings(this.defaults.FilterDefaults);
-        settings.filters.push(new filterObj(filterClause));
+        this.FilterSettings.filters.push(new filterObj(filterClause));
 
         return this;
     };
