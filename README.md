@@ -578,6 +578,56 @@ The Expand settings can be removed by calling:
 
 	query.resetExpand();
 
+Output: 
+
+	'$expand=Customer'
+
+####.resetExpand()
+
+The Expand settings can be removed by calling:
+
+	query.resetExpand();
+
+###Format
+
+####.format()
+
+Format is a singleton property, so you can call .format as many times as you like and the result will always be the last one.
+
+You must follow .format with format method. The methods are:
+
+#####.Atom()
+
+	query.format().Atom();
+
+Output:
+	
+	'$format=atom'
+
+#####.Xml()
+
+	query.format().Xml();
+
+Output:
+	
+	'$format=xml'
+
+#####.Json()
+
+	query.format().Json();
+
+Output:
+	
+	'$format=json'
+
+#####.Custom(value)
+
+	query.format().Custom('text/csv');
+
+Output:
+	
+	'$format=text/csv'
+
 ##Unsupported Features (for now)
 
 These are the list of features joData currently does not support. Hopefully, these features are coming soon.
@@ -595,9 +645,13 @@ These are the list of features joData currently does not support. Hopefully, the
 
 * IsOf
 
+###Expand
+
+joData currently supports $expand, but does not provide default expand options.
+
 ###Format
 
-joData currently does not support $format
+joData currently supports $format, but does not provide default format options.
 
 ###Select
 

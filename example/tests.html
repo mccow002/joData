@@ -8,7 +8,7 @@
             (function () {
                 var test = new joData('http://google.com');
                 test.filter(new joData.FilterClause('Price').Round().Eq(2));
-                test.expand('Customer');
+                test.format().Atom();
                 //test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
                 //test.setOrderByDefault('AccountNumber', 'desc');
 

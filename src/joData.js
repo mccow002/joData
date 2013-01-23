@@ -8,6 +8,7 @@
         this.FilterSettings = null;
         this.SelectSettings = null;
         this.ExpandSettings = null;
+        this.FormatSettings = null;
 
         this.defaults = {};
     };
@@ -45,6 +46,7 @@
 
         this.resetOrderBy = function () {
             this.OrderBySettings = null;
+            return this;
         };
 
         this.OrderBySettings.toString = function () {
@@ -80,6 +82,7 @@
 
         this.resetTop = function () {
             this.TopSettings = null;
+            return this;
         };
 
         this.TopSettings.toString = function () {
@@ -111,6 +114,7 @@
 
         this.resetSkip = function () {
             this.SkipSettings = null;
+            return this;
         };
 
         this.SkipSettings.toString = function () {
@@ -130,6 +134,7 @@
 
         this.resetSelect = function () {
             this.SelectSettings = null;
+            return this;
         };
 
         this.SelectSettings.toString = function () {
@@ -145,11 +150,47 @@
 
         this.resetExpand = function () {
             this.ExpandSettings = null;
-        }
+            return this;
+        };
 
         this.ExpandSettings.toString = function () {
             return '$expand=' + this.Expand;
+        };
+    }
+    
+    joData.prototype.format = function () {
+        this.FormatSettings = this.FormatSettings || {};
+
+        this.Atom = function () {
+            this.FormatSettings.Format = 'atom';
+            return this;
+        };
+
+        this.Xml = function () {
+            this.FormatSettings.Format = 'xml';
+            return this;
+        };
+
+        this.Json = function () {
+            this.FormatSettings.Format = 'json';
+            return this;
+        };
+
+        this.Custom = function (value) {
+            this.FormatSettings.Format = value;
+            return this;
+        };
+
+        this.resetFormat = function () {
+            this.FormatSettings = null;
+            return this;
+        };
+
+        this.FormatSettings.toString = function () {
+            return '$format=' + this.Format;
         }
+
+        return this;
     }
 
     joData.prototype.resetFilter = function () {
@@ -579,6 +620,9 @@
 
         if (this.ExpandSettings !== null)
             components.push(this.ExpandSettings.toString());
+
+        if (this.FormatSettings !== null)
+            components.push(this.FormatSettings.toString());
 
         return components.length > 0 ?
             url + '?' + components.join('&') :
