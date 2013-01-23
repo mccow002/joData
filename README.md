@@ -225,6 +225,27 @@ Available Operators:
 * Lt(value) - Less than
 * Le(value) - Less than or equal
 
+#####.Not()
+
+The 'not' operator is a bit different. It can be followed by a function. So rather than taking in a value, it is chained to the filter clause.
+
+Because 'not' is higher in the order of operations than the other logical operators, joData will automatically add parenthesis around any statement that doesn't return bool.
+
+	query.filter(new joData.FilterClause('CustomerName').Not().Eq('bob'));
+
+Output:
+	
+	'$filter=not (CustomerName eq 'bob')'
+
+'CustomerName eq 'bob'' must be evaluted to a bool before 'not' can be applied, so it is wrapped in parenthesis.
+
+	query.filter(new joData.FilterClause('CustomerName').Not().Endswith('bob'));
+
+Output:
+
+	'$filter=not endswith('bob')'
+
+endswith return a bool, so there is no need to add parenthesis.
 
 ####Arithmetic Methods
 

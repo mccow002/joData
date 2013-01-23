@@ -248,8 +248,12 @@
     joData.FilterClause = function (property) {
         this.property = property;
         this.value = '';
+
         this.isEmpty = true;
         this.propertyIncluded = false;
+        this.usingNot = false;
+        this.funcReturnType = null;
+
         this.components = [];
 
         return this;
@@ -257,18 +261,26 @@
 
     joData.FilterClause.prototype.toString = function () {
         var strComps = [];
-
+        
         if (!this.propertyIncluded)
             strComps.push(this.property);
 
         for (var i = 0; i < this.components.length; i++) {
             strComps.push(this.components[i]());
         }
-        return strComps.join(' ');
+        var filterStr = strComps.join(' ');
+
+        if (!this.usingNot)
+            return filterStr;
+
+        if (typeof this.funcReturnType === 'boolean')
+            return 'not ' + filterStr;
+        else
+            return 'not (' + filterStr + ')';
     };
 
     joData.FilterClause.prototype.isEmpty = function () {
-        return this.isEmpty;
+        return this.isEmpty || (this.propertyIncluded && this.usingNot);
     }
 
     function formatValue(value) {
@@ -343,9 +355,15 @@
         return addLogicalOperator(value, 'le', this);
     };
 
+    joData.FilterClause.prototype.Not = function () {
+        this.usingNot = true;
+        return this;
+    }
+
     //String Functions
     joData.FilterClause.prototype.Substringof = function (value) {
         this.propertyIncluded = true;
+        this.funcReturnType = Boolean();
         var that = this;
         this.components.push(function () {
             return 'substringof(\'' + value + '\',' + that.property + ')';
@@ -356,6 +374,7 @@
 
     joData.FilterClause.prototype.Endswith = function (value) {
         this.propertyIncluded = true;
+        this.funcReturnType = Boolean();
         var that = this;
         this.components.push(function () {
             return 'endswith(' + that.property + ',\'' + value + '\')';
@@ -366,6 +385,7 @@
 
     joData.FilterClause.prototype.Startswith = function (value) {
         this.propertyIncluded = true;
+        this.funcReturnType = Boolean();
         var that = this;
         this.components.push(function () {
             return 'startswith(' + that.property + ',\'' + value + '\')';
@@ -376,6 +396,7 @@
 
     joData.FilterClause.prototype.Length = function () {
         this.propertyIncluded = true;
+        this.funcReturnType = Number();
         var that = this;
         this.components.push(function () {
             return 'length(' + that.property + ')';
@@ -386,6 +407,7 @@
 
     joData.FilterClause.prototype.Indexof = function (value) {
         this.propertyIncluded = true;
+        this.funcReturnType = Number();
         var that = this;
         this.components.push(function () {
             return 'indexof(' + that.property + ',\'' + value + '\')';
@@ -396,6 +418,7 @@
 
     joData.FilterClause.prototype.Replace = function (find, replace) {
         this.propertyIncluded = true;
+        this.funcReturnType = String();
         var that = this;
         this.components.push(function () {
             return 'replace(' + that.property + ',\'' + find + '\',\'' + replace + '\')';
@@ -406,6 +429,7 @@
 
     joData.FilterClause.prototype.Substring = function (position, length) {
         this.propertyIncluded = true;
+        this.funcReturnType = String();
         var that = this;
         this.components.push(function () {
             var comps = [that.property, position];
@@ -420,6 +444,7 @@
 
     joData.FilterClause.prototype.ToLower = function () {
         this.propertyIncluded = true;
+        this.funcReturnType = String();
         var that = this;
         this.components.push(function () {
             return 'tolower(' + that.property + ')';
@@ -430,6 +455,7 @@
 
     joData.FilterClause.prototype.ToUpper = function () {
         this.propertyIncluded = true;
+        this.funcReturnType = String();
         var that = this;
         this.components.push(function () {
             return 'toupper(' + that.property + ')';
@@ -440,6 +466,7 @@
 
     joData.FilterClause.prototype.Trim = function () {
         this.propertyIncluded = true;
+        this.funcReturnType = String();
         var that = this;
         this.components.push(function () {
             return 'trim(' + that.property + ')';
