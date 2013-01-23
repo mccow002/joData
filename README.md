@@ -1,7 +1,7 @@
 joData
 ======
 
-A pure javascript library to help you query your data.
+A pure javascript library to help you query jo data.
 
 joData creates a javascript object that represents an oData query. This allows you to easily modify parts of your oData query without effecting the rest of it.
 
@@ -560,7 +560,23 @@ Output:
 
 	'$filter=Id eq 1'
 
+###Expand
 
+####.expand(property)
+
+Expand is a singleton property, so you can call .expand as many times as you like and the result will always be the last one.
+
+	query.expand('Customer');
+
+Output: 
+
+	'$expand=Customer'
+
+####.resetExpand()
+
+The Expand settings can be removed by calling:
+
+	query.resetExpand();
 
 ##Unsupported Features (for now)
 
@@ -578,10 +594,6 @@ These are the list of features joData currently does not support. Hopefully, the
 ####Type Functions
 
 * IsOf
-
-###Expand
-
-joData currently does not support $expand
 
 ###Format
 

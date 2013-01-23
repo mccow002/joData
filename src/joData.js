@@ -7,6 +7,7 @@
         this.SkipSettings = null;
         this.FilterSettings = null;
         this.SelectSettings = null;
+        this.ExpandSettings = null;
 
         this.defaults = {};
     };
@@ -137,6 +138,19 @@
 
         return this;
     };
+
+    joData.prototype.expand = function (expand) {
+        this.ExpandSettings = this.ExpandSettings || {};
+        this.ExpandSettings.Expand = expand;
+
+        this.resetExpand = function () {
+            this.ExpandSettings = null;
+        }
+
+        this.ExpandSettings.toString = function () {
+            return '$expand=' + this.Expand;
+        }
+    }
 
     joData.prototype.resetFilter = function () {
         this.FilterSettings = null;
@@ -562,6 +576,9 @@
             components.push(this.FilterSettings.toString());
         else if (typeof this.defaults.FilterDefaults !== 'undefined' && this.defaults.FilterDefaults !== null)
             components.push(this.defaults.FilterDefaults.toString());
+
+        if (this.ExpandSettings !== null)
+            components.push(this.ExpandSettings.toString());
 
         return components.length > 0 ?
             url + '?' + components.join('&') :
