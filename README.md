@@ -594,7 +594,7 @@ The Expand settings can be removed by calling:
 
 Format is a singleton property, so you can call .format as many times as you like and the result will always be the last one.
 
-You must follow .format with format method. The methods are:
+You must follow .format with a format method. The methods are:
 
 #####.Atom()
 
@@ -627,6 +627,30 @@ Output:
 Output:
 	
 	'$format=text/csv'
+
+###Inlinecount
+
+####.inlinecount()
+
+Inlinecount is a singleton property, so you can call .inlinecount as many times as you like and the result will always be the last one.
+
+You must follow .inlinecount with an inlinecount method. The methods are:
+
+#####.AllPages()
+
+	query.inlinecount().AllPages();
+
+Output:
+	
+	'$inlinecount=allpages'
+
+#####.None()
+
+	query.inlinecount().None();
+
+Output:
+	
+	'$inlinecount=none'
 
 ##Unsupported Features (for now)
 
