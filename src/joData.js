@@ -475,6 +475,42 @@
         return this;
     };
 
+    //Date Functions
+    function addDateFunction(filterClause, func) {
+        filterClause.propertyIncluded = true;
+        filterClause.funcReturnType = Number();
+        var that = filterClause;
+        filterClause.components.push(function () {
+            return func + '(' + that.property + ')';
+        });
+
+        return filterClause;
+    }
+
+    joData.FilterClause.prototype.Day = function () {
+        return addDateFunction(this, 'day');
+    };
+
+    joData.FilterClause.prototype.Hour = function () {
+        return addDateFunction(this, 'hour');
+    };
+
+    joData.FilterClause.prototype.Minute = function () {
+        return addDateFunction(this, 'minute');
+    };
+
+    joData.FilterClause.prototype.Month = function () {
+        return addDateFunction(this, 'month');
+    };
+
+    joData.FilterClause.prototype.Second = function () {
+        return addDateFunction(this, 'second');
+    };
+
+    joData.FilterClause.prototype.Year = function () {
+        return addDateFunction(this, 'year');
+    };
+
     joData.prototype.toString = function () {
         var url = this.baseUri;
         var components = [];

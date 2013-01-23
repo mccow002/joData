@@ -7,7 +7,7 @@
         <script>
             (function () {
                 var test = new joData('http://google.com');
-                test.filter(new joData.FilterClause('CustomerName').Not().Endswith('ob'));
+                test.filter(new joData.FilterClause('Birthday').Not().Month().Eq(2));
                 //test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
                 //test.setOrderByDefault('AccountNumber', 'desc');
 

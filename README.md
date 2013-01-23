@@ -359,6 +359,56 @@ Output:
 
 	'$filter=trim(PropertyName) eq 'TEST''
 
+####Date Functions
+
+#####.Day()
+
+	query.filter(new joData.FilterClause('Birthday').Day().Eq(2));
+
+Output:
+
+	'$filter=day(Birthday) eq 2'
+
+#####.Hour()
+
+	query.filter(new joData.FilterClause('Birthday').Hour().Eq(2));
+
+Output:
+
+	'$filter=hour(Birthday) eq 2'
+
+#####.Minute()
+
+	query.filter(new joData.FilterClause('Birthday').Minute().Eq(2));
+
+Output:
+
+	'$filter=minute(Birthday) eq 2'
+
+#####.Month()
+
+	query.filter(new joData.FilterClause('Birthday').Month().Eq(2));
+
+Output:
+
+	'$filter=month(Birthday) eq 2'
+
+#####.Second()
+
+	query.filter(new joData.FilterClause('Birthday').Second().Eq(2));
+
+Output:
+
+	'$filter=second(Birthday) eq 2'
+
+#####.Year()
+
+	query.filter(new joData.FilterClause('Birthday').Year().Eq(2));
+
+Output:
+
+	'$filter=year(Birthday) eq 2'
+
 ###Setting Defaults
 
 All oData query options have the ability to set a default setting.
@@ -493,21 +543,11 @@ These are the list of features joData currently does not support. Hopefully, the
 ###Filter
 ####Logical Operators
 
-* Not
 * () - Precedence Grouping
 
 ####String Functions
 
 * concat
-
-####Date Functions
-
-* day
-* hour
-* minute
-* month
-* second
-* year
 
 ####Math Functions
 
