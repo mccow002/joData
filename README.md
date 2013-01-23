@@ -659,7 +659,7 @@ joData currently supports $select, but does not provide default select options.
 
 ###Inline Count
 
-joData currently does not support $inlinecount
+joData currently supports $inlinecount, but does not provide default inlinecount options.
 
 ###Custom Query Options
 

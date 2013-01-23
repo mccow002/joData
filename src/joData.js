@@ -9,6 +9,7 @@
         this.SelectSettings = null;
         this.ExpandSettings = null;
         this.FormatSettings = null;
+        this.InlineCountSettings = null;
 
         this.defaults = {};
     };
@@ -188,10 +189,35 @@
 
         this.FormatSettings.toString = function () {
             return '$format=' + this.Format;
-        }
+        };
 
         return this;
-    }
+    };
+
+    joData.prototype.inlinecount = function () {
+        this.InlineCountSettings = this.InlineCountSettings || {};
+
+        this.AllPages = function () {
+            this.InlineCountSettings.InlineCount = 'allpages';
+            return this;
+        };
+
+        this.None = function () {
+            this.InlineCountSettings.InlineCount = 'none';
+            return this;
+        };
+
+        this.resetInlineCount = function () {
+            this.InlineCountSettings = null;
+            return this;
+        };
+
+        this.InlineCountSettings.toString = function () {
+            return '$inlinecount=' + this.InlineCount;
+        };
+
+        return this;
+    };
 
     joData.prototype.resetFilter = function () {
         this.FilterSettings = null;
@@ -623,6 +649,9 @@
 
         if (this.FormatSettings !== null)
             components.push(this.FormatSettings.toString());
+
+        if (this.InlineCountSettings !== null)
+            components.push(this.InlineCountSettings.toString());
 
         return components.length > 0 ?
             url + '?' + components.join('&') :
