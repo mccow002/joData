@@ -118,7 +118,72 @@ All Select settings can be removed by calling:
 
 ###Filter
 
-####joData.FilterClause(property)
+####.filter(clause)
+
+Filter is not singleton, which allows you to add as many filter clauses as you would like.
+
+.filter takes in a [joData.FilterClause](#filter-clause) object.
+
+.filter works best for single filter clauses. If you need multiple filter clauses seperated by 'or' or 'and', see below.
+
+To create a filer clause, use the joData.FilterClause object and pass in the proeprty the clause applies to.
+
+	var clause = new joData.FilterClause('PropertyName');
+
+Next, add your desires operator (for complete list of supported operators, see below)
+
+	clause.Eq(5);
+
+Lastly, to add it to the query:
+
+	query.filter(clause);
+
+Output: 
+
+	'$filter=PropertyName eq 5'
+
+####.andFilter(clause)
+
+Adds a filter clause using the 'and' operator. joData is smart enough to know that if this is the first clause in the filter, don't use the operator. This way you can loop through properties and not have to worry about using .filter for the first item and .addFilter for the rest.
+
+.andFilter takes in a [joData.FilterClause](#filter-clause) object.
+
+	query
+		.andFilter(new joData.FilterClause('Property1').Eq(5))
+		.andFilter(new joData.FilterClause('Property2').Eq(10));
+
+Output: 
+
+	'$filter=Property1 eq 5 and Property2 eq 10'
+
+####.orFilter(clause)
+
+Same as andFilter, except seperates the clauses with 'or'.
+
+.orFilter takes in a [joData.FilterClause](#filter-clause) object.
+
+	query
+		.andFilter(new joData.FilterClause('Property1').Eq(5))
+		.andFilter(new joData.FilterClause('Property2').Eq(10));
+
+Output: 
+
+	'$filter=Property1 eq 5 or Property2 eq 10'
+		
+####Mixing filter methods
+
+You can mix the filter methods as you like.
+
+	query
+		.filter(new joData.FilterClause('p1').Eq(1))
+		.andFilter(new joData.FilterClause('p2').Eq(5))
+		.orFilter(new joData.FilterClause('p3').Eq(10));
+
+Output: 
+
+	'$filter=p1 eq 1 and p2 eq 5 or p3 eq 10'
+
+####<a id="filter-clause"></a>joData.FilterClause(property) ##
 
 The joData.FilterClause object represents an oData filter clause. It's constructor takes in the property name the clause will be for.
 
@@ -143,65 +208,6 @@ Not Empty FilterClause:
 Output:
 
 	'true'
-
-####.filter(clause)
-
-Filter is not singleton, which allows you to add as many filter clauses as you would like.
-
-.filter works best for single filter clauses. If you need multiple filter clauses seperated by 'or' or 'and', see below.
-
-To create a filer clause, use the joData.FilterClause object and pass in the proeprty the clause applies to.
-
-	var clause = new joData.FilterClause('PropertyName');
-
-Next, add your desires operator (for complete list of supported operators, see below)
-
-	clause.Eq(5);
-
-Lastly, to add it to the query:
-
-	query.filter(clause);
-
-Output: 
-
-	'$filter=PropertyName eq 5'
-
-####.andFilter(clause)
-
-Adds a filter clause using the 'and' operator. joData is smart enough to know that if this is the first clause in the filter, don't use the operator. This way you can loop through properties and not have to worry about using .filter for the first item and .addFilter for the rest.
-
-	query
-		.andFilter(new joData.FilterClause('Property1').Eq(5))
-		.andFilter(new joData.FilterClause('Property2').Eq(10));
-
-Output: 
-
-	'$filter=Property1 eq 5 and Property2 eq 10'
-
-####.orFilter(clause)
-
-Same as andFilter, except seperates the clauses with 'or'.
-
-	query
-		.andFilter(new joData.FilterClause('Property1').Eq(5))
-		.andFilter(new joData.FilterClause('Property2').Eq(10));
-
-Output: 
-
-	'$filter=Property1 eq 5 or Property2 eq 10'
-		
-####Mixing filter methods
-
-You can mix the filter methods as you like.
-
-	query
-		.filter(new joData.FilterClause('p1').Eq(1))
-		.andFilter(new joData.FilterClause('p2').Eq(5))
-		.orFilter(new joData.FilterClause('p3').Eq(10));
-
-Output: 
-
-	'$filter=p1 eq 1 and p2 eq 5 or p3 eq 10'
 
 ####<a id="logical-operators"></a>Logical Operators  ##
 
