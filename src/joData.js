@@ -511,6 +511,31 @@
         return addDateFunction(this, 'year');
     };
 
+    //Math Functions
+    function addMathFunction(filterClause, func) {
+        filterClause.propertyIncluded = true;
+        filterClause.funcReturnType = Number();
+        var that = filterClause;
+        filterClause.components.push(function () {
+            return func + '(' + that.property + ')';
+        });
+
+        return filterClause;
+    }
+
+    joData.FilterClause.prototype.Round = function () {
+        return addDateFunction(this, 'round');
+    };
+
+    joData.FilterClause.prototype.Floor = function () {
+        return addDateFunction(this, 'floor');
+    };
+
+    joData.FilterClause.prototype.Ceiling = function () {
+        return addDateFunction(this, 'ceiling');
+    };
+
+    //toString()
     joData.prototype.toString = function () {
         var url = this.baseUri;
         var components = [];

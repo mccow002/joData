@@ -409,6 +409,32 @@ Output:
 
 	'$filter=year(Birthday) eq 2'
 
+####Math Functions
+
+#####.Round()
+
+	query.filter(new joData.FilterClause('Price').Round().Eq(2));
+
+Output:
+
+	'$filter=round(Price) eq 2'
+
+#####.Floor()
+
+	query.filter(new joData.FilterClause('Price').Floor().Eq(2));
+
+Output:
+
+	'$filter=floor(Price) eq 2'
+
+#####.Ceiling()
+
+	query.filter(new joData.FilterClause('Price').Ceiling().Eq(2));
+
+Output:
+
+	'$filter=ceiling(Price) eq 2'
+
 ###Setting Defaults
 
 All oData query options have the ability to set a default setting.
@@ -548,12 +574,6 @@ These are the list of features joData currently does not support. Hopefully, the
 ####String Functions
 
 * concat
-
-####Math Functions
-
-* round
-* floor
-* ceiling
 
 ####Type Functions
 
