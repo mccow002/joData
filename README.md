@@ -5,6 +5,8 @@ A pure javascript library to help you query jo data.
 
 joData creates a javascript object that represents an oData query. This allows you to easily modify parts of your oData query without effecting the rest of it.
 
+joData's goal is to implement 
+
 All methods in joData are chainable.
 
 ##Getting Started
@@ -731,3 +733,8 @@ joData currently supports $inlinecount, but does not provide default inlinecount
 ###Custom Query Options
 
 joData currently does not support any custom query options
+
+##Road Map - Goals for the Future
+
+* Paganition Extension - Writing an extension that will manage datagrid variables for you.
+* Backbone Pagination Plugin - Writing a plugin for backbone that will build up your fetch query to get datagrid pages
