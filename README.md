@@ -247,6 +247,46 @@ Output:
 
 endswith return a bool, so there is no need to add parenthesis.
 
+#####Precedence Groups
+
+#####new joData.PrecedenceGroup(filterClause)
+
+Precedence Groups allow you to group filter clauses in parenthesis.
+
+First, you instatiate a new joData.PrecedenceGroup. the constructor takes in a FilterClause object.
+
+	var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').Eq('Bob'));
+
+Then you add it to the main query filter.
+
+	query.filter(group);
+
+Output:
+
+	'$filter=(Name eq 'Bob')'
+
+#####.andFilter(filterClause), .orFilter(filterClause)
+
+Just like with the query filter, you can call andFilter or orFilter to add clauses to the group.
+
+	var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').Eq('Bob')).orFilter(new joData.FilterClause('Name').Eq('George'));
+	query.filter(group);
+
+Output:
+
+	'$filter=(Name eq 'Bob' or Name eq 'George')'
+
+#####Mixing Filters and Precedence Groups
+
+	query
+		.filter(new joData.FilterClause('Id').Eq(1))
+		.andFilter(new joData.PrecedenceGroup(new joData.FilterClause('Name').Startswith('a').Eq(true))
+			.orFilter(new joData.FilterClause('Name').Startswith('b').Eq(true)));
+
+Output:
+
+	'$filter=Id eq 1 and (startswith(Name,'a') eq true or startswith(Name,'b') eq true)'
+
 ####Arithmetic Methods
 
 All arithmetic methods are available. This includes:
@@ -657,9 +697,6 @@ Output:
 These are the list of features joData currently does not support. Hopefully, these features are coming soon.
 
 ###Filter
-####Logical Operators
-
-* () - Precedence Grouping
 
 ####String Functions
 
@@ -669,19 +706,19 @@ These are the list of features joData currently does not support. Hopefully, the
 
 * IsOf
 
-###Expand
+###Expand Defaults
 
 joData currently supports $expand, but does not provide default expand options.
 
-###Format
+###Format Defaults
 
 joData currently supports $format, but does not provide default format options.
 
-###Select
+###Select Defaults
 
 joData currently supports $select, but does not provide default select options.
 
-###Inline Count
+###Inline Count Defaults
 
 joData currently supports $inlinecount, but does not provide default inlinecount options.
 

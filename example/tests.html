@@ -7,9 +7,14 @@
         <script>
             (function () {
                 var test = new joData('http://google.com');
-                test.filter(new joData.FilterClause('Price').Round().Eq(2));
-                test.format().Atom();
-                test.inlinecount().AllPages();
+                //test.filter(new joData.FilterClause('Price').Round().Eq(2));
+
+                test.filter(new joData.FilterClause('Id').Eq(1))
+		            .andFilter(new joData.PrecedenceGroup(new joData.FilterClause('Name').Startswith('a').Eq(true))
+			            .orFilter(new joData.FilterClause('Name').Startswith('b').Eq(true)));
+
+                //test.format().Atom();
+                //test.inlinecount().AllPages();
                 //test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
                 //test.setOrderByDefault('AccountNumber', 'desc');
 

@@ -324,7 +324,43 @@
 
         filter += filterClause.filterObj.toString();
         return filter;
-    }
+    };
+
+    joData.PrecedenceGroup = function (filterClause) {
+        if (!filterClause instanceof joData.FilterClause)
+            throw 'filterClause must be of type joData.FilterClause!';
+
+        this.clauses = [];
+        this.clauses.push(new filterObj(filterClause));
+
+        return this;
+    };
+
+    joData.PrecedenceGroup.prototype.andFilter = function (filterClause) {
+        if (!filterClause instanceof joData.FilterClause)
+            throw 'filterClause must be of type joData.FilterClause!';
+
+        this.clauses.push(new filterObj(filterClause, 'and'));
+        return this;
+    };
+
+    joData.PrecedenceGroup.prototype.orFilter = function (filterClause) {
+        if (!filterClause instanceof joData.FilterClause)
+            throw 'filterClause must be of type joData.FilterClause!';
+
+        this.clauses.push(new filterObj(filterClause, 'or'));
+        return this;
+    };
+
+    joData.PrecedenceGroup.prototype.toString = function () {
+        var filter = '(';
+        for (var i = 0; i < this.clauses.length; i++) {
+            filter += writeFilter(this.clauses[i], i);
+        }
+        filter += ')';
+
+        return filter;
+    };
 
     joData.FilterClause = function (property) {
         this.property = property;
