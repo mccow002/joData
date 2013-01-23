@@ -158,7 +158,7 @@
             return '$expand=' + this.Expand;
         };
     }
-    
+
     joData.prototype.format = function () {
         this.FormatSettings = this.FormatSettings || {};
 
@@ -378,7 +378,7 @@
 
     joData.FilterClause.prototype.toString = function () {
         var strComps = [];
-        
+
         if (!this.propertyIncluded)
             strComps.push(this.property);
 
@@ -588,6 +588,34 @@
         this.components.push(function () {
             return 'trim(' + that.property + ')';
         });
+
+        return this;
+    };
+
+    joData.FilterClause.prototype.Concat = function (concat) {
+        this.propertyIncluded = true;
+        this.funcReturnType = String();
+        var that = this;
+        that.components.push(function () {
+            return concat.toString();
+        });
+
+        return this;
+    };
+
+    joData.Concat = function (value1, value2) {
+        this.parts = [value1, value2];
+
+        this.toString = function () {
+            function writeValue(value) {
+                if (typeof value === 'object')
+                    return value.toString();
+                else
+                    return "'" + value.toString() + "'";
+            };
+
+            return 'concat(' + writeValue(value1) + ',' + writeValue(value2) + ')';
+        };
 
         return this;
     };

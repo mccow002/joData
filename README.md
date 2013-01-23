@@ -39,7 +39,7 @@ Order by is a singleton property, so you can call .orderBy as many times as you 
 
 Output: 
 
-	'$orderby=PropertyName'
+	$orderby=PropertyName
 
 ####.asc(), .desc()
 
@@ -54,7 +54,7 @@ Which ever order is called last will be the one that wins, so writing
 
 will result in 
 
-	'$orderby=PropertyName desc'
+	$orderby=PropertyName desc
 
 ####.resetOrderBy()
 
@@ -72,7 +72,7 @@ Top is a singleton property, so you can call .top as many times as you like and 
 
 Output: 
 
-	'$top=10'
+	$top=10
 
 ####.resetTop()
 
@@ -90,7 +90,7 @@ Skip is a singleton property, so you can call .skip as many times as you like an
 
 Output: 
 
-	'$skip=5'
+	$skip=5
 
 ####.resetSkip()
 
@@ -110,7 +110,7 @@ select takes in an array of property names.
 
 Output: 
 
-	'$select=Property1,Property2'
+	$select=Property1,Property2
 
 ####.resetSelect()
 
@@ -142,7 +142,7 @@ Lastly, to add it to the query:
 
 Output: 
 
-	'$filter=PropertyName eq 5'
+	$filter=PropertyName eq 5
 
 ####.andFilter(clause)
 
@@ -156,7 +156,7 @@ Adds a filter clause using the 'and' operator. joData is smart enough to know th
 
 Output: 
 
-	'$filter=Property1 eq 5 and Property2 eq 10'
+	$filter=Property1 eq 5 and Property2 eq 10
 
 ####.orFilter(clause)
 
@@ -170,8 +170,8 @@ Same as andFilter, except seperates the clauses with 'or'.
 
 Output: 
 
-	'$filter=Property1 eq 5 or Property2 eq 10'
-		
+	$filter=Property1 eq 5 or Property2 eq 10
+			
 ####Mixing filter methods
 
 You can mix the filter methods as you like.
@@ -183,11 +183,13 @@ You can mix the filter methods as you like.
 
 Output: 
 
-	'$filter=p1 eq 1 and p2 eq 5 or p3 eq 10'
+	$filter=p1 eq 1 and p2 eq 5 or p3 eq 10
 
 ####<a id="filter-clause"></a>joData.FilterClause(property) ##
 
 The joData.FilterClause object represents an oData filter clause. It's constructor takes in the property name the clause will be for.
+
+ Note: The only time a parameter is not required for a FilterClause is for a concat clause.
 
 	new joData.FilterClause('CustomerName');
 
@@ -200,7 +202,7 @@ Used to test if the FilterClause object is actually populated and ready to use. 
 
 Output:
 
-	'false'
+	false
 
 Not Empty FilterClause:
 
@@ -209,7 +211,7 @@ Not Empty FilterClause:
 
 Output:
 
-	'true'
+	true
 
 ####<a id="logical-operators"></a>Logical Operators  ##
 
@@ -222,8 +224,8 @@ Example:
 
 Output:
 
-	'$filter=PropertyName eq 'test''
-	'$filter=PropertyName eq 10'
+	$filter=PropertyName eq 'test'
+	$filter=PropertyName eq 10
 
 Available Operators:
 * Eq(value) - Equals
@@ -243,7 +245,7 @@ Because 'not' is higher in the order of operations than the other logical operat
 
 Output:
 	
-	'$filter=not (CustomerName eq 'bob')'
+	$filter=not (CustomerName eq 'bob')
 
 'CustomerName eq 'bob'' must be evaluted to a bool before 'not' can be applied, so it is wrapped in parenthesis.
 
@@ -251,7 +253,7 @@ Output:
 
 Output:
 
-	'$filter=not endswith('bob')'
+	$filter=not endswith('bob')
 
 endswith return a bool, so there is no need to add parenthesis.
 
@@ -271,7 +273,7 @@ Then you add it to the main query filter.
 
 Output:
 
-	'$filter=(Name eq 'Bob')'
+	$filter=(Name eq 'Bob')
 
 #####.andFilter(filterClause), .orFilter(filterClause)
 
@@ -282,7 +284,7 @@ Just like with the query filter, you can call andFilter or orFilter to add claus
 
 Output:
 
-	'$filter=(Name eq 'Bob' or Name eq 'George')'
+	$filter=(Name eq 'Bob' or Name eq 'George')
 
 #####Mixing Filters and Precedence Groups
 
@@ -293,7 +295,7 @@ Output:
 
 Output:
 
-	'$filter=Id eq 1 and (startswith(Name,'a') eq true or startswith(Name,'b') eq true)'
+	$filter=Id eq 1 and (startswith(Name,'a') eq true or startswith(Name,'b') eq true)
 
 ####Arithmetic Methods
 
@@ -311,7 +313,7 @@ Usage:
 
 Output: 
 
-	'$filter=PropertyName add 5 eq 10'
+	$filter=PropertyName add 5 eq 10
 
 ####String Functions
 
@@ -323,7 +325,7 @@ Supported String Methods:
 
 Output: 
 
-	'$filter=substringof('test',PropertyName) eq true'
+	$filter=substringof('test',PropertyName) eq true
 
 #####Endswith(value)
 
@@ -331,7 +333,7 @@ Output:
 
 Output: 
 
-	'$filter=endswith(PropertyName,'test') eq true'
+	$filter=endswith(PropertyName,'test') eq true
 
 #####Startswith(value)
 
@@ -339,7 +341,7 @@ Output:
 
 Output: 
 
-	'$filter=startswith(PropertyName,'test') eq true'
+	$filter=startswith(PropertyName,'test') eq true
 
 #####Length()
 
@@ -347,7 +349,7 @@ Output:
 
 Output: 
 
-	'$filter=length(PropertyName) eq 10'
+	$filter=length(PropertyName) eq 10
 
 #####Indexof(value)
 
@@ -355,7 +357,7 @@ Output:
 
 Output: 
 
-	'$filter=indexof(PropertyName,'test') eq 1'
+	$filter=indexof(PropertyName,'test') eq 1
 
 #####Replace(find, replace)
 
@@ -363,7 +365,7 @@ Output:
 
 Output: 
 
-	'$filter=replace(PropertyName,'test','bob') eq 'bob''
+	$filter=replace(PropertyName,'test','bob') eq 'bob'
 
 #####Substring(position, \[optional\] length)
 
@@ -373,7 +375,7 @@ length is an options parameter.
 
 Output: 
 
-	'$filter=substring(PropertyName,1) eq 'test''
+	$filter=substring(PropertyName,1) eq 'test'
 
 With length param:
 
@@ -381,7 +383,7 @@ With length param:
 
 Output: 
 
-	'$filter=substring(PropertyName,1,2) eq 'test'
+	$filter=substring(PropertyName,1,2) eq 'test'
 
 #####ToLower(value)
 
@@ -389,7 +391,7 @@ Output:
 
 Output: 
 
-	'$filter=tolower(PropertyName) eq 'test''
+	$filter=tolower(PropertyName) eq 'test'
 
 #####ToUpper(value)
 
@@ -397,7 +399,7 @@ Output:
 
 Output: 
 
-	'$filter=toupper(PropertyName) eq 'TEST''
+	$filter=toupper(PropertyName) eq 'TEST'
 
 #####Trim(value)
 
@@ -405,7 +407,29 @@ Output:
 
 Output: 
 
-	'$filter=trim(PropertyName) eq 'TEST''
+	$filter=trim(PropertyName) eq 'TEST'
+
+#####.Concat(value1, value2)
+
+Concat is a bit different from other filter clauses. Concat can be nested, so it's possible to have 'concat(concat(City, ','), State) eq 'Birmingham, Alabama''
+
+To do this, there is the joData.Concat object that takes in either a string or a joData.Concat object.
+
+Example 1 - Without Nesting
+
+	query.filter(new joData.FilterClause().Concat(new joData.Concat('FirstName', 'LastName')).Eq('BobSmith'));
+
+Output:
+
+	$filter=concat(FirstName,LastName) eq 'BobSmith'
+
+Example 2 - With Nesting
+
+	query.filter(new joData.FilterClause().Concat(new joData.Concat(new joData.Concat('City',', '), 'State')).Eq('Birmingham, Alabama');
+
+Output:
+
+	$filter=concat(concat(City,', '),State) eq 'Birmingham, Alabama'
 
 ####Date Functions
 
@@ -415,7 +439,7 @@ Output:
 
 Output:
 
-	'$filter=day(Birthday) eq 2'
+	$filter=day(Birthday) eq 2
 
 #####.Hour()
 
@@ -423,7 +447,7 @@ Output:
 
 Output:
 
-	'$filter=hour(Birthday) eq 2'
+	$filter=hour(Birthday) eq 2
 
 #####.Minute()
 
@@ -431,7 +455,7 @@ Output:
 
 Output:
 
-	'$filter=minute(Birthday) eq 2'
+	$filter=minute(Birthday) eq 2
 
 #####.Month()
 
@@ -439,7 +463,7 @@ Output:
 
 Output:
 
-	'$filter=month(Birthday) eq 2'
+	$filter=month(Birthday) eq 2
 
 #####.Second()
 
@@ -447,7 +471,7 @@ Output:
 
 Output:
 
-	'$filter=second(Birthday) eq 2'
+	$filter=second(Birthday) eq 2
 
 #####.Year()
 
@@ -455,7 +479,7 @@ Output:
 
 Output:
 
-	'$filter=year(Birthday) eq 2'
+	$filter=year(Birthday) eq 2
 
 ####Math Functions
 
@@ -465,7 +489,7 @@ Output:
 
 Output:
 
-	'$filter=round(Price) eq 2'
+	$filter=round(Price) eq 2
 
 #####.Floor()
 
@@ -473,7 +497,7 @@ Output:
 
 Output:
 
-	'$filter=floor(Price) eq 2'
+	$filter=floor(Price) eq 2
 
 #####.Ceiling()
 
@@ -481,7 +505,7 @@ Output:
 
 Output:
 
-	'$filter=ceiling(Price) eq 2'
+	$filter=ceiling(Price) eq 2
 
 ###Setting Defaults
 
@@ -493,7 +517,7 @@ All oData query options have the ability to set a default setting.
 
 Output:
 
-	'$orderby=PropertyName'
+	$orderby=PropertyName
 
 Setting .orderBy will override the default. Calling .resetOrderBy() will restore the default.
 
@@ -504,7 +528,7 @@ Setting .orderBy will override the default. Calling .resetOrderBy() will restore
 
 Output:
 
-	'$orderby=p2 asc
+	$orderby=p2 asc
 
 Then, resetting will restore the default:
 
@@ -512,7 +536,7 @@ Then, resetting will restore the default:
 
 Output:
 
-	'$orderby=p1 desc'
+	$orderby=p1 desc
 
 ####.setTopDefault(top)
 
@@ -520,7 +544,7 @@ Output:
 
 Output:
 
-	'$top=5'
+	$top=5
 
 Setting .top will override the default. Calling .resetTop() will restore the default.
 
@@ -530,7 +554,7 @@ Setting .top will override the default. Calling .resetTop() will restore the def
 
 Output:
 
-	'$top=10
+	$top=10
 
 Then, resetting will restore the default:
 
@@ -538,7 +562,7 @@ Then, resetting will restore the default:
 
 Output:
 
-	'$top=5'
+	$top=5
 
 ####.setSkipDefault(skip)
 
@@ -546,7 +570,7 @@ Output:
 
 Output:
 
-	'$skip=5'
+	$skip=5
 
 Setting .skip will override the default. Calling .resetSkip() will restore the default.
 
@@ -556,7 +580,7 @@ Setting .skip will override the default. Calling .resetSkip() will restore the d
 
 Output:
 
-	'$skip=10
+	$skip=10
 
 Then, resetting will restore the default:
 
@@ -564,7 +588,7 @@ Then, resetting will restore the default:
 
 Output:
 
-	'$skip=5'
+	$skip=5
 
 ####.defaultFilter(clause), .defaultAndFilter(clause), .defaultOrFilter(clause)
 
@@ -576,7 +600,7 @@ As for seperating default clauses with 'and' or 'or', .defaultAndFilter and .def
 
 Output:
 
-	'$filter=Id eq 1'
+	$filter=Id eq 1
 
 Adding a filter will merge it with the defaults:
 
@@ -586,7 +610,7 @@ Adding a filter will merge it with the defaults:
 
 Output:
 
-	'$filter=Id eq 1 and Name eq 'bob''
+	$filter=Id eq 1 and Name eq 'bob'
 
 Unless specified with .orFilter(), default clauses will be seperated from the other clauses by 'and'.
 
@@ -598,7 +622,7 @@ Calling .resetFilter() will remove all filter clauses except for the defaults.
 
 Output:
 
-	'$filter=Id eq 1 and Name eq 'bob''
+	$filter=Id eq 1 and Name eq 'bob'
 
 Then reset the filters:
 
@@ -606,7 +630,7 @@ Then reset the filters:
 
 Output:
 
-	'$filter=Id eq 1'
+	$filter=Id eq 1
 
 ###Expand
 
@@ -618,7 +642,7 @@ Expand is a singleton property, so you can call .expand as many times as you lik
 
 Output: 
 
-	'$expand=Customer'
+	$expand=Customer
 
 ####.resetExpand()
 
@@ -628,7 +652,7 @@ The Expand settings can be removed by calling:
 
 Output: 
 
-	'$expand=Customer'
+	$expand=Customer
 
 ####.resetExpand()
 
@@ -650,7 +674,7 @@ You must follow .format with a format method. The methods are:
 
 Output:
 	
-	'$format=atom'
+	$format=atom
 
 #####.Xml()
 
@@ -658,7 +682,7 @@ Output:
 
 Output:
 	
-	'$format=xml'
+	$format=xml
 
 #####.Json()
 
@@ -666,7 +690,7 @@ Output:
 
 Output:
 	
-	'$format=json'
+	$format=json
 
 #####.Custom(value)
 
@@ -674,7 +698,7 @@ Output:
 
 Output:
 	
-	'$format=text/csv'
+	$format=text/csv
 
 ###Inlinecount
 
@@ -690,7 +714,7 @@ You must follow .inlinecount with an inlinecount method. The methods are:
 
 Output:
 	
-	'$inlinecount=allpages'
+	$inlinecount=allpages
 
 #####.None()
 
@@ -698,17 +722,13 @@ Output:
 
 Output:
 	
-	'$inlinecount=none'
+	$inlinecount=none
 
 ##Unsupported Features (for now)
 
 These are the list of features joData currently does not support. Hopefully, these features are coming soon.
 
 ###Filter
-
-####String Functions
-
-* concat
 
 ####Type Functions
 
