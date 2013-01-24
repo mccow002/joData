@@ -1,9 +1,6 @@
+language: ruby
 rvm:
-  - 1.9.3
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - bundle exec rackup &
-  - sleep 5
-script: phantomjs spec/javascripts/specs/joDataSpec.js "http://localhost:9292/spec/SpecRunner.html?package=all"
- 
+- 1.9.2
+before_install: 
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
