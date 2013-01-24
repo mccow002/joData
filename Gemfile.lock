@@ -24,7 +24,7 @@ GEM
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.8.0)
     rubyzip (0.9.5)
-    selenium-webdriver (2.16.0)
+    selenium-webdriver (2.14.0)
       childprocess (>= 0.2.5)
       ffi (~> 1.0.9)
       multi_json (~> 1.0.4)
