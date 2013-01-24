@@ -1,7 +1,7 @@
 language: node_js
 node_js:
- - "0.8"
- - "0.6"
+ - 0.8
+ - 0.6
  before_script:
   - "sudo npm i -g jasmine-node"
 script: ./test/SpecRunner.html
