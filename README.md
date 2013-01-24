@@ -1,6 +1,8 @@
 joData
 ======
 
+[![Build Status](https://travis-ci.org/mccow002/joData.png?branch=master)](https://travis-ci.org/mccow002/joData)
+
 A pure javascript library to help you query jo data.
 
 joData creates a javascript object that represents an oData query. This allows you to easily modify parts of your oData query without effecting the rest of it.
