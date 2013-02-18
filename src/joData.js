@@ -30,6 +30,19 @@
         this.defaults.OrderByDefault = orderByDefaults;
         return this;
     };
+    
+    joData.prototype.toggleOrderBy = function (property, callback) {
+
+        if (this.OrderBySettings === null || this.OrderBySettings.Order === 'asc')
+            this.orderBy(property).desc();
+        else
+            this.orderBy(property).asc();
+
+        if (callback && typeof callback === 'function')
+            callback.call(this);
+
+        return this;
+    };
 
     joData.prototype.orderBy = function (property) {
         this.OrderBySettings = this.OrderBySettings || {};
