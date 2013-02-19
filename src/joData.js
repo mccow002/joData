@@ -30,7 +30,7 @@
         this.defaults.OrderByDefault = orderByDefaults;
         return this;
     };
-    
+
     joData.prototype.toggleOrderBy = function (property, callback) {
 
         if (this.OrderBySettings === null || this.OrderBySettings.Order === 'asc')
@@ -58,16 +58,15 @@
             return this;
         };
 
-        this.resetOrderBy = function () {
-            this.OrderBySettings = null;
-            return this;
-        };
-
         this.OrderBySettings.toString = function () {
             return orderByToString(this.Property, this.Order);
         };
 
         return this;
+    };
+
+    joData.prototype.resetOrderBy = function () {
+        this.OrderBySettings = null;
     };
 
     function orderByToString(property, order) {
@@ -94,16 +93,15 @@
         this.TopSettings = this.TopSettings || {};
         this.TopSettings.Top = top;
 
-        this.resetTop = function () {
-            this.TopSettings = null;
-            return this;
-        };
-
         this.TopSettings.toString = function () {
             return topToString(this.Top);
         };
 
         return this;
+    };
+
+    this.resetTop = function () {
+        this.TopSettings = null;
     };
 
     function topToString(top) {
@@ -126,16 +124,15 @@
         this.SkipSettings = this.SkipSettings || {};
         this.SkipSettings.Skip = skip;
 
-        this.resetSkip = function () {
-            this.SkipSettings = null;
-            return this;
-        };
-
         this.SkipSettings.toString = function () {
             return skipToString(this.Skip);
         };
 
         return this;
+    };
+
+    this.resetSkip = function () {
+        this.SkipSettings = null;
     };
 
     function skipToString(skip) {
@@ -146,16 +143,16 @@
         this.SelectSettings = this.SelectSettings || {};
         this.SelectSettings.Select = select;
 
-        this.resetSelect = function () {
-            this.SelectSettings = null;
-            return this;
-        };
-
         this.SelectSettings.toString = function () {
             return '$select=' + this.Select.join(',');
         };
 
         return this;
+    };
+    
+    joData.prototype.resetSelect = function () {
+    	this.SelectSettings = null;
+    	return this;
     };
 
     joData.prototype.expand = function (expand) {
@@ -734,6 +731,20 @@
             url + '?' + components.join('&') :
             url;
     };
+
+    joData.prototype.saveLocal = function () {
+        if (!canSaveLocal())
+            return;
+
+        alert(JSON.stringify(this));
+    }
+
+    function canSaveLocal() {
+        var hasLocalStorage = (window['localStorage'] !== null && window.localStorage !== 'undefined');
+        var hasJson = (window['JSON'] !== null && window.localStorage !== 'undefined');
+
+        return hasLocalStorage && hasJson;
+    }
 
     return this;
 
