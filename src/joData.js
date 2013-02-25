@@ -408,9 +408,12 @@
 
     joData.FilterClause.prototype.isEmpty = function () {
         return this.isEmpty || (this.propertyIncluded && this.usingNot);
-    }
+    };
 
     function formatValue(value) {
+        if (value.length > 8 && value.substring(0, 8) === 'datetime')
+            return value;
+
         if (typeof value === 'string')
             return "'" + value + "'";
 
@@ -485,7 +488,7 @@
     joData.FilterClause.prototype.Not = function () {
         this.usingNot = true;
         return this;
-    }
+    };
 
     //String Functions
     joData.FilterClause.prototype.Substringof = function (value) {
