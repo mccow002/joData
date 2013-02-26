@@ -40,6 +40,30 @@ describe('joData', function(){
 		    j.toggleOrderBy('baz');
 		    expect(j.toString()).toEqual('http://foo.bar?$orderby=baz asc');
 		});
+
+		describe('resets to default', function () {
+		    it('without default order', function () {
+		        var j = new joData('http://foo.bar');
+		        j.setOrderByDefault('CustomerName');
+
+		        j.orderBy('OtherValue').asc();
+		        expect(j.toString()).toEqual('http://foo.bar?$orderby=OtherValue asc');
+
+		        j.resetOrderBy();
+		        expect(j.toString()).toEqual('http://foo.bar?$orderby=CustomerName desc');
+		    });
+
+		    it('with default order', function () {
+		        var j = new joData('http://foo.bar');
+		        j.setOrderByDefault('CustomerName', 'asc');
+
+		        j.orderBy('OtherValue').desc();
+		        expect(j.toString()).toEqual('http://foo.bar?$orderby=OtherValue desc');
+
+		        j.resetOrderBy();
+		        expect(j.toString()).toEqual('http://foo.bar?$orderby=CustomerName asc');
+		    });
+		});
 		
 		describe('multiple calls', function(){
 			it('only keeps the latest of asc or desc', function(){
@@ -65,6 +89,8 @@ describe('joData', function(){
 			
 			expect(j.toString()).toEqual('http://foo.bar?$top=20');
 		});
+
+        it('')
 		
 		describe('multiple calls', function(){
 			it('only keeps the latest top value', function(){

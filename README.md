@@ -64,6 +64,33 @@ All OrderBy settings can be removed by calling:
 
 	query.resetOrderBy();
 
+####.setOrderByDefault(property, \[optional\] order)
+
+	query.setOrderByDefault('PropertyName');
+
+Output:
+
+	$orderby=PropertyName
+
+Setting .orderBy will override the default. Calling .resetOrderBy() will restore the default.
+
+	query
+		.setOrderByDefault('p1', 'desc')
+		.orderBy('p2')
+		.asc();
+
+Output:
+
+	$orderby=p2 asc
+
+Then, resetting will restore the default:
+
+	query.resetOrderBy();
+
+Output:
+
+	$orderby=p1 desc
+
 ####.toggleOrderBy(property, \[optional\] callback)
 
 Toggles the order by value on a given property between desc and asc. If the orderby property has not been set yet, it will default to desc.
@@ -98,6 +125,32 @@ All Top settings can be removed by calling:
 
 	query.resetTop();
 
+####.setTopDefault(top)
+
+	query.setTopDefault(5);
+
+Output:
+
+	$top=5
+
+Setting .top will override the default. Calling .resetTop() will restore the default.
+
+	query
+		.setTopDefault(5)
+		.top(10);
+
+Output:
+
+	$top=10
+
+Then, resetting will restore the default:
+
+	query.resetTop()
+
+Output:
+
+	$top=5
+
 ###Skip
 
 ####.skip(number)
@@ -115,6 +168,32 @@ Output:
 All Skip settings can be removed by calling:
 
 	query.resetSkip();
+
+####.setSkipDefault(skip)
+
+	query.setSkipDefault(5);
+
+Output:
+
+	$skip=5
+
+Setting .skip will override the default. Calling .resetSkip() will restore the default.
+
+	query
+		.setSkipDefault(5)
+		.skip(10);
+
+Output:
+
+	$skip=10
+
+Then, resetting will restore the default:
+
+	query.resetSkip();
+
+Output:
+
+	$skip=5
 
 ###Select
 
@@ -314,6 +393,48 @@ Output:
 Output:
 
 	$filter=Id eq 1 and (startswith(Name,'a') eq true or startswith(Name,'b') eq true)
+
+####.defaultFilter(clause), .defaultAndFilter(clause), .defaultOrFilter(clause)
+
+Filter defaults work a little different than all the other defaults. Rather than overriding the default when .filter, .andFilter, or .orFilter is called, the defaults are merged.
+
+As for seperating default clauses with 'and' or 'or', .defaultAndFilter and .defaultOrFilter work the same as .andFilter and .orFilter.
+
+	query.defaultFilter(new joData.FilterClause('Id').Eq(1));
+
+Output:
+
+	$filter=Id eq 1
+
+Adding a filter will merge it with the defaults:
+
+	query
+		.defaultFilter(new joData.FilterClause('Id').Eq(1))
+		.filter(new joData.FilterClause('Name').Eq('bob'));
+
+Output:
+
+	$filter=Id eq 1 and Name eq 'bob'
+
+Unless specified with .orFilter(), default clauses will be seperated from the other clauses by 'and'.
+
+Calling .resetFilter() will remove all filter clauses except for the defaults.
+
+	query
+		.defaultFilter(new joData.FilterClause('Id').Eq(1))
+		.filter(new joData.FilterClause('Name').Eq('bob'));
+
+Output:
+
+	$filter=Id eq 1 and Name eq 'bob'
+
+Then reset the filters:
+
+	query.resetFilter();
+
+Output:
+
+	$filter=Id eq 1
 
 ####Arithmetic Methods
 
@@ -525,130 +646,6 @@ Output:
 
 	$filter=ceiling(Price) eq 2
 
-###Setting Defaults
-
-All oData query options have the ability to set a default setting.
-
-####.setOrderByDefault(property, \[optional\] order)
-
-	query.setOrderByDefault('PropertyName');
-
-Output:
-
-	$orderby=PropertyName
-
-Setting .orderBy will override the default. Calling .resetOrderBy() will restore the default.
-
-	query
-		.setOrderByDefault('p1', 'desc')
-		.orderBy('p2')
-		.asc();
-
-Output:
-
-	$orderby=p2 asc
-
-Then, resetting will restore the default:
-
-	query.resetOrderBy();
-
-Output:
-
-	$orderby=p1 desc
-
-####.setTopDefault(top)
-
-	query.setTopDefault(5);
-
-Output:
-
-	$top=5
-
-Setting .top will override the default. Calling .resetTop() will restore the default.
-
-	query
-		.setTopDefault(5)
-		.top(10);
-
-Output:
-
-	$top=10
-
-Then, resetting will restore the default:
-
-	query.resetTop()
-
-Output:
-
-	$top=5
-
-####.setSkipDefault(skip)
-
-	query.setSkipDefault(5);
-
-Output:
-
-	$skip=5
-
-Setting .skip will override the default. Calling .resetSkip() will restore the default.
-
-	query
-		.setSkipDefault(5)
-		.skip(10);
-
-Output:
-
-	$skip=10
-
-Then, resetting will restore the default:
-
-	query.resetSkip();
-
-Output:
-
-	$skip=5
-
-####.defaultFilter(clause), .defaultAndFilter(clause), .defaultOrFilter(clause)
-
-Filter defaults work a little different than all the other defaults. Rather than overriding the default when .filter, .andFilter, or .orFilter is called, the defaults are merged.
-
-As for seperating default clauses with 'and' or 'or', .defaultAndFilter and .defaultOrFilter work the same as .andFilter and .orFilter.
-
-	query.defaultFilter(new joData.FilterClause('Id').Eq(1));
-
-Output:
-
-	$filter=Id eq 1
-
-Adding a filter will merge it with the defaults:
-
-	query
-		.defaultFilter(new joData.FilterClause('Id').Eq(1))
-		.filter(new joData.FilterClause('Name').Eq('bob'));
-
-Output:
-
-	$filter=Id eq 1 and Name eq 'bob'
-
-Unless specified with .orFilter(), default clauses will be seperated from the other clauses by 'and'.
-
-Calling .resetFilter() will remove all filter clauses except for the defaults.
-
-	query
-		.defaultFilter(new joData.FilterClause('Id').Eq(1))
-		.filter(new joData.FilterClause('Name').Eq('bob'));
-
-Output:
-
-	$filter=Id eq 1 and Name eq 'bob'
-
-Then reset the filters:
-
-	query.resetFilter();
-
-Output:
-
-	$filter=Id eq 1
 
 ###Expand
 

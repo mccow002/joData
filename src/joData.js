@@ -26,6 +26,8 @@
 
         if (typeof order !== 'undefined')
             orderByDefaults.Order = order;
+        else
+            orderByDefaults.Order = 'desc';
 
         this.defaults.OrderByDefault = orderByDefaults;
         return this;
