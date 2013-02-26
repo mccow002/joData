@@ -7,9 +7,14 @@
         <script>
             (function () {
                 var test = new joData('http://google.com');
-                //test.filter(new joData.FilterClause('Price').Round().Eq(2));
+                test.top(1);
+                test.filter(new joData.FilterClause('Price').Round().Eq(2));
+                test.andFilter(new joData.FilterClause('Name').Eq(true));
+                
 
-                test.filter(new joData.FilterClause().Concat(new joData.Concat(new joData.Concat('City',', '), 'State')).Eq('Birmingham, Alabama'));
+                test.saveLocal();
+
+                //test.filter(new joData.FilterClause().Concat(new joData.Concat(new joData.Concat('City', ', '), 'State')).Eq('Birmingham, Alabama'));
 
                 //test.format().Atom();
                 //test.inlinecount().AllPages();

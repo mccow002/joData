@@ -31,6 +31,19 @@
         return this;
     };
 
+    joData.prototype.toggleOrderBy = function (property, callback) {
+
+        if (this.OrderBySettings === null || this.OrderBySettings.Order === 'asc')
+            this.orderBy(property).desc();
+        else
+            this.orderBy(property).asc();
+
+        if (callback && typeof callback === 'function')
+            callback.call(this);
+
+        return this;
+    };
+
     joData.prototype.orderBy = function (property) {
         this.OrderBySettings = this.OrderBySettings || {};
         this.OrderBySettings.Property = property;
@@ -45,16 +58,15 @@
             return this;
         };
 
-        this.resetOrderBy = function () {
-            this.OrderBySettings = null;
-            return this;
-        };
-
         this.OrderBySettings.toString = function () {
             return orderByToString(this.Property, this.Order);
         };
 
         return this;
+    };
+
+    joData.prototype.resetOrderBy = function () {
+        this.OrderBySettings = null;
     };
 
     function orderByToString(property, order) {
@@ -81,16 +93,15 @@
         this.TopSettings = this.TopSettings || {};
         this.TopSettings.Top = top;
 
-        this.resetTop = function () {
-            this.TopSettings = null;
-            return this;
-        };
-
         this.TopSettings.toString = function () {
             return topToString(this.Top);
         };
 
         return this;
+    };
+
+    this.resetTop = function () {
+        this.TopSettings = null;
     };
 
     function topToString(top) {
@@ -113,16 +124,15 @@
         this.SkipSettings = this.SkipSettings || {};
         this.SkipSettings.Skip = skip;
 
-        this.resetSkip = function () {
-            this.SkipSettings = null;
-            return this;
-        };
-
         this.SkipSettings.toString = function () {
             return skipToString(this.Skip);
         };
 
         return this;
+    };
+
+    this.resetSkip = function () {
+        this.SkipSettings = null;
     };
 
     function skipToString(skip) {
@@ -133,16 +143,16 @@
         this.SelectSettings = this.SelectSettings || {};
         this.SelectSettings.Select = select;
 
-        this.resetSelect = function () {
-            this.SelectSettings = null;
-            return this;
-        };
-
         this.SelectSettings.toString = function () {
             return '$select=' + this.Select.join(',');
         };
 
         return this;
+    };
+    
+    joData.prototype.resetSelect = function () {
+    	this.SelectSettings = null;
+    	return this;
     };
 
     joData.prototype.expand = function (expand) {
@@ -398,9 +408,12 @@
 
     joData.FilterClause.prototype.isEmpty = function () {
         return this.isEmpty || (this.propertyIncluded && this.usingNot);
-    }
+    };
 
     function formatValue(value) {
+        if (value.length > 8 && value.substring(0, 8) === 'datetime')
+            return value;
+
         if (typeof value === 'string')
             return "'" + value + "'";
 
@@ -475,7 +488,7 @@
     joData.FilterClause.prototype.Not = function () {
         this.usingNot = true;
         return this;
-    }
+    };
 
     //String Functions
     joData.FilterClause.prototype.Substringof = function (value) {
@@ -721,6 +734,20 @@
             url + '?' + components.join('&') :
             url;
     };
+
+    joData.prototype.saveLocal = function () {
+        if (!canSaveLocal())
+            return;
+
+        alert(JSON.stringify(this));
+    }
+
+    function canSaveLocal() {
+        var hasLocalStorage = (window['localStorage'] !== null && window.localStorage !== 'undefined');
+        var hasJson = (window['JSON'] !== null && window.localStorage !== 'undefined');
+
+        return hasLocalStorage && hasJson;
+    }
 
     return this;
 

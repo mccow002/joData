@@ -24,6 +24,22 @@ describe('joData', function(){
 			
 			expect(j.toString()).toEqual('http://foo.bar?$orderby=baz desc');
 		});
+
+		it('allows for asc', function () {
+		    var j = new joData('http://foo.bar');
+		    j.orderBy('baz').asc();
+
+		    expect(j.toString()).toEqual('http://foo.bar?$orderby=baz asc');
+		});
+
+		it('toggles between orders', function () {
+		    var j = new joData('http://foo.bar');
+		    j.toggleOrderBy('baz');
+		    expect(j.toString()).toEqual('http://foo.bar?$orderby=baz desc');
+
+		    j.toggleOrderBy('baz');
+		    expect(j.toString()).toEqual('http://foo.bar?$orderby=baz asc');
+		});
 		
 		describe('multiple calls', function(){
 			it('only keeps the latest of asc or desc', function(){

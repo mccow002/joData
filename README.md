@@ -64,6 +64,22 @@ All OrderBy settings can be removed by calling:
 
 	query.resetOrderBy();
 
+####.toggleOrderBy(property, \[optional\] callback)
+
+Toggles the order by value on a given property between desc and asc. If the orderby property has not been set yet, it will default to desc.
+
+	query.orderBy('CustomerId');
+
+Output:
+
+	$orderby=CustomerName desc
+
+If called again, the result would be
+
+	$orderby=CustomerName asc.
+
+The callback is an optional parameter and will be called after the order property has been set.
+
 ###Top
 
 ####.top(number)
@@ -656,12 +672,6 @@ Output:
 
 	$expand=Customer
 
-####.resetExpand()
-
-The Expand settings can be removed by calling:
-
-	query.resetExpand();
-
 ###Format
 
 ####.format()
@@ -760,3 +770,4 @@ joData currently does not support any custom query options
 
 * Paganition Extension - Writing an extension that will manage datagrid variables for you.
 * Backbone Pagination Plugin - Writing a plugin for backbone that will build up your fetch query to get datagrid pages
+* The ability to save a joData object to local storage to allow for sticky settings
