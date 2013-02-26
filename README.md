@@ -231,7 +231,7 @@ To create a filer clause, use the joData.FilterClause object and pass in the pro
 
 Next, add your desires operator (for complete list of supported operators, see below)
 
-	clause.Eq(5);
+	clause.eq(5);
 
 Lastly, to add it to the query:
 
@@ -248,8 +248,8 @@ Adds a filter clause using the 'and' operator. joData is smart enough to know th
 .andFilter takes in a [joData.FilterClause](#filter-clause) object.
 
 	query
-		.andFilter(new joData.FilterClause('Property1').Eq(5))
-		.andFilter(new joData.FilterClause('Property2').Eq(10));
+		.andFilter(new joData.FilterClause('Property1').eq(5))
+		.andFilter(new joData.FilterClause('Property2').eq(10));
 
 Output: 
 
@@ -262,8 +262,8 @@ Same as andFilter, except seperates the clauses with 'or'.
 .orFilter takes in a [joData.FilterClause](#filter-clause) object.
 
 	query
-		.andFilter(new joData.FilterClause('Property1').Eq(5))
-		.andFilter(new joData.FilterClause('Property2').Eq(10));
+		.orFilter(new joData.FilterClause('Property1').eq(5))
+		.orFilter(new joData.FilterClause('Property2').eq(10));
 
 Output: 
 
@@ -274,9 +274,9 @@ Output:
 You can mix the filter methods as you like.
 
 	query
-		.filter(new joData.FilterClause('p1').Eq(1))
-		.andFilter(new joData.FilterClause('p2').Eq(5))
-		.orFilter(new joData.FilterClause('p3').Eq(10));
+		.filter(new joData.FilterClause('p1').eq(1))
+		.andFilter(new joData.FilterClause('p2').eq(5))
+		.orFilter(new joData.FilterClause('p3').eq(10));
 
 Output: 
 
@@ -299,16 +299,16 @@ Used to test if the FilterClause object is actually populated and ready to use. 
 
 Output:
 
-	false
+	true
 
 Not Empty FilterClause:
 
-	var clause = new joData.FilterClause('CustomerId').Eq(1);
+	var clause = new joData.FilterClause('CustomerId').eq(1);
 	clause.isEmpty();
 
 Output:
 
-	true
+	false
 
 ####<a id="logical-operators"></a>Logical Operators  ##
 
@@ -316,8 +316,8 @@ The Logical Operator is what completes a filter clause. They can take in a strin
 
 Example:
 
-	query.filter(new joData.FilterData('PropertyName').Eq('test'));
-	query.filter(new joData.FilterData('PropertyName').Eq(10));
+	query.filter(new joData.FilterData('PropertyName').eq('test'));
+	query.filter(new joData.FilterData('PropertyName').eq(10));
 
 Output:
 
@@ -325,20 +325,20 @@ Output:
 	$filter=PropertyName eq 10
 
 Available Operators:
-* Eq(value) - Equals
-* Ne(value) - Not equals
-* Gt(value) - Greater than
-* Ge(value) - Greater than or equal
-* Lt(value) - Less than
-* Le(value) - Less than or equal
+* eq(value) - Equals
+* ne(value) - Not equals
+* gt(value) - Greater than
+* ge(value) - Greater than or equal
+* lt(value) - Less than
+* le(value) - Less than or equal
 
-#####.Not()
+#####.not()
 
 The 'not' operator is a bit different. It can be followed by a function. So rather than taking in a value, it is chained to the filter clause.
 
 Because 'not' is higher in the order of operations than the other logical operators, joData will automatically add parenthesis around any statement that doesn't return bool.
 
-	query.filter(new joData.FilterClause('CustomerName').Not().Eq('bob'));
+	query.filter(new joData.FilterClause('CustomerName').not().eq('bob'));
 
 Output:
 	
@@ -346,11 +346,11 @@ Output:
 
 'CustomerName eq 'bob'' must be evaluted to a bool before 'not' can be applied, so it is wrapped in parenthesis.
 
-	query.filter(new joData.FilterClause('CustomerName').Not().Endswith('bob'));
+	query.filter(new joData.FilterClause('CustomerName').not().endswith('bob'));
 
 Output:
 
-	$filter=not endswith('bob')
+	$filter=not endswith(CustomerName,'bob')
 
 endswith return a bool, so there is no need to add parenthesis.
 
@@ -362,7 +362,7 @@ Precedence Groups allow you to group filter clauses in parenthesis.
 
 First, you instatiate a new joData.PrecedenceGroup. the constructor takes in a FilterClause object.
 
-	var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').Eq('Bob'));
+	var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').eq('Bob'));
 
 Then you add it to the main query filter.
 
@@ -376,7 +376,7 @@ Output:
 
 Just like with the query filter, you can call andFilter or orFilter to add clauses to the group.
 
-	var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').Eq('Bob')).orFilter(new joData.FilterClause('Name').Eq('George'));
+	var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').eq('Bob')).orFilter(new joData.FilterClause('Name').eq('George'));
 	query.filter(group);
 
 Output:
@@ -386,13 +386,15 @@ Output:
 #####Mixing Filters and Precedence Groups
 
 	query
-		.filter(new joData.FilterClause('Id').Eq(1))
-		.andFilter(new joData.PrecedenceGroup(new joData.FilterClause('Name').Startswith('a').Eq(true))
-			.orFilter(new joData.FilterClause('Name').Startswith('b').Eq(true)));
+		.filter(new joData.FilterClause('Id').eq(1))
+		.andFilter(new joData.PrecedenceGroup(new joData.FilterClause('Name').startswith('a').eq(true))
+			.orFilter(new joData.FilterClause('Name').startswith('b').eq(true)));
 
 Output:
 
 	$filter=Id eq 1 and (startswith(Name,'a') eq true or startswith(Name,'b') eq true)
+
+####Settings Filter Defaults
 
 ####.defaultFilter(clause), .defaultAndFilter(clause), .defaultOrFilter(clause)
 
@@ -400,7 +402,7 @@ Filter defaults work a little different than all the other defaults. Rather than
 
 As for seperating default clauses with 'and' or 'or', .defaultAndFilter and .defaultOrFilter work the same as .andFilter and .orFilter.
 
-	query.defaultFilter(new joData.FilterClause('Id').Eq(1));
+	query.defaultFilter(new joData.FilterClause('Id').eq(1));
 
 Output:
 
@@ -409,8 +411,8 @@ Output:
 Adding a filter will merge it with the defaults:
 
 	query
-		.defaultFilter(new joData.FilterClause('Id').Eq(1))
-		.filter(new joData.FilterClause('Name').Eq('bob'));
+		.defaultFilter(new joData.FilterClause('Id').eq(1))
+		.filter(new joData.FilterClause('Name').eq('bob'));
 
 Output:
 
@@ -421,8 +423,8 @@ Unless specified with .orFilter(), default clauses will be seperated from the ot
 Calling .resetFilter() will remove all filter clauses except for the defaults.
 
 	query
-		.defaultFilter(new joData.FilterClause('Id').Eq(1))
-		.filter(new joData.FilterClause('Name').Eq('bob'));
+		.defaultFilter(new joData.FilterClause('Id').eq(1))
+		.filter(new joData.FilterClause('Name').eq('bob'));
 
 Output:
 
@@ -448,7 +450,7 @@ All arithmetic methods are available. This includes:
 
 Usage:
 
-	query.filter(new joData.FilterClause('PropertyName').Add(5).Eq(10));
+	query.filter(new joData.FilterClause('PropertyName').add(5).eq(10));
 
 Output: 
 
@@ -458,59 +460,59 @@ Output:
 
 Supported String Methods:
 
-#####Substringof(value)
+#####substringof(value)
 
-	query.filter(new joData.FilterClause('PropertyName').Substringof('test').Eq(true));
+	query.filter(new joData.FilterClause('PropertyName').substringof('test').eq(true));
 
 Output: 
 
 	$filter=substringof('test',PropertyName) eq true
 
-#####Endswith(value)
+#####endswith(value)
 
-	query.filter(new joData.FilterClause('PropertyName').Endswith('test').Eq(true));
+	query.filter(new joData.FilterClause('PropertyName').endswith('test').eq(true));
 
 Output: 
 
 	$filter=endswith(PropertyName,'test') eq true
 
-#####Startswith(value)
+#####startswith(value)
 
-	query.filter(new joData.FilterClause('PropertyName').Startswith('test').Eq(true));
+	query.filter(new joData.FilterClause('PropertyName').startswith('test').eq(true));
 
 Output: 
 
 	$filter=startswith(PropertyName,'test') eq true
 
-#####Length()
+#####length()
 
-	query.filter(new joData.FilterClause('PropertyName').Length().Eq(10));
+	query.filter(new joData.FilterClause('PropertyName').length().eq(10));
 
 Output: 
 
 	$filter=length(PropertyName) eq 10
 
-#####Indexof(value)
+#####indexof(value)
 
-	query.filter(new joData.FilterClause('PropertyName').Indexof('test').Eq(1));
+	query.filter(new joData.FilterClause('PropertyName').indexof('test').eq(1));
 
 Output: 
 
 	$filter=indexof(PropertyName,'test') eq 1
 
-#####Replace(find, replace)
+#####replace(find, replace)
 
-	query.filter(new joData.FilterClause('PropertyName').Replace('test', 'bob').Eq('bob'));
+	query.filter(new joData.FilterClause('PropertyName').replace('test', 'bob').eq('bob'));
 
 Output: 
 
 	$filter=replace(PropertyName,'test','bob') eq 'bob'
 
-#####Substring(position, \[optional\] length)
+#####substring(position, \[optional\] length)
 
 length is an options parameter.
 
-	query.filter(new joData.FilterClause('PropertyName').Substring(1).Eq('test'));
+	query.filter(new joData.FilterClause('PropertyName').substring(1).eq('test'));
 
 Output: 
 
@@ -518,35 +520,35 @@ Output:
 
 With length param:
 
-	query.filter(new joData.FilterClause('PropertyName').Substring(1,2).Eq('test'));
+	query.filter(new joData.FilterClause('PropertyName').substring(1,2).eq('test'));
 
 Output: 
 
 	$filter=substring(PropertyName,1,2) eq 'test'
 
-#####ToLower(value)
+#####toLower(value)
 
-	query.filter(new joData.FilterClause('PropertyName').ToLower().Eq('test'));
+	query.filter(new joData.FilterClause('PropertyName').toLower().eq('test'));
 
 Output: 
 
 	$filter=tolower(PropertyName) eq 'test'
 
-#####ToUpper(value)
+#####toUpper(value)
 
-	query.filter(new joData.FilterClause('PropertyName').ToUpper().Eq('TEST'));
+	query.filter(new joData.FilterClause('PropertyName').toUpper().eq('TEST'));
 
 Output: 
 
 	$filter=toupper(PropertyName) eq 'TEST'
 
-#####Trim(value)
+#####trim(value)
 
-	query.filter(new joData.FilterClause('PropertyName').Trim().Eq('test'));
+	query.filter(new joData.FilterClause('PropertyName').trim().eq('test'));
 
 Output: 
 
-	$filter=trim(PropertyName) eq 'TEST'
+	$filter=trim(PropertyName) eq 'test'
 
 #####.Concat(value1, value2)
 
@@ -554,9 +556,12 @@ Concat is a bit different from other filter clauses. Concat can be nested, so it
 
 To do this, there is the joData.Concat object that takes in either a string or a joData.Concat object.
 
+By default, the concat object assumes you're dealing with properties, so it doesn't wrap your concat arguments in quotes. If you wish to use a string literal, like in example 2,
+use literal('your literal value').
+
 Example 1 - Without Nesting
 
-	query.filter(new joData.FilterClause().Concat(new joData.Concat('FirstName', 'LastName')).Eq('BobSmith'));
+	query.filter(new joData.FilterClause().Concat(new joData.Concat('FirstName', 'LastName')).eq('BobSmith'));
 
 Output:
 
@@ -564,7 +569,7 @@ Output:
 
 Example 2 - With Nesting
 
-	query.filter(new joData.FilterClause().Concat(new joData.Concat(new joData.Concat('City',', '), 'State')).Eq('Birmingham, Alabama');
+	query.filter(new joData.FilterClause().Concat(new joData.Concat(new joData.Concat('City',literal(', ')), 'State')).eq('Birmingham, Alabama'));
 
 Output:
 
@@ -572,49 +577,49 @@ Output:
 
 ####Date Functions
 
-#####.Day()
+#####.day()
 
-	query.filter(new joData.FilterClause('Birthday').Day().Eq(2));
+	query.filter(new joData.FilterClause('Birthday').day().eq(2));
 
 Output:
 
 	$filter=day(Birthday) eq 2
 
-#####.Hour()
+#####.hour()
 
-	query.filter(new joData.FilterClause('Birthday').Hour().Eq(2));
+	query.filter(new joData.FilterClause('Birthday').hour().eq(2));
 
 Output:
 
 	$filter=hour(Birthday) eq 2
 
-#####.Minute()
+#####.minute()
 
-	query.filter(new joData.FilterClause('Birthday').Minute().Eq(2));
+	query.filter(new joData.FilterClause('Birthday').minute().eq(2));
 
 Output:
 
 	$filter=minute(Birthday) eq 2
 
-#####.Month()
+#####.month()
 
-	query.filter(new joData.FilterClause('Birthday').Month().Eq(2));
+	query.filter(new joData.FilterClause('Birthday').month().eq(2));
 
 Output:
 
 	$filter=month(Birthday) eq 2
 
-#####.Second()
+#####.second()
 
-	query.filter(new joData.FilterClause('Birthday').Second().Eq(2));
+	query.filter(new joData.FilterClause('Birthday').second().eq(2));
 
 Output:
 
 	$filter=second(Birthday) eq 2
 
-#####.Year()
+#####.year()
 
-	query.filter(new joData.FilterClause('Birthday').Year().Eq(2));
+	query.filter(new joData.FilterClause('Birthday').year().eq(2));
 
 Output:
 
@@ -622,25 +627,25 @@ Output:
 
 ####Math Functions
 
-#####.Round()
+#####.round()
 
-	query.filter(new joData.FilterClause('Price').Round().Eq(2));
+	query.filter(new joData.FilterClause('Price').round().eq(2));
 
 Output:
 
 	$filter=round(Price) eq 2
 
-#####.Floor()
+#####.floor()
 
-	query.filter(new joData.FilterClause('Price').Floor().Eq(2));
+	query.filter(new joData.FilterClause('Price').floor().eq(2));
 
 Output:
 
 	$filter=floor(Price) eq 2
 
-#####.Ceiling()
+#####.ceiling()
 
-	query.filter(new joData.FilterClause('Price').Ceiling().Eq(2));
+	query.filter(new joData.FilterClause('Price').ceiling().eq(2));
 
 Output:
 
@@ -665,10 +670,6 @@ The Expand settings can be removed by calling:
 
 	query.resetExpand();
 
-Output: 
-
-	$expand=Customer
-
 ###Format
 
 ####.format()
@@ -677,37 +678,41 @@ Format is a singleton property, so you can call .format as many times as you lik
 
 You must follow .format with a format method. The methods are:
 
-#####.Atom()
+#####.atom()
 
-	query.format().Atom();
+	query.format().atom();
 
 Output:
 	
 	$format=atom
 
-#####.Xml()
+#####.xml()
 
-	query.format().Xml();
+	query.format().xml();
 
 Output:
 	
 	$format=xml
 
-#####.Json()
+#####.json()
 
-	query.format().Json();
+	query.format().json();
 
 Output:
 	
 	$format=json
 
-#####.Custom(value)
+#####.custom(value)
 
-	query.format().Custom('text/csv');
+	query.format().custom('text/csv');
 
 Output:
 	
 	$format=text/csv
+
+####.resetFormat()
+
+calling .resetFormat() will remove any format settings.
 
 ###Inlinecount
 
@@ -717,21 +722,25 @@ Inlinecount is a singleton property, so you can call .inlinecount as many times 
 
 You must follow .inlinecount with an inlinecount method. The methods are:
 
-#####.AllPages()
+#####.allPages()
 
-	query.inlinecount().AllPages();
+	query.inlinecount().allPages();
 
 Output:
 	
 	$inlinecount=allpages
 
-#####.None()
+#####.none()
 
-	query.inlinecount().None();
+	query.inlinecount().none();
 
 Output:
 	
 	$inlinecount=none
+
+####.resetInlineCount()
+
+calling .resetInlineCount() will remove any inline count settings.
 
 ##Unsupported Features (for now)
 

@@ -102,7 +102,7 @@
         return this;
     };
 
-    this.resetTop = function () {
+    joData.prototype.resetTop = function () {
         this.TopSettings = null;
     };
 
@@ -133,7 +133,7 @@
         return this;
     };
 
-    this.resetSkip = function () {
+    joData.prototype.resetSkip = function () {
         this.SkipSettings = null;
     };
 
@@ -174,22 +174,22 @@
     joData.prototype.format = function () {
         this.FormatSettings = this.FormatSettings || {};
 
-        this.Atom = function () {
+        this.atom = function () {
             this.FormatSettings.Format = 'atom';
             return this;
         };
 
-        this.Xml = function () {
+        this.xml = function () {
             this.FormatSettings.Format = 'xml';
             return this;
         };
 
-        this.Json = function () {
+        this.json = function () {
             this.FormatSettings.Format = 'json';
             return this;
         };
 
-        this.Custom = function (value) {
+        this.custom = function (value) {
             this.FormatSettings.Format = value;
             return this;
         };
@@ -209,12 +209,12 @@
     joData.prototype.inlinecount = function () {
         this.InlineCountSettings = this.InlineCountSettings || {};
 
-        this.AllPages = function () {
+        this.allPages = function () {
             this.InlineCountSettings.InlineCount = 'allpages';
             return this;
         };
 
-        this.None = function () {
+        this.none = function () {
             this.InlineCountSettings.InlineCount = 'none';
             return this;
         };
@@ -331,7 +331,7 @@
         var filter = '';
         if ((typeof filterClause.logicalOperator !== 'undefined' && filterClause.logicalOperator !== null) && i > 0)
             filter += ' ' + filterClause.logicalOperator + ' ';
-        else if (i < 0 && (typeof filterClause.logicalOperator === 'undefined' || filterClause.logicalOperator === null))
+        else if (i > 0 && (typeof filterClause.logicalOperator === 'undefined' || filterClause.logicalOperator === null))
             filter += ' and ';
 
         filter += filterClause.filterObj.toString();
@@ -378,7 +378,7 @@
         this.property = property;
         this.value = '';
 
-        this.isEmpty = true;
+        this.isClauseEmpty = true;
         this.propertyIncluded = false;
         this.usingNot = false;
         this.funcReturnType = null;
@@ -409,7 +409,7 @@
     };
 
     joData.FilterClause.prototype.isEmpty = function () {
-        return this.isEmpty || (this.propertyIncluded && this.usingNot);
+        return this.isClauseEmpty || (this.propertyIncluded && this.usingNot);
     };
 
     function formatValue(value) {
@@ -424,7 +424,7 @@
 
     function addLogicalOperator(value, operator, filterClause) {
         filterClause.value = value;
-        filterClause.isEmpty = false;
+        filterClause.isClauseEmpty = false;
 
         filterClause.components.push(function () {
             return operator + ' ' + formatValue(value);
@@ -442,58 +442,58 @@
     }
 
     //Arithmetic Methods
-    joData.FilterClause.prototype.Add = function (amount) {
+    joData.FilterClause.prototype.add = function (amount) {
         return addArithmeticOperator(amount, 'add', this);
     };
 
-    joData.FilterClause.prototype.Sub = function (amount) {
+    joData.FilterClause.prototype.sub = function (amount) {
         return addArithmeticOperator(amount, 'sub', this);
     };
 
-    joData.FilterClause.prototype.Mul = function (amount) {
+    joData.FilterClause.prototype.mul = function (amount) {
         return addArithmeticOperator(amount, 'mul', this);
     };
 
-    joData.FilterClause.prototype.Div = function (amount) {
+    joData.FilterClause.prototype.div = function (amount) {
         return addArithmeticOperator(amount, 'div', this);
     };
 
-    joData.FilterClause.prototype.Mod = function (amount) {
+    joData.FilterClause.prototype.mod = function (amount) {
         return addArithmeticOperator(amount, 'mod', this);
     };
 
     //Logical Operators
-    joData.FilterClause.prototype.Eq = function (value) {
+    joData.FilterClause.prototype.eq = function (value) {
         return addLogicalOperator(value, 'eq', this);
     };
 
-    joData.FilterClause.prototype.Ne = function (value) {
+    joData.FilterClause.prototype.ne = function (value) {
         return addLogicalOperator(value, 'ne', this);
     };
 
-    joData.FilterClause.prototype.Gt = function (value) {
+    joData.FilterClause.prototype.gt = function (value) {
         return addLogicalOperator(value, 'gt', this);
     };
 
-    joData.FilterClause.prototype.Ge = function (value) {
+    joData.FilterClause.prototype.ge = function (value) {
         return addLogicalOperator(value, 'ge', this);
     };
 
-    joData.FilterClause.prototype.Lt = function (value) {
+    joData.FilterClause.prototype.lt = function (value) {
         return addLogicalOperator(value, 'lt', this);
     };
 
-    joData.FilterClause.prototype.Le = function (value) {
+    joData.FilterClause.prototype.le = function (value) {
         return addLogicalOperator(value, 'le', this);
     };
 
-    joData.FilterClause.prototype.Not = function () {
+    joData.FilterClause.prototype.not = function () {
         this.usingNot = true;
         return this;
     };
 
     //String Functions
-    joData.FilterClause.prototype.Substringof = function (value) {
+    joData.FilterClause.prototype.substringof = function (value) {
         this.propertyIncluded = true;
         this.funcReturnType = Boolean();
         var that = this;
@@ -504,7 +504,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.Endswith = function (value) {
+    joData.FilterClause.prototype.endswith = function (value) {
         this.propertyIncluded = true;
         this.funcReturnType = Boolean();
         var that = this;
@@ -515,7 +515,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.Startswith = function (value) {
+    joData.FilterClause.prototype.startswith = function (value) {
         this.propertyIncluded = true;
         this.funcReturnType = Boolean();
         var that = this;
@@ -526,7 +526,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.Length = function () {
+    joData.FilterClause.prototype.length = function () {
         this.propertyIncluded = true;
         this.funcReturnType = Number();
         var that = this;
@@ -537,7 +537,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.Indexof = function (value) {
+    joData.FilterClause.prototype.indexof = function (value) {
         this.propertyIncluded = true;
         this.funcReturnType = Number();
         var that = this;
@@ -548,7 +548,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.Replace = function (find, replace) {
+    joData.FilterClause.prototype.replace = function (find, replace) {
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
@@ -559,7 +559,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.Substring = function (position, length) {
+    joData.FilterClause.prototype.substring = function (position, length) {
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
@@ -574,7 +574,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.ToLower = function () {
+    joData.FilterClause.prototype.toLower = function () {
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
@@ -585,7 +585,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.ToUpper = function () {
+    joData.FilterClause.prototype.toUpper = function () {
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
@@ -596,7 +596,7 @@
         return this;
     };
 
-    joData.FilterClause.prototype.Trim = function () {
+    joData.FilterClause.prototype.trim = function () {
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
@@ -618,6 +618,10 @@
         return this;
     };
 
+    window.literal = function (stringLiteral) {
+        return "'" + stringLiteral.toString() + "'";
+    }
+
     joData.Concat = function (value1, value2) {
         this.parts = [value1, value2];
 
@@ -625,8 +629,10 @@
             function writeValue(value) {
                 if (typeof value === 'object')
                     return value.toString();
+                else if (typeof value === 'function')
+                    return value.call(this);
                 else
-                    return "'" + value.toString() + "'";
+                    return value.toString();
             };
 
             return 'concat(' + writeValue(value1) + ',' + writeValue(value2) + ')';
@@ -647,27 +653,27 @@
         return filterClause;
     }
 
-    joData.FilterClause.prototype.Day = function () {
+    joData.FilterClause.prototype.day = function () {
         return addDateFunction(this, 'day');
     };
 
-    joData.FilterClause.prototype.Hour = function () {
+    joData.FilterClause.prototype.hour = function () {
         return addDateFunction(this, 'hour');
     };
 
-    joData.FilterClause.prototype.Minute = function () {
+    joData.FilterClause.prototype.minute = function () {
         return addDateFunction(this, 'minute');
     };
 
-    joData.FilterClause.prototype.Month = function () {
+    joData.FilterClause.prototype.month = function () {
         return addDateFunction(this, 'month');
     };
 
-    joData.FilterClause.prototype.Second = function () {
+    joData.FilterClause.prototype.second = function () {
         return addDateFunction(this, 'second');
     };
 
-    joData.FilterClause.prototype.Year = function () {
+    joData.FilterClause.prototype.year = function () {
         return addDateFunction(this, 'year');
     };
 
@@ -683,15 +689,15 @@
         return filterClause;
     }
 
-    joData.FilterClause.prototype.Round = function () {
+    joData.FilterClause.prototype.round = function () {
         return addDateFunction(this, 'round');
     };
 
-    joData.FilterClause.prototype.Floor = function () {
+    joData.FilterClause.prototype.floor = function () {
         return addDateFunction(this, 'floor');
     };
 
-    joData.FilterClause.prototype.Ceiling = function () {
+    joData.FilterClause.prototype.ceiling = function () {
         return addDateFunction(this, 'ceiling');
     };
 
