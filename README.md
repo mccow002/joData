@@ -282,6 +282,15 @@ Output:
 
 	$filter=p1 eq 1 and p2 eq 5 or p3 eq 10
 
+####Removing a Single Filter
+
+####.removeFilter(property)
+
+If you wish to remove a single filter, call .removeFilter and pass in the name of the property whose filter you wish to remove. Currently, this will only work with FilterClause. It does not work with Precedence Groups 
+or Conat.
+
+	query.removeFilter('CustomerName')
+
 ####<a id="filter-clause"></a>joData.FilterClause(property) ##
 
 The joData.FilterClause object represents an oData filter clause. It's constructor takes in the property name the clause will be for.

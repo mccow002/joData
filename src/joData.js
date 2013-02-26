@@ -151,10 +151,10 @@
 
         return this;
     };
-    
+
     joData.prototype.resetSelect = function () {
-    	this.SelectSettings = null;
-    	return this;
+        this.SelectSettings = null;
+        return this;
     };
 
     joData.prototype.expand = function (expand) {
@@ -234,6 +234,28 @@
     joData.prototype.resetFilter = function () {
         this.FilterSettings = null;
         return this;
+    };
+
+    if (!Array.remove) {
+        Array.prototype.remove = function (from, to) {
+            var rest = this.slice((to || from) + 1 || this.length);
+            this.length = from < 0 ? this.length + from : from;
+            return this.push.apply(this, rest);
+        };
+    }
+
+    joData.prototype.removeFilter = function (property) {
+        if (this.FilterSettings == null)
+            return this;
+
+        for (var i = 0; i < this.FilterSettings.filters.length; i++) {
+            if (this.FilterSettings.filters[i].filterObj.property === property) {
+                this.FilterSettings.filters.remove(i);
+            }
+        }
+
+        if (this.FilterSettings.filters.length === 0)
+            this.FilterSettings = null;
     };
 
     var filterObj = function (filterObj, logicalOperator) {
@@ -743,18 +765,60 @@
             url;
     };
 
-    joData.prototype.saveLocal = function () {
-        if (!canSaveLocal())
+    joData.prototype.toJson = function () {
+        if (!canJsonStringify())
             return;
 
-        alert(JSON.stringify(this));
+        var jsonObj = {};
+
+        jsonObj.OrderBySettings = null;
+        jsonObj.TopSettings = null;
+        jsonObj.SkipSettings = null;
+        jsonObj.SelectSettings = null;
+        jsonObj.ExpandSettings = null;
+        jsonObj.FormatSettings = null;
+        jsonObj.InlineCountSettings = null;
+        jsonObj.FilterSettings = null;
+
+        jsonObj.defaults = {};
+
+        if (this.OrderBySettings !== null) {
+            jsonObj.OrderBySettings = this.OrderBySettings;
+        }
+
+        if (this.TopSettings !== null) {
+            jsonObj.TopSettings = this.TopSettings;
+        }
+
+        if (this.SkipSettings !== null) {
+            jsonObj.SkipSettings = this.SkipSettings;
+        }
+
+        if (this.SelectSettings !== null) {
+            jsonObj.SelectSettings = this.SelectSettings;
+        }
+
+        if (this.ExpandSettings !== null) {
+            jsonObj.ExpandSettings = this.ExpandSettings;
+        }
+
+        if (this.FormatSettings !== null) {
+            jsonObj.FormatSettings = this.FormatSettings;
+        }
+
+        if (this.InlineCountSettings !== null) {
+            jsonObj.InlineCountSettings = this.InlineCountSettings;
+        }
+
+        alert(JSON.stringify(jsonObj));
     }
 
     function canSaveLocal() {
-        var hasLocalStorage = (window['localStorage'] !== null && window.localStorage !== 'undefined');
-        var hasJson = (window['JSON'] !== null && window.localStorage !== 'undefined');
+        return (window['localStorage'] !== null && window.localStorage !== 'undefined');
+    }
 
-        return hasLocalStorage && hasJson;
+    function canJsonStringify() {
+        return (window['JSON'] !== null && window.JSON !== 'undefined');
     }
 
     return this;
