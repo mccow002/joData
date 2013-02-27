@@ -8,21 +8,12 @@
 			(function () {
 			    var test = new joData('http://foo.bar');
 
-
-			    //test.filter(new joData.FilterClause().Concat(new joData.Concat(new joData.Concat('City', ', '), 'State')).Eq('Birmingham, Alabama'));
-
 			    test
-					.format()
-					.atom()
-					.inlinecount()
-					.allPages()
-					.top(25)
-					.skip(25)
-					.select(['CustomerName', 'CustomerId'])
-					.orderBy('CustomerId')
-					.desc()
-					.expand('Customer');
+                    .filter(new joData.FilterClause('CustomerId').eq(1))
+                    .orFilter(new joData.FilterClause('CustomerName').substringof('chris').eq(true))
+                    .andFilter(new joData.FilterClause('Price').round().ne(5));
 
+			    
 			    test.toJson();
 			    //test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
 			    //test.setOrderByDefault('AccountNumber', 'desc');

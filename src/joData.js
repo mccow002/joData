@@ -417,7 +417,7 @@
             strComps.push(this.property);
 
         for (var i = 0; i < this.components.length; i++) {
-            strComps.push(this.components[i]());
+            strComps.push(this.components[i]);
         }
         var filterStr = strComps.join(' ');
 
@@ -448,17 +448,13 @@
         filterClause.value = value;
         filterClause.isClauseEmpty = false;
 
-        filterClause.components.push(function () {
-            return operator + ' ' + formatValue(value);
-        });
+        filterClause.components.push(operator + ' ' + formatValue(value));
 
         return filterClause;
     }
 
     function addArithmeticOperator(amount, operator, filterClause) {
-        filterClause.components.push(function () {
-            return operator + ' ' + amount;
-        });
+        filterClause.components.push(operator + ' ' + amount);
 
         return filterClause;
     }
@@ -519,9 +515,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = Boolean();
         var that = this;
-        this.components.push(function () {
-            return 'substringof(\'' + value + '\',' + that.property + ')';
-        });
+        this.components.push('substringof(\'' + value + '\',' + that.property + ')');
 
         return this;
     };
@@ -530,9 +524,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = Boolean();
         var that = this;
-        this.components.push(function () {
-            return 'endswith(' + that.property + ',\'' + value + '\')';
-        });
+        this.components.push('endswith(' + that.property + ',\'' + value + '\')');
 
         return this;
     };
@@ -541,9 +533,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = Boolean();
         var that = this;
-        this.components.push(function () {
-            return 'startswith(' + that.property + ',\'' + value + '\')';
-        });
+        this.components.push('startswith(' + that.property + ',\'' + value + '\')');
 
         return this;
     };
@@ -552,9 +542,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = Number();
         var that = this;
-        this.components.push(function () {
-            return 'length(' + that.property + ')';
-        });
+        this.components.push('length(' + that.property + ')');
 
         return this;
     };
@@ -563,9 +551,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = Number();
         var that = this;
-        this.components.push(function () {
-            return 'indexof(' + that.property + ',\'' + value + '\')';
-        });
+        this.components.push('indexof(' + that.property + ',\'' + value + '\')');
 
         return this;
     };
@@ -574,9 +560,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
-        this.components.push(function () {
-            return 'replace(' + that.property + ',\'' + find + '\',\'' + replace + '\')';
-        });
+        this.components.push('replace(' + that.property + ',\'' + find + '\',\'' + replace + '\')');
 
         return this;
     };
@@ -585,13 +569,12 @@
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
-        this.components.push(function () {
-            var comps = [that.property, position];
-            if (typeof length !== 'undefined')
-                comps.push(length);
 
-            return 'substring(' + comps.join(',') + ')';
-        });
+        var comps = [that.property, position];
+        if (typeof length !== 'undefined')
+            comps.push(length);
+
+        this.components.push('substring(' + comps.join(',') + ')');
 
         return this;
     };
@@ -600,9 +583,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
-        this.components.push(function () {
-            return 'tolower(' + that.property + ')';
-        });
+        this.components.push('tolower(' + that.property + ')');
 
         return this;
     };
@@ -611,9 +592,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
-        this.components.push(function () {
-            return 'toupper(' + that.property + ')';
-        });
+        this.components.push('toupper(' + that.property + ')');
 
         return this;
     };
@@ -622,9 +601,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
-        this.components.push(function () {
-            return 'trim(' + that.property + ')';
-        });
+        this.components.push('trim(' + that.property + ')');
 
         return this;
     };
@@ -633,9 +610,7 @@
         this.propertyIncluded = true;
         this.funcReturnType = String();
         var that = this;
-        that.components.push(function () {
-            return concat.toString();
-        });
+        that.components.push(concat.toString());
 
         return this;
     };
@@ -668,9 +643,7 @@
         filterClause.propertyIncluded = true;
         filterClause.funcReturnType = Number();
         var that = filterClause;
-        filterClause.components.push(function () {
-            return func + '(' + that.property + ')';
-        });
+        filterClause.components.push(func + '(' + that.property + ')');
 
         return filterClause;
     }
@@ -704,9 +677,7 @@
         filterClause.propertyIncluded = true;
         filterClause.funcReturnType = Number();
         var that = filterClause;
-        filterClause.components.push(function () {
-            return func + '(' + that.property + ')';
-        });
+        filterClause.components.push(func + '(' + that.property + ')');
 
         return filterClause;
     }
@@ -780,7 +751,7 @@
         jsonObj.InlineCountSettings = null;
         jsonObj.FilterSettings = null;
 
-        jsonObj.defaults = {};
+        jsonObj.defaults = this.defaults;
 
         if (this.OrderBySettings !== null) {
             jsonObj.OrderBySettings = this.OrderBySettings;
@@ -810,8 +781,19 @@
             jsonObj.InlineCountSettings = this.InlineCountSettings;
         }
 
-        alert(JSON.stringify(jsonObj));
-    }
+        if (this.FilterSettings !== null) {
+            jsonObj.FilterSettings = this.FilterSettings;
+        }
+
+        return JSON.stringify(jsonObj);
+    };
+
+    joData.prototype.saveLocal = function () {
+        if (!canSaveLocal() || !canJsonStringify())
+            return;
+
+        var json = this.toJson();
+    };
 
     function canSaveLocal() {
         return (window['localStorage'] !== null && window.localStorage !== 'undefined');
