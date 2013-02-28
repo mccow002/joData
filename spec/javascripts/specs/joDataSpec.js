@@ -162,14 +162,22 @@ describe('joData', function () {
             expect(j.toString()).toEqual('http://foo.bar?$select=prop1,prop2');
         });
 
-        it('is reset', function () {
+        it('has a default', function () {
             var j = new joData('http://foo.bar');
-            j.select(['prop1', 'prop2']);
+            j.setDefaultSelect(['prop1', 'prop2']);
 
+            expect(j.toString()).toEqual('http://foo.bar?$select=prop1,prop2');
+        });
+
+        it('is reset to default', function () {
+            var j = new joData('http://foo.bar');
+            j.setDefaultSelect(['prop3','prop4']);
+
+            j.select(['prop1', 'prop2']);
             expect(j.toString()).toEqual('http://foo.bar?$select=prop1,prop2');
 
             j.resetSelect();
-            expect(j.toString()).toEqual('http://foo.bar');
+            expect(j.toString()).toEqual('http://foo.bar?$select=prop3,prop4');
         });
 
         describe('multiple calls', function () {
@@ -190,13 +198,21 @@ describe('joData', function () {
             expect(j.toString()).toEqual('http://foo.bar?$expand=Customer');
         });
 
-        it('is reset', function () {
+        it('has a default', function () {
             var j = new joData('http://foo.bar');
+            j.setDefaultExpand('Customer');
+            expect(j.toString()).toEqual('http://foo.bar?$expand=Customer');
+        });
+
+        it('is reset to default', function () {
+            var j = new joData('http://foo.bar');
+            j.setDefaultExpand('Address');
+
             j.expand('Customer');
             expect(j.toString()).toEqual('http://foo.bar?$expand=Customer');
 
             j.resetExpand();
-            expect(j.toString()).toEqual('http://foo.bar');
+            expect(j.toString()).toEqual('http://foo.bar?$expand=Address');
         });
     });
 

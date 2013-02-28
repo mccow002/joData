@@ -9,12 +9,19 @@
 			    var test = new joData('http://foo.bar');
 
 			    test
-                    .filter(new joData.FilterClause('CustomerId').eq(1))
-                    .orFilter(new joData.FilterClause('CustomerName').substringof('chris').eq(true))
-                    .andFilter(new joData.FilterClause('Price').round().ne(5));
+                    //.top(25)
+                    //.skip(25)
+                    .orderBy('CustomerId')
+                    .desc()
+                    //.filter(new joData.FilterClause('CustomerId').eq(1))
+                    //.orFilter(new joData.FilterClause('CustomerName').substringof('chris').eq(true))
+                    //.andFilter(new joData.FilterClause('Price').round().ne(5));
 
-			    
-			    test.toJson();
+
+
+			    test.saveLocal();
+
+			    var local = joData.loadLocal();
 			    //test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
 			    //test.setOrderByDefault('AccountNumber', 'desc');
 
@@ -37,7 +44,7 @@
 			    //test.resetOrderBy();
 			    //test.resetSelect();
 			    //test.resetFilter();
-			    //alert(test.toString());
+			    alert(local.toString());
 			})();
 		</script>
 	</body>

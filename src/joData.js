@@ -2,14 +2,99 @@
     window.joData = function (baseUri) {
         this.baseUri = baseUri;
 
-        this.OrderBySettings = null;
-        this.TopSettings = null;
-        this.SkipSettings = null;
-        this.FilterSettings = null;
-        this.SelectSettings = null;
-        this.ExpandSettings = null;
+        this.OrderBySettings = {
+            Property: null,
+            Order: null,
+            DefaultProperty: null,
+            DefaultOrder: null,
+            toString: function () {
+                var qsValue = '$orderby=' + (this.Property || this.DefaultProperty);
+                if (this.DefaultOrder !== null || this.Order !== null)
+                    qsValue += ' ' + (this.Order || this.DefaultOrder);
+
+                return qsValue;
+            },
+            reset: function () {
+                this.Property = null;
+                this.Order = null;
+            },
+            isSet: function () {
+                return this.Property !== null || this.DefaultProperty !== null;
+            }
+        };
+
+        this.TopSettings = {
+            Top: null,
+            DefaultTop: null,
+            toString: function () {
+                return '$top=' + (this.Top || this.DefaultTop);
+            },
+            reset: function () {
+                this.Top = null;
+            },
+            isSet: function () {
+                return this.Top !== null || this.DefaultTop !== null;
+            }
+        };
+
+        this.SkipSettings = {
+            Skip: null,
+            DefaultSkip: null,
+            toString: function () {
+                return '$skip=' + (this.Skip || this.DefaultSkip);
+            },
+            reset: function () {
+                this.Skip = null;
+            },
+            isSet: function () {
+                return this.Skip !== null || this.DefaultSkip !== null;
+            }
+        };
+
+        this.SelectSettings = {
+            Select: null,
+            DefaultSelect: null,
+            toString: function () {
+                var selectArray = (this.Select || this.DefaultSelect);
+                return '$select=' + selectArray.join(',');
+            },
+            reset: function () {
+                this.Select = null;
+            },
+            isSet: function () {
+                return this.Select !== null || this.DefaultSelect !== null;
+            }
+        };
+
+        this.ExpandSettings = {
+            Expand: null,
+            DefaultExpand: null,
+            toString: function () {
+                return '$expand=' + (this.Expand || this.DefaultExpand);
+            },
+            reset: function () {
+                this.Expand = null;
+            },
+            isSet: function () {
+                return this.Expand !== null || this.DefaultExpand !== null;
+            }
+        };
         this.FormatSettings = null;
+        //            Format: null,
+        //            DefaultFormat: null,
+        //            toString: function () {
+        //                return '$format=' + (this.Format || this.DefaultFormat);
+        //            },
+        //            reset: function () {
+        //                this.Format = null;
+        //            },
+        //            isSet: function () {
+        //                return this.Format !== null || this.DefaultFormat !== null;
+        //            }
+        //        };
         this.InlineCountSettings = null;
+
+        this.FilterSettings = null;
 
         this.defaults = {};
     };
@@ -17,25 +102,19 @@
     joData.prototype.baseUri = '';
 
     joData.prototype.setOrderByDefault = function (property, order) {
-        var orderByDefaults = {
-            Property: property,
-            toString: function () {
-                return orderByToString(this.Property, this.Order);
-            }
-        };
+        this.OrderBySettings.DefaultProperty = property;
 
         if (typeof order !== 'undefined')
-            orderByDefaults.Order = order;
+            this.OrderBySettings.DefaultOrder = order;
         else
-            orderByDefaults.Order = 'desc';
+            this.OrderBySettings.DefaultOrder = 'desc';
 
-        this.defaults.OrderByDefault = orderByDefaults;
         return this;
     };
 
     joData.prototype.toggleOrderBy = function (property, callback) {
 
-        if (this.OrderBySettings === null || this.OrderBySettings.Order === 'asc')
+        if (this.OrderBySettings.Property === null || this.OrderBySettings.Order === 'asc')
             this.orderBy(property).desc();
         else
             this.orderBy(property).asc();
@@ -47,128 +126,87 @@
     };
 
     joData.prototype.orderBy = function (property) {
-        this.OrderBySettings = this.OrderBySettings || {};
         this.OrderBySettings.Property = property;
+        return this;
+    };
 
-        this.desc = function () {
-            this.OrderBySettings.Order = 'desc';
-            return this;
-        };
+    joData.prototype.desc = function () {
+        this.OrderBySettings.Order = 'desc';
+        return this;
+    };
 
-        this.asc = function () {
-            this.OrderBySettings.Order = 'asc';
-            return this;
-        };
-
-        this.OrderBySettings.toString = function () {
-            return orderByToString(this.Property, this.Order);
-        };
-
+    joData.prototype.asc = function () {
+        this.OrderBySettings.Order = 'asc';
         return this;
     };
 
     joData.prototype.resetOrderBy = function () {
-        this.OrderBySettings = null;
+        this.OrderBySettings.reset();
+        return this;
     };
 
-    function orderByToString(property, order) {
-        var qsValue = '$orderby=' + property;
-        if (typeof order !== 'undefined')
-            qsValue += ' ' + order;
-
-        return qsValue;
-    }
-
     joData.prototype.setTopDefault = function (top) {
-        var topDefault = {
-            Top: top,
-            toString: function () {
-                return topToString(this.Top);
-            }
-        };
-
-        this.defaults.TopDefault = topDefault;
+        this.TopSettings.DefaultTop = top;
         return this;
     };
 
     joData.prototype.top = function (top) {
-        this.TopSettings = this.TopSettings || {};
         this.TopSettings.Top = top;
-
-        this.TopSettings.toString = function () {
-            return topToString(this.Top);
-        };
-
         return this;
     };
 
     joData.prototype.resetTop = function () {
-        this.TopSettings = null;
+        this.TopSettings.reset();
+        return this;
     };
 
-    function topToString(top) {
-        return '$top=' + top;
-    }
-
     joData.prototype.setSkipDefault = function (skip) {
-        var skipDefault = {
-            Skip: skip,
-            toString: function () {
-                return skipToString(this.Skip);
-            }
-        };
-
-        this.defaults.SkipDefault = skipDefault;
+        this.SkipSettings.DefaultSkip = skip;
         return this;
     };
 
     joData.prototype.skip = function (skip) {
-        this.SkipSettings = this.SkipSettings || {};
         this.SkipSettings.Skip = skip;
-
-        this.SkipSettings.toString = function () {
-            return skipToString(this.Skip);
-        };
-
         return this;
     };
 
     joData.prototype.resetSkip = function () {
-        this.SkipSettings = null;
+        this.SkipSettings.reset();
+        return this;
     };
 
-    function skipToString(skip) {
-        return '$skip=' + skip;
-    };
+    joData.prototype.setDefaultSelect = function (select) {
+        this.SelectSettings.DefaultSelect = select;
+        return this;
+    }
 
     joData.prototype.select = function (select) {
-        this.SelectSettings = this.SelectSettings || {};
         this.SelectSettings.Select = select;
-
-        this.SelectSettings.toString = function () {
-            return '$select=' + this.Select.join(',');
-        };
-
         return this;
     };
 
     joData.prototype.resetSelect = function () {
-        this.SelectSettings = null;
+        this.SelectSettings.reset();
+        return this;
+    };
+
+
+    joData.prototype.setDefaultExpand = function (expand) {
+        this.ExpandSettings.DefaultExpand = expand;
         return this;
     };
 
     joData.prototype.expand = function (expand) {
-        this.ExpandSettings = this.ExpandSettings || {};
         this.ExpandSettings.Expand = expand;
+        return this;
+    }
 
-        this.resetExpand = function () {
-            this.ExpandSettings = null;
-            return this;
-        };
+    joData.prototype.resetExpand = function () {
+        this.ExpandSettings.reset();
+    }
 
-        this.ExpandSettings.toString = function () {
-            return '$expand=' + this.Expand;
-        };
+    joData.prototype.defaultFormat = function () {
+
     }
 
     joData.prototype.format = function () {
@@ -699,22 +737,16 @@
         var url = this.baseUri;
         var components = [];
 
-        if (this.OrderBySettings !== null)
+        if (this.OrderBySettings.isSet())
             components.push(this.OrderBySettings.toString());
-        else if (typeof this.defaults.OrderByDefault !== 'undefined' && this.defaults.OrderByDefault !== null)
-            components.push(this.defaults.OrderByDefault.toString());
 
-        if (this.TopSettings !== null)
+        if (this.TopSettings.isSet())
             components.push(this.TopSettings.toString());
-        else if (typeof this.defaults.TopDefault !== 'undefined' && this.defaults.TopDefault !== null)
-            components.push(this.defaults.TopDefault.toString());
 
-        if (this.SkipSettings !== null)
+        if (this.SkipSettings.isSet())
             components.push(this.SkipSettings.toString());
-        else if (typeof this.defaults.SkipDefault !== 'undefined' && this.defaults.SkipDefault !== null)
-            components.push(this.defaults.SkipDefault.toString());
 
-        if (this.SelectSettings !== null)
+        if (this.SelectSettings.isSet())
             components.push(this.SelectSettings.toString());
 
         if (this.FilterSettings !== null)
@@ -722,7 +754,7 @@
         else if (typeof this.defaults.FilterDefaults !== 'undefined' && this.defaults.FilterDefaults !== null)
             components.push(this.defaults.FilterDefaults.toString());
 
-        if (this.ExpandSettings !== null)
+        if (this.ExpandSettings.isSet())
             components.push(this.ExpandSettings.toString());
 
         if (this.FormatSettings !== null)
@@ -741,6 +773,8 @@
             return;
 
         var jsonObj = {};
+
+        jsonObj.baseUri = this.baseUri;
 
         jsonObj.OrderBySettings = null;
         jsonObj.TopSettings = null;
@@ -788,19 +822,80 @@
         return JSON.stringify(jsonObj);
     };
 
-    joData.prototype.saveLocal = function () {
+    joData.prototype.saveLocal = function (key) {
         if (!canSaveLocal() || !canJsonStringify())
             return;
 
         var json = this.toJson();
+
+        var storageKey = key || 'joData.StorageKey';
+        localStorage.setItem(storageKey, json);
+    };
+
+    joData.loadLocal = function (key) {
+        var storageKey = key || 'joData.StorageKey';
+        var jsonStr = localStorage.getItem('joData.StorageKey');
+        if (jsonStr == null) {
+            console.log('Nothing was found in localStorage');
+            return;
+        }
+
+        json = JSON.parse(jsonStr)
+        var joDataObj = new joData(json.baseUri);
+
+        joDataObj.defaults = this.defaults;
+
+        if (json.OrderBySettings !== null) {
+            for (key in json.OrderBySettings) {
+                joDataObj.OrderBySettings[key] = json.OrderBySettings[key];
+            }
+        }
+
+        if (json.TopSettings !== null) {
+            joDataObj.TopSettings = json.TopSettings;
+        }
+
+        if (json.SkipSettings !== null) {
+            joDataObj.SkipSettings = json.SkipSettings;
+        }
+
+        if (json.SelectSettings !== null) {
+            joDataObj.SelectSettings = json.SelectSettings;
+        }
+
+        if (json.ExpandSettings !== null) {
+            joDataObj.ExpandSettings = json.ExpandSettings;
+        }
+
+        if (json.FormatSettings !== null) {
+            joDataObj.FormatSettings = json.FormatSettings;
+        }
+
+        if (json.InlineCountSettings !== null) {
+            joDataObj.InlineCountSettings = json.InlineCountSettings;
+        }
+
+        if (json.FilterSettings !== null) {
+            joDataObj.FilterSettings = json.FilterSettings;
+        }
+
+        return joDataObj;
     };
 
     function canSaveLocal() {
-        return (window['localStorage'] !== null && window.localStorage !== 'undefined');
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
     }
 
     function canJsonStringify() {
-        return (window['JSON'] !== null && window.JSON !== 'undefined');
+        try {
+            return 'JSON' in window && window['JSON'] !== null;
+        } catch (e) {
+            return false;
+        }
     }
 
     return this;
