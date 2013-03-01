@@ -924,4 +924,4 @@
 
     window.joData = joData;
 
-} (window));
+}(window));
