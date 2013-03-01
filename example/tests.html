@@ -6,22 +6,20 @@
 	<body>
 		<script>
 			(function () {
-			    var test = new joData('http://foo.bar');
+			    //var test = new joData('http://foo.bar');
 
-			    test
-                    .top(25)
-                    .skip(25)
-                    .orderBy('CustomerId')
-                    .desc()
-			        .filter(new joData.FilterClause('CustomerId').eq(1))
-			        .orFilter(new joData.FilterClause('CustomerName').substringof('chris').eq(true))
-			        .andFilter(new joData.FilterClause('Price').round().ne(5));
+			    var j = new joData('http://foo.bar');
+			    var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').eq('Bob'));
+			    j.filter(group);
 
-			    alert(test.toString());
+			    j.saveLocal();
+			    var l = joData.loadLocal();
 
-			    test.saveLocal();
+			    //alert(test.toString());
 
-			    var local = joData.loadLocal();
+			    //test.saveLocal();
+
+			    //var local = joData.loadLocal();
 			    //test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
 			    //test.setOrderByDefault('AccountNumber', 'desc');
 
@@ -44,7 +42,7 @@
 			    //test.resetOrderBy();
 			    //test.resetSelect();
 			    //test.resetFilter();
-			    alert(local.toString());
+			    //alert(local.toString());
 			})();
 		</script>
 	</body>

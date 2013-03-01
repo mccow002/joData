@@ -215,6 +215,208 @@ All Select settings can be removed by calling:
 
 	query.resetSelect();
 
+####.setSelectDefault(array)
+
+	query.setSelectDefault(['CustomerId', 'CustomerName']);
+
+Output:
+
+	$select=CustomerId,CustomerName
+
+Setting .select will override the default. Calling .resetSelect() will restore the default.
+
+	query
+		.setSelectDefault(['CustomerId', 'CustomerName'])
+		.select(['CustomerId', 'CustomerName', 'Address']);
+
+Output:
+
+	$select=CustomerId,CustomerName,Address
+
+Then, resetting will restore the default:
+
+	query.resetSelect();
+
+Output:
+
+	$select=CustomerId,CustomerName
+
+###Expand
+
+####.expand(property)
+
+Expand is a singleton property, so you can call .expand as many times as you like and the result will always be the last one.
+
+	query.expand('Customer');
+
+Output: 
+
+	$expand=Customer
+
+####.resetExpand()
+
+The Expand settings can be removed by calling:
+
+	query.resetExpand();
+
+####.setExpandDefault(property)
+
+	query.setExpandDefault('Customer');
+
+Output:
+
+	$expand=Customer
+
+Setting .expand will override the default. Calling .resetExpand() will restore the default.
+
+	query
+		.setExpandDefault('Customer')
+		.skip('Product');
+
+Output:
+
+	$expand=Product
+
+Then, resetting will restore the default:
+
+	query.resetExpand();
+
+Output:
+
+	$expand=Customer
+
+###Format
+
+####.format()
+
+Format is a singleton property, so you can call .format as many times as you like and the result will always be the last one.
+
+You must follow .format with a format method. The methods are:
+
+#####.atom()
+
+	query.format().atom();
+
+Output:
+	
+	$format=atom
+
+#####.xml()
+
+	query.format().xml();
+
+Output:
+	
+	$format=xml
+
+#####.json()
+
+	query.format().json();
+
+Output:
+	
+	$format=json
+
+#####.custom(value)
+
+	query.format().custom('text/csv');
+
+Output:
+	
+	$format=text/csv
+
+####.resetFormat()
+
+calling .resetFormat() will remove any format settings or restore the default.
+
+####.formatDefault()
+
+Just like .format(), one of the 4 different format methods need to be called after calling .formatDefault()
+
+	query.formatDefault().atom();
+
+Output:
+
+	$format=atom
+
+Setting .format() will override the default. Calling .resetFormat() will restore the default.
+
+	query
+		.formatDefault()
+		.atom()
+		.format()
+		.json();
+
+Output:
+
+	$format=json
+
+Then, resetting will restore the default:
+
+	query.resetFormat();
+
+Output:
+
+	$format=atom
+
+###Inlinecount
+
+####.inlineCount()
+
+Inlinecount is a singleton property, so you can call .inlinecount as many times as you like and the result will always be the last one.
+
+You must follow .inlineCount with an inlinecount method. The methods are:
+
+#####.allPages()
+
+	query.inlineCount().allPages();
+
+Output:
+	
+	$inlinecount=allpages
+
+#####.none()
+
+	query.inlineCount().none();
+
+Output:
+	
+	$inlinecount=none
+
+####.resetInlineCount()
+
+calling .resetInlineCount() will remove any inline count settings or restore the defaults.
+
+####.inlineCountDefault()
+
+Just like .inlineCount(), one of the 2 inline count methods need to be called after calling .inlineCountDefault()
+
+	query.inlineCountDefault().allPages();
+
+Output:
+
+	$inlinecount=allpages
+
+Setting .inlineCount() will override the default. Calling .resetInlineCount() will restore the default.
+
+	query
+		.inlineCountDefault()
+		.allPages()
+		.inlineCount()
+		.none();
+
+Output:
+
+	$inlinecount=none
+
+Then, resetting will restore the default:
+
+	query.resetInlineCount();
+
+Output:
+
+	$inlinecount=none
+
 ###Filter
 
 ####.filter(clause)
@@ -660,96 +862,14 @@ Output:
 
 	$filter=ceiling(Price) eq 2
 
+##Saving Local
 
-###Expand
+joData allows you to save a joData instance to your browsers localStorage. Then when you return to that page, you can reload the joData object from local storage.
 
-####.expand(property)
+This allows you to have sticky settings on something like a datagrid. Say a user enters a search term, sorts by a column, goes to a page, then clicks on a row to take them to an edit page.
+This feature will allow the joData object to be reloaded once they return to the grid, causing the search, sort, and page to be restored.
 
-Expand is a singleton property, so you can call .expand as many times as you like and the result will always be the last one.
-
-	query.expand('Customer');
-
-Output: 
-
-	$expand=Customer
-
-####.resetExpand()
-
-The Expand settings can be removed by calling:
-
-	query.resetExpand();
-
-###Format
-
-####.format()
-
-Format is a singleton property, so you can call .format as many times as you like and the result will always be the last one.
-
-You must follow .format with a format method. The methods are:
-
-#####.atom()
-
-	query.format().atom();
-
-Output:
-	
-	$format=atom
-
-#####.xml()
-
-	query.format().xml();
-
-Output:
-	
-	$format=xml
-
-#####.json()
-
-	query.format().json();
-
-Output:
-	
-	$format=json
-
-#####.custom(value)
-
-	query.format().custom('text/csv');
-
-Output:
-	
-	$format=text/csv
-
-####.resetFormat()
-
-calling .resetFormat() will remove any format settings.
-
-###Inlinecount
-
-####.inlinecount()
-
-Inlinecount is a singleton property, so you can call .inlinecount as many times as you like and the result will always be the last one.
-
-You must follow .inlinecount with an inlinecount method. The methods are:
-
-#####.allPages()
-
-	query.inlinecount().allPages();
-
-Output:
-	
-	$inlinecount=allpages
-
-#####.none()
-
-	query.inlinecount().none();
-
-Output:
-	
-	$inlinecount=none
-
-####.resetInlineCount()
-
-calling .resetInlineCount() will remove any inline count settings.
+Using it is simple, but joData requires you to have 2 things -	localStorage and the JSON object.
 
 ##Unsupported Features (for now)
 
@@ -761,22 +881,6 @@ These are the list of features joData currently does not support. Hopefully, the
 
 * IsOf
 
-###Expand Defaults
-
-joData currently supports $expand, but does not provide default expand options.
-
-###Format Defaults
-
-joData currently supports $format, but does not provide default format options.
-
-###Select Defaults
-
-joData currently supports $select, but does not provide default select options.
-
-###Inline Count Defaults
-
-joData currently supports $inlinecount, but does not provide default inlinecount options.
-
 ###Custom Query Options
 
 joData currently does not support any custom query options
@@ -785,4 +889,3 @@ joData currently does not support any custom query options
 
 * Paganition Extension - Writing an extension that will manage datagrid variables for you.
 * Backbone Pagination Plugin - Writing a plugin for backbone that will build up your fetch query to get datagrid pages
-* The ability to save a joData object to local storage to allow for sticky settings

@@ -1,57 +1,6 @@
 (function (window) {
     "use strict";
-    var joData, FilterObj;
-
-    function formatValue(value) {
-        if (value.length > 8 && value.substring(0, 8) === 'datetime') {
-            return value;
-        }
-
-        if (typeof value === 'string') {
-            return "'" + value + "'";
-        }
-
-        return value;
-    }
-
-    function addLogicalOperator(value, operator, filterClause) {
-        filterClause.Value = value;
-        filterClause.IsClauseEmpty = false;
-
-        filterClause.Components.push(operator + ' ' + formatValue(value));
-
-        return filterClause;
-    }
-
-    function addArithmeticOperator(amount, operator, filterClause) {
-        filterClause.Components.push(operator + ' ' + amount);
-        return filterClause;
-    }
-
-    function addMethodWrapper(filterClause, func) {
-        filterClause.PropertyIncluded = true;
-        filterClause.FuncReturnType = Number();
-        var that = filterClause;
-        filterClause.Components.push(func + '(' + that.Property + ')');
-
-        return filterClause;
-    }
-
-    function canSaveLocal() {
-        try {
-            return window.hasOwnProperty('localStorage') && window['localStorage'] !== null;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    function canJsonStringify() {
-        try {
-            return window.hasOwnProperty('JSON') && window['JSON'] !== null;
-        } catch (e) {
-            return false;
-        }
-    }
+    var joData, FilterObj, Helpers;
 
     joData = function (baseUri) {
         if (!Array.remove) {
@@ -204,33 +153,45 @@
                 return this.Filters.length > 0 || this.DefaultFilters.length > 0;
             },
             loadFromJson: function (filterSettings) {
-                var i = 0, filter, newFilterClause, key;
+                var i, filter, newFilterClause, key;
 
+                var loadPrecedenceGroup = function (precedenceGroup) {
+                    var j, group, currentClause;
 
-                for (i = 0; i < filterSettings.Filters.length; i++) {
-                    filter = filterSettings.Filters[i];
+                    group = new joData.PrecedenceGroup();
+
+                    for (j = 0; j < precedenceGroup.clauses.length; j++) {
+                        currentClause = precedenceGroup.clauses[j];
+                        group.clauses.push(new FilterObj(loadFilterObj(currentClause.filterObj), currentClause.logicalOperator));
+                    }
+
+                    return group;
+                };
+
+                var loadFilterObj = function (filter) {
+                    if (filter.clauses !== undefined) {
+                        return loadPrecedenceGroup(filter);
+                    }
+
                     newFilterClause = new joData.FilterClause();
 
-                    for (key in filter.filterObj) {
-                        if (filter.filterObj.hasOwnProperty(key)) {
-                            newFilterClause[key] = filter.filterObj[key];
+                    for (key in filter) {
+                        if (filter.hasOwnProperty(key)) {
+                            newFilterClause[key] = filter[key];
                         }
                     }
 
-                    this.Filters.push(new FilterObj(newFilterClause, filter.logicalOperator));
+                    return newFilterClause;
+                };
+
+                for (i = 0; i < filterSettings.Filters.length; i++) {
+                    filter = filterSettings.Filters[i];
+                    this.Filters.push(new FilterObj(loadFilterObj(filter.filterObj), filter.logicalOperator));
                 }
 
                 for (i = 0; i < filterSettings.DefaultFilters.length; i++) {
                     filter = filterSettings.DefaultFilters[i];
-                    newFilterClause = new joData.FilterClause();
-
-                    for (key in filter.filterObj) {
-                        if (filter.filterObj.hasOwnProperty(key)) {
-                            newFilterClause[key] = filter.filterObj[key];
-                        }
-                    }
-
-                    this.DefaultFilters.push(new FilterObj(newFilterClause, filter.logicalOperator));
+                    this.DefaultFilters.push(new FilterObj(loadFilterObj(filter.filterObj), filter.logicalOperator));
                 }
             }
         };
@@ -293,7 +254,7 @@
             this.SkipSettings.reset();
             return this;
         },
-        setDefaultSelect: function (select) {
+        setSelectDefault: function (select) {
             this.SelectSettings.DefaultSelect = select;
             return this;
         },
@@ -305,7 +266,7 @@
             this.SelectSettings.reset();
             return this;
         },
-        setDefaultExpand: function (expand) {
+        setExpandDefault: function (expand) {
             this.ExpandSettings.DefaultExpand = expand;
             return this;
         },
@@ -316,7 +277,7 @@
         resetExpand: function () {
             this.ExpandSettings.reset();
         },
-        defaultFormat: function () {
+        formatDefault: function () {
             var that = this;
 
             this.atom = function () {
@@ -369,7 +330,7 @@
         resetFormat: function () {
             this.FormatSettings.reset();
         },
-        defaultInlineCount: function () {
+        inlineCountDefault: function () {
             var that = this;
 
             this.allPages = function () {
@@ -486,10 +447,6 @@
             return components.length > 0 ? url + '?' + components.join('&') : url;
         },
         toJson: function () {
-            if (!canJsonStringify()) {
-                return;
-            }
-
             var jsonObj = {};
 
             jsonObj.baseUri = this.baseUri;
@@ -505,45 +462,41 @@
 
             jsonObj.defaults = this.defaults;
 
-            if (this.OrderBySettings !== null) {
+            if (this.OrderBySettings.isSet()) {
                 jsonObj.OrderBySettings = this.OrderBySettings;
             }
 
-            if (this.TopSettings !== null) {
+            if (this.TopSettings.isSet()) {
                 jsonObj.TopSettings = this.TopSettings;
             }
 
-            if (this.SkipSettings !== null) {
+            if (this.SkipSettings.isSet()) {
                 jsonObj.SkipSettings = this.SkipSettings;
             }
 
-            if (this.SelectSettings !== null) {
+            if (this.SelectSettings.isSet()) {
                 jsonObj.SelectSettings = this.SelectSettings;
             }
 
-            if (this.ExpandSettings !== null) {
+            if (this.ExpandSettings.isSet()) {
                 jsonObj.ExpandSettings = this.ExpandSettings;
             }
 
-            if (this.FormatSettings !== null) {
+            if (this.FormatSettings.isSet()) {
                 jsonObj.FormatSettings = this.FormatSettings;
             }
 
-            if (this.InlineCountSettings !== null) {
+            if (this.InlineCountSettings.isSet()) {
                 jsonObj.InlineCountSettings = this.InlineCountSettings;
             }
 
-            if (this.FilterSettings !== null) {
+            if (this.FilterSettings.isSet()) {
                 jsonObj.FilterSettings = this.FilterSettings;
             }
 
             return JSON.stringify(jsonObj);
         },
         saveLocal: function (key) {
-            if (!canSaveLocal() || !canJsonStringify()) {
-                return;
-            }
-
             var json, storageKey;
 
             json = this.toJson();
@@ -661,12 +614,16 @@
         }
 
         this.clauses = [];
-        this.clauses.push(new FilterObj(filterClause));
+
+        if (filterClause !== undefined) {
+            this.clauses.push(new FilterObj(filterClause));
+        }
 
         return this;
     };
 
     joData.PrecedenceGroup.prototype = {
+        clauses: [],
         andFilter: function (filterClause) {
             if (!filterClause instanceof joData.FilterClause) {
                 throw 'filterClause must be of type joData.FilterClause!';
@@ -739,7 +696,6 @@
         UsingNot: false,
         FuncReturnType: null,
         Components: [],
-
         toString: function () {
             var strComps, i, filterStr;
             strComps = [];
@@ -764,38 +720,38 @@
         },
         //Arithmetic Methods
         add: function (amount) {
-            return addArithmeticOperator(amount, 'add', this);
+            return Helpers.addArithmeticOperator(amount, 'add', this);
         },
         sub: function (amount) {
-            return addArithmeticOperator(amount, 'sub', this);
+            return Helpers.addArithmeticOperator(amount, 'sub', this);
         },
         mul: function (amount) {
-            return addArithmeticOperator(amount, 'mul', this);
+            return Helpers.addArithmeticOperator(amount, 'mul', this);
         },
         div: function (amount) {
-            return addArithmeticOperator(amount, 'div', this);
+            return Helpers.addArithmeticOperator(amount, 'div', this);
         },
         mod: function (amount) {
-            return addArithmeticOperator(amount, 'mod', this);
+            return Helpers.addArithmeticOperator(amount, 'mod', this);
         },
         //Logical Operators
         eq: function (value) {
-            return addLogicalOperator(value, 'eq', this);
+            return Helpers.addLogicalOperator(value, 'eq', this);
         },
         ne: function (value) {
-            return addLogicalOperator(value, 'ne', this);
+            return Helpers.addLogicalOperator(value, 'ne', this);
         },
         gt: function (value) {
-            return addLogicalOperator(value, 'gt', this);
+            return Helpers.addLogicalOperator(value, 'gt', this);
         },
         ge: function (value) {
-            return addLogicalOperator(value, 'ge', this);
+            return Helpers.addLogicalOperator(value, 'ge', this);
         },
         lt: function (value) {
-            return addLogicalOperator(value, 'lt', this);
+            return Helpers.addLogicalOperator(value, 'lt', this);
         },
         le: function (value) {
-            return addLogicalOperator(value, 'le', this);
+            return Helpers.addLogicalOperator(value, 'le', this);
         },
         not: function () {
             this.UsingNot = true;
@@ -897,32 +853,66 @@
         },
         //Date/Time Functions
         day: function () {
-            return addMethodWrapper(this, 'day');
+            return Helpers.addMethodWrapper(this, 'day');
         },
         hour: function () {
-            return addMethodWrapper(this, 'hour');
+            return Helpers.addMethodWrapper(this, 'hour');
         },
         minute: function () {
-            return addMethodWrapper(this, 'minute');
+            return Helpers.addMethodWrapper(this, 'minute');
         },
         month: function () {
-            return addMethodWrapper(this, 'month');
+            return Helpers.addMethodWrapper(this, 'month');
         },
         second: function () {
-            return addMethodWrapper(this, 'second');
+            return Helpers.addMethodWrapper(this, 'second');
         },
         year: function () {
-            return addMethodWrapper(this, 'year');
+            return Helpers.addMethodWrapper(this, 'year');
         },
         //Math Functions
         round: function () {
-            return addMethodWrapper(this, 'round');
+            return Helpers.addMethodWrapper(this, 'round');
         },
         floor: function () {
-            return addMethodWrapper(this, 'floor');
+            return Helpers.addMethodWrapper(this, 'floor');
         },
         ceiling: function () {
-            return addMethodWrapper(this, 'ceiling');
+            return Helpers.addMethodWrapper(this, 'ceiling');
+        }
+    };
+
+    Helpers = {
+        formatValue: function (value) {
+            if (value.length > 8 && value.substring(0, 8) === 'datetime') {
+                return value;
+            }
+
+            if (typeof value === 'string') {
+                return "'" + value + "'";
+            }
+
+            return value;
+        },
+        addLogicalOperator: function (value, operator, filterClause) {
+            filterClause.Value = value;
+            filterClause.IsClauseEmpty = false;
+
+            filterClause.Components.push(operator + ' ' + this.formatValue(value));
+
+            return filterClause;
+        },
+        addArithmeticOperator: function (amount, operator, filterClause) {
+            filterClause.Components.push(operator + ' ' + amount);
+            return filterClause;
+        },
+        addMethodWrapper: function (filterClause, func) {
+            filterClause.PropertyIncluded = true;
+            filterClause.FuncReturnType = Number();
+            var that = filterClause;
+            filterClause.Components.push(func + '(' + that.Property + ')');
+
+            return filterClause;
         }
     };
 
