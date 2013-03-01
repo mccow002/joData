@@ -9,15 +9,15 @@
 			    var test = new joData('http://foo.bar');
 
 			    test
-                    //.top(25)
-                    //.skip(25)
+                    .top(25)
+                    .skip(25)
                     .orderBy('CustomerId')
                     .desc()
-                    //.filter(new joData.FilterClause('CustomerId').eq(1))
-                    //.orFilter(new joData.FilterClause('CustomerName').substringof('chris').eq(true))
-                    //.andFilter(new joData.FilterClause('Price').round().ne(5));
+			        .filter(new joData.FilterClause('CustomerId').eq(1))
+			        .orFilter(new joData.FilterClause('CustomerName').substringof('chris').eq(true))
+			        .andFilter(new joData.FilterClause('Price').round().ne(5));
 
-
+			    alert(test.toString());
 
 			    test.saveLocal();
 

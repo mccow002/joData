@@ -171,7 +171,7 @@ describe('joData', function () {
 
         it('is reset to default', function () {
             var j = new joData('http://foo.bar');
-            j.setDefaultSelect(['prop3','prop4']);
+            j.setDefaultSelect(['prop3', 'prop4']);
 
             j.select(['prop1', 'prop2']);
             expect(j.toString()).toEqual('http://foo.bar?$select=prop1,prop2');
@@ -216,44 +216,61 @@ describe('joData', function () {
         });
     });
 
-    describe('Format', function () {
+    describe('Format - ', function () {
         it('Atom', function () {
-            var j = new joData('http://foo.bar')
-	            .format()
-	            .atom();
-
+            var j = new joData('http://foo.bar').format().atom();
             expect(j.toString()).toEqual('http://foo.bar?$format=atom');
         });
 
         it('Xml', function () {
-            var j = new joData('http://foo.bar')
-	            .format()
-	            .xml();
-
+            var j = new joData('http://foo.bar').format().xml();
             expect(j.toString()).toEqual('http://foo.bar?$format=xml');
         });
 
         it('Json', function () {
-            var j = new joData('http://foo.bar')
-	            .format()
-	            .json();
-
+            var j = new joData('http://foo.bar').format().json();
             expect(j.toString()).toEqual('http://foo.bar?$format=json');
         });
 
         it('Custom', function () {
-            var j = new joData('http://foo.bar')
-	            .format()
-	            .custom('text/csv');
-
+            var j = new joData('http://foo.bar').format().custom('text/csv');
             expect(j.toString()).toEqual('http://foo.bar?$format=text/csv');
         });
 
-        it('is reset', function () {
-            var j = new joData('http://foo.bar')
-	            .format()
-	            .json();
+        describe('Default is', function () {
+            it('Atom', function () {
+                var j = new joData('http://foo.bar').defaultFormat().atom();
+                expect(j.toString()).toEqual('http://foo.bar?$format=atom');
+            });
 
+            it('Xml', function () {
+                var j = new joData('http://foo.bar').defaultFormat().xml();
+                expect(j.toString()).toEqual('http://foo.bar?$format=xml');
+            });
+
+            it('Json', function () {
+                var j = new joData('http://foo.bar').defaultFormat().json();
+                expect(j.toString()).toEqual('http://foo.bar?$format=json');
+            });
+
+            it('Custom', function () {
+                var j = new joData('http://foo.bar').defaultFormat().custom('text/csv');
+                expect(j.toString()).toEqual('http://foo.bar?$format=text/csv');
+            });
+        });
+
+        it('is reset to default', function () {
+            var j = new joData('http://foo.bar').defaultFormat().atom();
+
+            j.format().json();
+            expect(j.toString()).toEqual('http://foo.bar?$format=json');
+
+            j.resetFormat();
+            expect(j.toString()).toEqual('http://foo.bar?$format=atom');
+        });
+
+        it('is reset', function () {
+            var j = new joData('http://foo.bar').format().json();
             expect(j.toString()).toEqual('http://foo.bar?$format=json');
 
             j.resetFormat();
@@ -261,19 +278,41 @@ describe('joData', function () {
         });
     });
 
-    describe('Inline Count', function () {
-        it('allpages', function () {
-            var j = new joData('http://foo.bar').inlinecount().allPages();
+    describe('Inline Count - ', function () {
+        it('All Pages', function () {
+            var j = new joData('http://foo.bar').inlineCount().allPages();
             expect(j.toString()).toEqual('http://foo.bar?$inlinecount=allpages');
         });
 
-        it('none', function () {
-            var j = new joData('http://foo.bar').inlinecount().none();
+        it('None', function () {
+            var j = new joData('http://foo.bar').inlineCount().none();
+            expect(j.toString()).toEqual('http://foo.bar?$inlinecount=none');
+        });
+
+        describe('Default is', function () {
+            it('All Pages', function () {
+                var j = new joData('http://foo.bar').defaultInlineCount().allPages();
+                expect(j.toString()).toEqual('http://foo.bar?$inlinecount=allpages');
+            });
+
+            it('None', function () {
+                var j = new joData('http://foo.bar').defaultInlineCount().none();
+                expect(j.toString()).toEqual('http://foo.bar?$inlinecount=none');
+            });
+        });
+
+        it('is reset to default', function () {
+            var j = new joData('http://foo.bar').defaultInlineCount().none();
+
+            j.inlineCount().allPages();
+            expect(j.toString()).toEqual('http://foo.bar?$inlinecount=allpages');
+
+            j.resetInlineCount();
             expect(j.toString()).toEqual('http://foo.bar?$inlinecount=none');
         });
 
         it('is reset', function () {
-            var j = new joData('http://foo.bar').inlinecount().allPages();
+            var j = new joData('http://foo.bar').inlineCount().allPages();
             expect(j.toString()).toEqual('http://foo.bar?$inlinecount=allpages');
 
             j.resetInlineCount();
@@ -283,7 +322,7 @@ describe('joData', function () {
         describe('multiple calls', function () {
             it('uses only the latest value', function () {
                 var j = new joData('http://foo.bar')
-                    .inlinecount()
+                    .inlineCount()
                     .allPages()
 	                .none();
 
@@ -777,5 +816,5 @@ describe('joData', function () {
         });
     });
 
-    
+
 });
