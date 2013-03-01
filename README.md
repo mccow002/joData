@@ -521,6 +521,15 @@ Output:
 
 	false
 
+
+###Datetime
+
+For any of the filter types listed below, you may need to query for a datetime.
+
+	query.filter(new joData.FilterClause('DateAdded').eq(datetime('13-03-01')));
+
+In order for this to work, you must use the date format of YY-MM-DD.
+
 ####<a id="logical-operators"></a>Logical Operators  ##
 
 The Logical Operator is what completes a filter clause. They can take in a string, number, or boolean, and are smart enough to know whether or not to add quotes.
@@ -870,6 +879,28 @@ This allows you to have sticky settings on something like a datagrid. Say a user
 This feature will allow the joData object to be reloaded once they return to the grid, causing the search, sort, and page to be restored.
 
 Using it is simple, but joData requires you to have 2 things -	localStorage and the JSON object.
+
+localStorage is supported in all major browsers, inclusing IE 8+. Saving Local will not work for IE 7 or less.
+
+The JSON object is a little less consistant. For browsers that don't support it (IE 8 and less), you need a add the [json2](https://github.com/douglascrockford/JSON-js) js file.
+
+	<!--[if lt IE 9]>
+		<script src="/Scripts/json2.js" type="text/javascript"></script>
+	<![endif]-->
+
+Once everything is set up, it's a simple matter of calling .saveLocal() and .loadLocal()
+
+####.saveLocal(\[optional\] key)
+
+	query.saveLocal();
+
+Calling .saveLocal() will stringify your joData object and save to to localStorage. You can pass in an optional string parameter to name the localStorage key.
+
+####joData.loadLocal(\[optional\] key)
+
+	joData.loadLocal()
+
+.loadlLocal() needs to be called off the joData object statically rather than off of an instantiated joData object. You can pass in an optional string parameter to tell it which localStorage key to try and load.
 
 ##Unsupported Features (for now)
 

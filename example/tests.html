@@ -9,11 +9,9 @@
 			    //var test = new joData('http://foo.bar');
 
 			    var j = new joData('http://foo.bar');
-			    var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').eq('Bob'));
-			    j.filter(group);
+			    j.filter(new joData.FilterClause('DateAdded').eq(datetime('13-03-01')));
 
-			    j.saveLocal();
-			    var l = joData.loadLocal();
+			    alert(j.toString());
 
 			    //alert(test.toString());
 

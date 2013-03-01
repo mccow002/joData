@@ -153,9 +153,9 @@
                 return this.Filters.length > 0 || this.DefaultFilters.length > 0;
             },
             loadFromJson: function (filterSettings) {
-                var i, filter, newFilterClause, key;
+                var i, filter, newFilterClause, loadPrecedenceGroup, loadFilterObj;
 
-                var loadPrecedenceGroup = function (precedenceGroup) {
+                loadPrecedenceGroup = function (precedenceGroup) {
                     var j, group, currentClause;
 
                     group = new joData.PrecedenceGroup();
@@ -168,10 +168,12 @@
                     return group;
                 };
 
-                var loadFilterObj = function (filter) {
+                loadFilterObj = function (filter) {
                     if (filter.clauses !== undefined) {
                         return loadPrecedenceGroup(filter);
                     }
+
+                    var key;
 
                     newFilterClause = new joData.FilterClause();
 
@@ -656,6 +658,10 @@
         return "'" + stringLiteral.toString() + "'";
     };
 
+    window.datetime = function (datetime) {
+        return "datetime'" + datetime + "'";
+    };
+
     joData.Concat = function (value1, value2) {
         this.LeftSide = value1;
         this.RightSide = value2;
@@ -918,4 +924,4 @@
 
     window.joData = joData;
 
-}(window));
+} (window));
