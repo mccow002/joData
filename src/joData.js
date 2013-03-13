@@ -127,7 +127,6 @@
                 var allFilters, i, filter;
 
                 allFilters = [];
-                i = 0;
                 filter = '$filter=';
 
                 if (this.DefaultFilters.length > 0) {
@@ -168,18 +167,18 @@
                     return group;
                 };
 
-                loadFilterObj = function (filter) {
-                    if (filter.clauses !== undefined) {
-                        return loadPrecedenceGroup(filter);
+                loadFilterObj = function (currentFilter) {
+                    if (currentFilter.clauses !== undefined) {
+                        return loadPrecedenceGroup(currentFilter);
                     }
 
                     var key;
 
                     newFilterClause = new joData.FilterClause();
 
-                    for (key in filter) {
-                        if (filter.hasOwnProperty(key)) {
-                            newFilterClause[key] = filter[key];
+                    for (key in currentFilter) {
+                        if (currentFilter.hasOwnProperty(key)) {
+                            newFilterClause[key] = currentFilter[key];
                         }
                     }
 
@@ -201,6 +200,10 @@
 
     joData.prototype = {
         baseUri: '',
+        currentHashRoute: '',
+        updateHashRoute: function (hashRoute) {
+            this.currentHashRoute = hashRoute;
+        },
         setOrderByDefault: function (property, order) {
             this.OrderBySettings.DefaultProperty = property;
             this.OrderBySettings.DefaultOrder = order === undefined ? 'desc' : order;
@@ -371,7 +374,7 @@
             return this;
         },
         removeFilter: function (property) {
-            var i = 0;
+            var i;
 
             if (!this.FilterSettings.isSet()) {
                 return this;
@@ -382,6 +385,8 @@
                     this.FilterSettings.Filters.remove(i);
                 }
             }
+
+            return this;
         },
         defaultFilter: function (filterClause) {
             this.FilterSettings.DefaultFilters.push(new FilterObj(filterClause));
@@ -515,7 +520,7 @@
         jsonStr = localStorage.getItem(actualKey);
         if (jsonStr === null) {
             console.log('Nothing was found in localStorage');
-            return;
+            return null;
         }
 
         json = JSON.parse(jsonStr);
@@ -924,4 +929,4 @@
 
     window.joData = joData;
 
-}(window));
+} (window));
