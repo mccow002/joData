@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata>
-    <id>joData</id>
-    <version>1.0</version>
-    <authors>Chris McCown</authors>
-    <description>Builds and manages a javascript object that represents an oData query string</description>
-    <language>en-US</language>
-    <projectUrl>https://github.com/mccow002/joData</projectUrl>
-  </metadata>
-  <files>
-	<file src="../src/joData.js" target="Scripts" />
-	<file src="../src/joData.min.js" target="Scripts" />
-  </files
+    <metadata>
+        <id>joData</id>
+        <version>1.0.1</version>
+        <title>joData</title>
+        <authors>Chris McCown</authors>
+        <owners />
+        <projectUrl>https://github.com/mccow002/joData</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Builds and manages a javascript object that represents an oData query string</description>
+        <summary />
+        <language>es-US</language>
+        <tags>oData, web api, javascript</tags>
+    </metadata>
 </package>
