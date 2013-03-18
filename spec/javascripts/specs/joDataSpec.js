@@ -90,11 +90,25 @@ describe('joData', function () {
 			expect(j.toString()).toEqual('http://foo.bar?$top=20');
 		});
 
+		it('has a value of 0', function () {
+		    var j = new joData('http://foo.bar');
+		    j.top(0);
+
+		    expect(j.toString()).toEqual('http://foo.bar?$top=0');
+		});
+
 		it('has a default', function () {
 			var j = new joData('http://foo.bar');
 			j.setTopDefault(10);
 
 			expect(j.toString()).toEqual('http://foo.bar?$top=10');
+		});
+
+		it('has a default of 0', function () {
+		    var j = new joData('http://foo.bar');
+		    j.setTopDefault(0);
+
+		    expect(j.toString()).toEqual('http://foo.bar?$top=0');
 		});
 
 		it('is reset to default', function () {
@@ -126,11 +140,25 @@ describe('joData', function () {
 			expect(j.toString()).toEqual('http://foo.bar?$skip=20');
 		});
 
+		it('has a value of 0', function () {
+		    var j = new joData('http://foo.bar');
+		    j.skip(0);
+
+		    expect(j.toString()).toEqual('http://foo.bar?$skip=0');
+		});
+
 		it('has a default', function () {
 			var j = new joData('http://foo.bar');
 			j.setSkipDefault(10);
 
 			expect(j.toString()).toEqual('http://foo.bar?$skip=10');
+		});
+
+		it('has a default of 0', function () {
+		    var j = new joData('http://foo.bar');
+		    j.setSkipDefault(0);
+
+		    expect(j.toString()).toEqual('http://foo.bar?$skip=0');
 		});
 
 		it('is reset to default', function () {

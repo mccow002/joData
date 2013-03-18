@@ -39,7 +39,7 @@
             Top: null,
             DefaultTop: null,
             toString: function () {
-                return '$top=' + (this.Top || this.DefaultTop);
+                return '$top=' + (this.Top !== null ? this.Top : this.DefaultTop);
             },
             reset: function () {
                 this.Top = null;
@@ -53,7 +53,7 @@
             Skip: null,
             DefaultSkip: null,
             toString: function () {
-                return '$skip=' + (this.Skip || this.DefaultSkip);
+                return '$skip=' + (this.Skip !== null ? this.Skip : this.DefaultSkip);
             },
             reset: function () {
                 this.Skip = null;
