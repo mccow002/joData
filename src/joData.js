@@ -706,6 +706,7 @@
         PropertyIncluded: false,
         UsingNot: false,
         FuncReturnType: null,
+        transformFunc: null,
         Components: [],
         toString: function () {
             var strComps, i, filterStr;
@@ -773,7 +774,14 @@
             this.PropertyIncluded = true;
             this.FuncReturnType = Boolean();
             var that = this;
-            this.Components.push('substringof(\'' + value + '\',' + that.Property + ')');
+
+            var property = this.Property;
+            if (this.transformFunc !== null) {
+                property = this.Components[this.Components.length - 1];
+                this.Components.splice(this.Components.length - 1, 1);
+            }
+
+            this.Components.push('substringof(\'' + value + '\',' + property + ')');
 
             return this;
         },
@@ -834,6 +842,8 @@
             this.PropertyIncluded = true;
             this.FuncReturnType = String();
             var that = this;
+
+            this.transformFunc = this.toLower;
             this.Components.push('tolower(' + that.Property + ')');
 
             return this;
@@ -842,6 +852,8 @@
             this.PropertyIncluded = true;
             this.FuncReturnType = String();
             var that = this;
+
+            this.transformFunc = this.toUpper;
             this.Components.push('toupper(' + that.Property + ')');
 
             return this;
@@ -850,6 +862,8 @@
             this.PropertyIncluded = true;
             this.FuncReturnType = String();
             var that = this;
+
+            this.transformFunc = this.trim;
             this.Components.push('trim(' + that.Property + ')');
 
             return this;
