@@ -688,6 +688,18 @@ Output:
 
 	$filter=substringof('test',PropertyName) eq true
 
+#####substringof(value) - with toLower, toUpper, or trim
+
+If you wish your substring of to transform the value being searched:
+
+	query.filter(new joData.FilterClause('PropertyName').toLower().substringof('test').eq(true));
+
+Output
+
+	$filter=substringof('test',tolower(PropertyName)) eq true
+
+This works for toLower(), toUpper(), and trim()
+
 #####endswith(value)
 
 	query.filter(new joData.FilterClause('PropertyName').endswith('test').eq(true));
