@@ -5,6 +5,9 @@
     joData = function (baseUri) {
         if (!Array.remove) {
             Array.prototype.remove = function (from, to) {
+                if (typeof from !== 'number' || typeof to !== 'number')
+                    return this;
+
                 var rest = this.slice((to || from) + 1 || this.length);
                 this.length = from < 0 ? this.length + from : from;
                 return this.push.apply(this, rest);
@@ -39,7 +42,7 @@
             Top: null,
             DefaultTop: null,
             toString: function () {
-                return '$top=' + (this.Top !== null ? this.Top : this.DefaultTop);
+                return '$top=' + (this.Top || this.DefaultTop);
             },
             reset: function () {
                 this.Top = null;
@@ -53,7 +56,7 @@
             Skip: null,
             DefaultSkip: null,
             toString: function () {
-                return '$skip=' + (this.Skip !== null ? this.Skip : this.DefaultSkip);
+                return '$skip=' + (this.Skip || this.DefaultSkip);
             },
             reset: function () {
                 this.Skip = null;
@@ -457,6 +460,7 @@
             var jsonObj = {};
 
             jsonObj.baseUri = this.baseUri;
+            jsonObj.currentHashRoute = this.currentHashRoute;
 
             jsonObj.OrderBySettings = null;
             jsonObj.TopSettings = null;
@@ -517,6 +521,7 @@
         var actualKey, jsonStr, json, joDataObj, key;
 
         actualKey = storageKey || 'joData.StorageKey';
+
         jsonStr = localStorage.getItem(actualKey);
         if (jsonStr === null) {
             console.log('Nothing was found in localStorage');
@@ -525,6 +530,7 @@
 
         json = JSON.parse(jsonStr);
         joDataObj = new joData(json.baseUri);
+        joDataObj.currentHashRoute = json.currentHashRoute;
 
         if (json.OrderBySettings !== null) {
             for (key in json.OrderBySettings) {
