@@ -42,7 +42,7 @@
             Top: null,
             DefaultTop: null,
             toString: function () {
-                return '$top=' + (this.Top || this.DefaultTop);
+                return '$top=' + (this.Top !== null ? this.Top : this.DefaultTop);
             },
             reset: function () {
                 this.Top = null;
@@ -56,7 +56,7 @@
             Skip: null,
             DefaultSkip: null,
             toString: function () {
-                return '$skip=' + (this.Skip || this.DefaultSkip);
+                return '$skip=' + (this.Skip !== null ? this.Skip : this.DefaultSkip);
             },
             reset: function () {
                 this.Skip = null;
@@ -126,6 +126,7 @@
         this.FilterSettings = {
             Filters: [],
             DefaultFilters: [],
+            CapturedFilter: [],
             toString: function () {
                 var allFilters, i, filter;
 
@@ -150,6 +151,15 @@
             },
             reset: function () {
                 this.Filters = [];
+                if (this.CapturedFilter.length > 0) {
+                    for (var i = 0; i < this.CapturedFilter.length; i++) {
+                        this.Filters.push(this.CapturedFilter[i]);
+                    }
+                }
+            },
+            fullReset: function () {
+                this.Filters = [];
+                this.CapturedFilter = [];
             },
             isSet: function () {
                 return this.Filters.length > 0 || this.DefaultFilters.length > 0;
@@ -372,7 +382,17 @@
             this.InlineCountSettings.reset();
             return this;
         },
+        captureFilter: function () {
+            this.FilterSettings.CapturedFilter = [];
+            for (var i = 0; i < this.FilterSettings.Filters.length; i++) {
+                this.FilterSettings.CapturedFilter.push(this.FilterSettings.Filters[i]);
+            }
+        },
         resetFilter: function () {
+            this.FilterSettings.fullReset();
+            return this;
+        },
+        resetToCapturedFilter: function () {
             this.FilterSettings.reset();
             return this;
         },
@@ -385,7 +405,7 @@
 
             for (i = 0; i < this.FilterSettings.Filters.length; i++) {
                 if (this.FilterSettings.Filters[i].filterObj.Property === property) {
-                    this.FilterSettings.Filters.remove(i);
+                    this.FilterSettings.Filters.splice(i, 1);
                 }
             }
 

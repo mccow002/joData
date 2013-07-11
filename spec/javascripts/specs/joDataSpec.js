@@ -869,6 +869,34 @@ describe('joData', function () {
                 expect(j.toString()).toEqual("http://foo.bar?$filter=ceiling(Price) eq 2");
             });
         });
+
+        describe('Capture Filter', function () {
+            it('Apply Filter, then capture, add more filters, then reset to capture', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('Status').eq('Pending'));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Status eq 'Pending'")
+
+                j.captureFilter();
+                j.andFilter(new joData.FilterClause('Name').eq('Chris'))
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Status eq 'Pending' and Name eq 'Chris'")
+
+                j.resetToCapturedFilter();
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Status eq 'Pending'")
+            })
+
+            it('Apply Filter, then capture, add more filters, then do a full reset', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('Status').eq('Pending'));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Status eq 'Pending'")
+
+                j.captureFilter();
+                j.andFilter(new joData.FilterClause('Name').eq('Chris'))
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Status eq 'Pending' and Name eq 'Chris'")
+
+                j.resetFilter();
+                expect(j.toString()).toEqual("http://foo.bar")
+            })
+        });
     });
 
     describe('Saving to local, the loading from local', function () {

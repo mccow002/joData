@@ -522,6 +522,43 @@ Output:
 	false
 
 
+####Capturing Filters
+
+#####.captureFilter(), .resetToCapturedFilter()
+
+Capturing a filter will allow you to reset back to the captured filter.
+
+An example is applying a filter, and then searching within that filter.
+
+So in this example, you click a filter:
+
+	query.andFilter(new joData.FilterClause('Status').eq('Pending'));
+
+Then you capture that filter:
+
+	query.captureFilter();
+
+Now you perform a search:
+
+	query.andFilter(new joData.FilterClause('Name').eq('Guy'));
+
+At this point your query is:
+
+	$filter=Status eq 'Pending' and Name eq 'Guy'
+
+So now, you want to clear your search results but stay in that filter. So you call .resetToCapturedFilter().
+
+	query.resetToCapturedFilter();
+
+You query will reset back to:
+
+	$filter=Status eq 'Pending'
+
+To completely reset just call:
+
+	query.resetFilter();
+
+
 ###Datetime
 
 For any of the filter types listed below, you may need to query for a datetime.
