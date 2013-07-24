@@ -523,11 +523,35 @@ describe('joData', function () {
             });
         });
 
-        describe('Datetime Cast', function () {
-            it('casts to datetime', function () {
+        describe('Type Casts', function () {
+            it('cast to datetime', function () {
                 var j = new joData('http://foo.bar');
                 j.filter(new joData.FilterClause('DateAdded').eq(datetime('13-03-01')));
                 expect(j.toString()).toEqual("http://foo.bar?$filter=DateAdded eq datetime'13-03-01'");
+            });
+
+            it('cast to decimal', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('Price').eq(decimal(392.52)));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Price eq 392.52m");
+            });
+
+            it('cast to guid', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('CustomerGuid').eq(guid('1225c695-cfb8-4ebb-aaaa-80da344efa6a')));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=CustomerGuid eq guid'1225c695-cfb8-4ebb-aaaa-80da344efa6a'");
+            });
+
+            it('cast to single', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('Price').eq(single(392.52)));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Price eq 392.52f");
+            });
+
+            it('cast to double', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('Price').eq(double(392.52)));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Price eq 392.52d");
             });
         });
 

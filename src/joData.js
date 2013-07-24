@@ -693,6 +693,22 @@
         return "datetime'" + datetime + "'";
     };
 
+    window.decimal = function (decimal) {
+        return decimal + 'm';
+    };
+
+    window.guid = function (guid) {
+        return "guid'" + guid + "'";
+    };
+
+    window.single = function (single) {
+        return single + 'f';
+    };
+
+    window.double = function (double) {
+        return double + 'd';
+    };
+
     joData.Concat = function (value1, value2) {
         this.LeftSide = value1;
         this.RightSide = value2;
@@ -939,7 +955,22 @@
                 return value;
             }
 
+            if (value.length > 4 && value.substring(0, 4) === 'guid') {
+                return value;
+            }
+
             if (typeof value === 'string') {
+                var numberSuffixes = ['m', 'f', 'd'];
+                for (var i = 0; i < numberSuffixes.length; i++) {
+                    var suffix = numberSuffixes[i];
+                    if (value.indexOf(suffix, value.length - suffix.length) !== -1) {
+                        var numberValue = value.substring(0, value - 1);
+                        if (!isNaN(numberValue)) {
+                            return value;
+                        }
+                    }
+                }
+
                 return "'" + value + "'";
             }
 
