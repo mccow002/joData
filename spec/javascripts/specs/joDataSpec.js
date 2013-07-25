@@ -553,6 +553,24 @@ describe('joData', function () {
                 j.filter(new joData.FilterClause('Price').eq(double(392.52)));
                 expect(j.toString()).toEqual("http://foo.bar?$filter=Price eq 392.52d");
             });
+
+            it('string that ends with m', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('Currency').eq('slurm'));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Currency eq 'slurm'");
+            });
+
+            it('string that ends with f', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('Currency').eq('stuff'));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Currency eq 'stuff'");
+            });
+
+            it('string that ends with d', function () {
+                var j = new joData('http://foo.bar');
+                j.filter(new joData.FilterClause('Currency').eq('usd'));
+                expect(j.toString()).toEqual("http://foo.bar?$filter=Currency eq 'usd'");
+            });
         });
 
         describe('Logical Operators', function () {
