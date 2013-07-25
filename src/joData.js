@@ -964,7 +964,7 @@
                 for (var i = 0; i < numberSuffixes.length; i++) {
                     var suffix = numberSuffixes[i];
                     if (value.indexOf(suffix, value.length - suffix.length) !== -1) {
-                        var numberValue = value.substring(0, value - 1);
+                        var numberValue = value.substring(0, value.length - 1);
                         if (!isNaN(numberValue)) {
                             return value;
                         }
