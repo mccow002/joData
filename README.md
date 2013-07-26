@@ -11,13 +11,18 @@ joData's goal is to implement
 
 All methods in joData are chainable.
 
+##NOTE:
+
+As of version 1.1, the joData object has been renamed jo.
+
 ##Getting Started
 
 ###Creating a joData object
 
 To create a joData query object, you instantiate it by passing your base uri into the constructor.
 
-	var query = new joData('http://test.com');
+	var query = new jo('http://test.com');
+	var query = new jo('http://test.com');
 
 ###.baseUri
 
@@ -423,13 +428,13 @@ Output:
 
 Filter is not singleton, which allows you to add as many filter clauses as you would like.
 
-.filter takes in a [joData.FilterClause](#filter-clause) object.
+.filter takes in a [jo.FilterClause](#filter-clause) object.
 
 .filter works best for single filter clauses. If you need multiple filter clauses seperated by 'or' or 'and', see below.
 
-To create a filer clause, use the joData.FilterClause object and pass in the proeprty the clause applies to.
+To create a filer clause, use the jo.FilterClause object and pass in the proeprty the clause applies to.
 
-	var clause = new joData.FilterClause('PropertyName');
+	var clause = new jo.FilterClause('PropertyName');
 
 Next, add your desires operator (for complete list of supported operators, see below)
 
@@ -447,11 +452,11 @@ Output:
 
 Adds a filter clause using the 'and' operator. joData is smart enough to know that if this is the first clause in the filter, don't use the operator. This way you can loop through properties and not have to worry about using .filter for the first item and .addFilter for the rest.
 
-.andFilter takes in a [joData.FilterClause](#filter-clause) object.
+.andFilter takes in a [jo.FilterClause](#filter-clause) object.
 
 	query
-		.andFilter(new joData.FilterClause('Property1').eq(5))
-		.andFilter(new joData.FilterClause('Property2').eq(10));
+		.andFilter(new jo.FilterClause('Property1').eq(5))
+		.andFilter(new jo.FilterClause('Property2').eq(10));
 
 Output: 
 
@@ -461,11 +466,11 @@ Output:
 
 Same as andFilter, except seperates the clauses with 'or'.
 
-.orFilter takes in a [joData.FilterClause](#filter-clause) object.
+.orFilter takes in a [jo.FilterClause](#filter-clause) object.
 
 	query
-		.orFilter(new joData.FilterClause('Property1').eq(5))
-		.orFilter(new joData.FilterClause('Property2').eq(10));
+		.orFilter(new jo.FilterClause('Property1').eq(5))
+		.orFilter(new jo.FilterClause('Property2').eq(10));
 
 Output: 
 
@@ -476,9 +481,9 @@ Output:
 You can mix the filter methods as you like.
 
 	query
-		.filter(new joData.FilterClause('p1').eq(1))
-		.andFilter(new joData.FilterClause('p2').eq(5))
-		.orFilter(new joData.FilterClause('p3').eq(10));
+		.filter(new jo.FilterClause('p1').eq(1))
+		.andFilter(new jo.FilterClause('p2').eq(5))
+		.orFilter(new jo.FilterClause('p3').eq(10));
 
 Output: 
 
@@ -493,19 +498,19 @@ or Conat.
 
 	query.removeFilter('CustomerName')
 
-####<a id="filter-clause"></a>joData.FilterClause(property) ##
+####<a id="filter-clause"></a>jo.FilterClause(property) ##
 
-The joData.FilterClause object represents an oData filter clause. It's constructor takes in the property name the clause will be for.
+The jo.FilterClause object represents an oData filter clause. It's constructor takes in the property name the clause will be for.
 
  Note: The only time a parameter is not required for a FilterClause is for a concat clause.
 
-	new joData.FilterClause('CustomerName');
+	new jo.FilterClause('CustomerName');
 
 #####.isEmpty()
 
 Used to test if the FilterClause object is actually populated and ready to use. Will not return true until one of the [Logical Operators](#logical-operators) have been called.
 
-	var clause = new joData.FilterClause('CustomerId');
+	var clause = new jo.FilterClause('CustomerId');
 	clause.isEmpty();
 
 Output:
@@ -514,7 +519,7 @@ Output:
 
 Not Empty FilterClause:
 
-	var clause = new joData.FilterClause('CustomerId').eq(1);
+	var clause = new jo.FilterClause('CustomerId').eq(1);
 	clause.isEmpty();
 
 Output:
@@ -532,7 +537,7 @@ An example is applying a filter, and then searching within that filter.
 
 So in this example, you click a filter:
 
-	query.andFilter(new joData.FilterClause('Status').eq('Pending'));
+	query.andFilter(new jo.FilterClause('Status').eq('Pending'));
 
 Then you capture that filter:
 
@@ -540,7 +545,7 @@ Then you capture that filter:
 
 Now you perform a search:
 
-	query.andFilter(new joData.FilterClause('Name').eq('Guy'));
+	query.andFilter(new jo.FilterClause('Name').eq('Guy'));
 
 At this point your query is:
 
@@ -559,13 +564,59 @@ To completely reset just call:
 	query.resetFilter();
 
 
-###Datetime
+###Casts
 
-For any of the filter types listed below, you may need to query for a datetime.
+For any of the filter types listed below, you may need to cast a value to a certain type.
 
-	query.filter(new joData.FilterClause('DateAdded').eq(datetime('13-03-01')));
+####Datetime
 
-In order for this to work, you must use the date format of YY-MM-DD.
+To cast datetime, use jo.datetime(value)
+
+    query.filter(new jo.FilterClause('DateAdded').eq(jo.datetime('2013-03-01')));
+
+Output:
+
+	$filter=DateAdded eq datetime'2013-03-01'
+
+####Guid
+
+To cast guid, use jo.guid(value)
+
+    query.filter(new jo.FilterClause('CustomerId').eq(jo.guid('3F2504E0-4F89-11D3-9A0C-0305E82C3301')));
+
+Output:
+
+	$filter=CustomerId eq guid'3F2504E0-4F89-11D3-9A0C-0305E82C3301'
+
+####Decimal
+
+To cast to decimal, use jo.decimal(value)
+
+	query.filter(new jo.FilterClause('Price').eq(jo.decimal(24.97)));
+
+Output:
+
+	$filter=Price eq 24.97m
+
+####Single
+
+To cast to decimal, use jo.single(value)
+
+	query.filter(new jo.FilterClause('Price').eq(jo.single(24.97)));
+
+Output:
+
+	$filter=Price eq 24.97f
+
+####Double
+
+To cast to decimal, use jo.double(value)
+
+	query.filter(new jo.FilterClause('Price').eq(jo.double(24.97)));
+
+Output:
+
+	$filter=Price eq 24.97d
 
 ####<a id="logical-operators"></a>Logical Operators  ##
 
@@ -573,8 +624,8 @@ The Logical Operator is what completes a filter clause. They can take in a strin
 
 Example:
 
-	query.filter(new joData.FilterData('PropertyName').eq('test'));
-	query.filter(new joData.FilterData('PropertyName').eq(10));
+	query.filter(new jo.FilterData('PropertyName').eq('test'));
+	query.filter(new jo.FilterData('PropertyName').eq(10));
 
 Output:
 
@@ -595,7 +646,7 @@ The 'not' operator is a bit different. It can be followed by a function. So rath
 
 Because 'not' is higher in the order of operations than the other logical operators, joData will automatically add parenthesis around any statement that doesn't return bool.
 
-	query.filter(new joData.FilterClause('CustomerName').not().eq('bob'));
+	query.filter(new jo.FilterClause('CustomerName').not().eq('bob'));
 
 Output:
 	
@@ -603,7 +654,7 @@ Output:
 
 'CustomerName eq 'bob'' must be evaluted to a bool before 'not' can be applied, so it is wrapped in parenthesis.
 
-	query.filter(new joData.FilterClause('CustomerName').not().endswith('bob'));
+	query.filter(new jo.FilterClause('CustomerName').not().endswith('bob'));
 
 Output:
 
@@ -613,13 +664,13 @@ endswith return a bool, so there is no need to add parenthesis.
 
 #####Precedence Groups
 
-#####new joData.PrecedenceGroup(filterClause)
+#####new jo.PrecedenceGroup(filterClause)
 
 Precedence Groups allow you to group filter clauses in parenthesis.
 
-First, you instatiate a new joData.PrecedenceGroup. the constructor takes in a FilterClause object.
+First, you instatiate a new jo.PrecedenceGroup. the constructor takes in a FilterClause object.
 
-	var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').eq('Bob'));
+	var group = new jo.PrecedenceGroup(new jo.FilterClause('Name').eq('Bob'));
 
 Then you add it to the main query filter.
 
@@ -633,7 +684,7 @@ Output:
 
 Just like with the query filter, you can call andFilter or orFilter to add clauses to the group.
 
-	var group = new joData.PrecedenceGroup(new joData.FilterClause('Name').eq('Bob')).orFilter(new joData.FilterClause('Name').eq('George'));
+	var group = new jo.PrecedenceGroup(new jo.FilterClause('Name').eq('Bob')).orFilter(new jo.FilterClause('Name').eq('George'));
 	query.filter(group);
 
 Output:
@@ -643,9 +694,9 @@ Output:
 #####Mixing Filters and Precedence Groups
 
 	query
-		.filter(new joData.FilterClause('Id').eq(1))
-		.andFilter(new joData.PrecedenceGroup(new joData.FilterClause('Name').startswith('a').eq(true))
-			.orFilter(new joData.FilterClause('Name').startswith('b').eq(true)));
+		.filter(new jo.FilterClause('Id').eq(1))
+		.andFilter(new jo.PrecedenceGroup(new jo.FilterClause('Name').startswith('a').eq(true))
+			.orFilter(new jo.FilterClause('Name').startswith('b').eq(true)));
 
 Output:
 
@@ -659,7 +710,7 @@ Filter defaults work a little different than all the other defaults. Rather than
 
 As for seperating default clauses with 'and' or 'or', .defaultAndFilter and .defaultOrFilter work the same as .andFilter and .orFilter.
 
-	query.defaultFilter(new joData.FilterClause('Id').eq(1));
+	query.defaultFilter(new jo.FilterClause('Id').eq(1));
 
 Output:
 
@@ -668,8 +719,8 @@ Output:
 Adding a filter will merge it with the defaults:
 
 	query
-		.defaultFilter(new joData.FilterClause('Id').eq(1))
-		.filter(new joData.FilterClause('Name').eq('bob'));
+		.defaultFilter(new jo.FilterClause('Id').eq(1))
+		.filter(new jo.FilterClause('Name').eq('bob'));
 
 Output:
 
@@ -680,8 +731,8 @@ Unless specified with .orFilter(), default clauses will be seperated from the ot
 Calling .resetFilter() will remove all filter clauses except for the defaults.
 
 	query
-		.defaultFilter(new joData.FilterClause('Id').eq(1))
-		.filter(new joData.FilterClause('Name').eq('bob'));
+		.defaultFilter(new jo.FilterClause('Id').eq(1))
+		.filter(new jo.FilterClause('Name').eq('bob'));
 
 Output:
 
@@ -707,7 +758,7 @@ All arithmetic methods are available. This includes:
 
 Usage:
 
-	query.filter(new joData.FilterClause('PropertyName').add(5).eq(10));
+	query.filter(new jo.FilterClause('PropertyName').add(5).eq(10));
 
 Output: 
 
@@ -719,7 +770,7 @@ Supported String Methods:
 
 #####substringof(value)
 
-	query.filter(new joData.FilterClause('PropertyName').substringof('test').eq(true));
+	query.filter(new jo.FilterClause('PropertyName').substringof('test').eq(true));
 
 Output: 
 
@@ -729,7 +780,7 @@ Output:
 
 If you wish your substring of to transform the value being searched:
 
-	query.filter(new joData.FilterClause('PropertyName').toLower().substringof('test').eq(true));
+	query.filter(new jo.FilterClause('PropertyName').toLower().substringof('test').eq(true));
 
 Output
 
@@ -739,7 +790,7 @@ This works for toLower(), toUpper(), and trim()
 
 #####endswith(value)
 
-	query.filter(new joData.FilterClause('PropertyName').endswith('test').eq(true));
+	query.filter(new jo.FilterClause('PropertyName').endswith('test').eq(true));
 
 Output: 
 
@@ -747,7 +798,7 @@ Output:
 
 #####startswith(value)
 
-	query.filter(new joData.FilterClause('PropertyName').startswith('test').eq(true));
+	query.filter(new jo.FilterClause('PropertyName').startswith('test').eq(true));
 
 Output: 
 
@@ -755,7 +806,7 @@ Output:
 
 #####length()
 
-	query.filter(new joData.FilterClause('PropertyName').length().eq(10));
+	query.filter(new jo.FilterClause('PropertyName').length().eq(10));
 
 Output: 
 
@@ -763,7 +814,7 @@ Output:
 
 #####indexof(value)
 
-	query.filter(new joData.FilterClause('PropertyName').indexof('test').eq(1));
+	query.filter(new jo.FilterClause('PropertyName').indexof('test').eq(1));
 
 Output: 
 
@@ -771,7 +822,7 @@ Output:
 
 #####replace(find, replace)
 
-	query.filter(new joData.FilterClause('PropertyName').replace('test', 'bob').eq('bob'));
+	query.filter(new jo.FilterClause('PropertyName').replace('test', 'bob').eq('bob'));
 
 Output: 
 
@@ -781,7 +832,7 @@ Output:
 
 length is an options parameter.
 
-	query.filter(new joData.FilterClause('PropertyName').substring(1).eq('test'));
+	query.filter(new jo.FilterClause('PropertyName').substring(1).eq('test'));
 
 Output: 
 
@@ -789,7 +840,7 @@ Output:
 
 With length param:
 
-	query.filter(new joData.FilterClause('PropertyName').substring(1,2).eq('test'));
+	query.filter(new jo.FilterClause('PropertyName').substring(1,2).eq('test'));
 
 Output: 
 
@@ -797,7 +848,7 @@ Output:
 
 #####toLower(value)
 
-	query.filter(new joData.FilterClause('PropertyName').toLower().eq('test'));
+	query.filter(new jo.FilterClause('PropertyName').toLower().eq('test'));
 
 Output: 
 
@@ -805,7 +856,7 @@ Output:
 
 #####toUpper(value)
 
-	query.filter(new joData.FilterClause('PropertyName').toUpper().eq('TEST'));
+	query.filter(new jo.FilterClause('PropertyName').toUpper().eq('TEST'));
 
 Output: 
 
@@ -813,7 +864,7 @@ Output:
 
 #####trim(value)
 
-	query.filter(new joData.FilterClause('PropertyName').trim().eq('test'));
+	query.filter(new jo.FilterClause('PropertyName').trim().eq('test'));
 
 Output: 
 
@@ -823,14 +874,14 @@ Output:
 
 Concat is a bit different from other filter clauses. Concat can be nested, so it's possible to have 'concat(concat(City, ','), State) eq 'Birmingham, Alabama''
 
-To do this, there is the joData.Concat object that takes in either a string or a joData.Concat object.
+To do this, there is the jo.Concat object that takes in either a string or a jo.Concat object.
 
 By default, the concat object assumes you're dealing with properties, so it doesn't wrap your concat arguments in quotes. If you wish to use a string literal, like in example 2,
 use literal('your literal value').
 
 Example 1 - Without Nesting
 
-	query.filter(new joData.FilterClause().Concat(new joData.Concat('FirstName', 'LastName')).eq('BobSmith'));
+	query.filter(new jo.FilterClause().Concat(new jo.Concat('FirstName', 'LastName')).eq('BobSmith'));
 
 Output:
 
@@ -838,7 +889,7 @@ Output:
 
 Example 2 - With Nesting
 
-	query.filter(new joData.FilterClause().Concat(new joData.Concat(new joData.Concat('City',literal(', ')), 'State')).eq('Birmingham, Alabama'));
+	query.filter(new jo.FilterClause().Concat(new jo.Concat(new jo.Concat('City',literal(', ')), 'State')).eq('Birmingham, Alabama'));
 
 Output:
 
@@ -848,7 +899,7 @@ Output:
 
 #####.day()
 
-	query.filter(new joData.FilterClause('Birthday').day().eq(2));
+	query.filter(new jo.FilterClause('Birthday').day().eq(2));
 
 Output:
 
@@ -856,7 +907,7 @@ Output:
 
 #####.hour()
 
-	query.filter(new joData.FilterClause('Birthday').hour().eq(2));
+	query.filter(new jo.FilterClause('Birthday').hour().eq(2));
 
 Output:
 
@@ -864,7 +915,7 @@ Output:
 
 #####.minute()
 
-	query.filter(new joData.FilterClause('Birthday').minute().eq(2));
+	query.filter(new jo.FilterClause('Birthday').minute().eq(2));
 
 Output:
 
@@ -872,7 +923,7 @@ Output:
 
 #####.month()
 
-	query.filter(new joData.FilterClause('Birthday').month().eq(2));
+	query.filter(new jo.FilterClause('Birthday').month().eq(2));
 
 Output:
 
@@ -880,7 +931,7 @@ Output:
 
 #####.second()
 
-	query.filter(new joData.FilterClause('Birthday').second().eq(2));
+	query.filter(new jo.FilterClause('Birthday').second().eq(2));
 
 Output:
 
@@ -888,7 +939,7 @@ Output:
 
 #####.year()
 
-	query.filter(new joData.FilterClause('Birthday').year().eq(2));
+	query.filter(new jo.FilterClause('Birthday').year().eq(2));
 
 Output:
 
@@ -898,7 +949,7 @@ Output:
 
 #####.round()
 
-	query.filter(new joData.FilterClause('Price').round().eq(2));
+	query.filter(new jo.FilterClause('Price').round().eq(2));
 
 Output:
 
@@ -906,7 +957,7 @@ Output:
 
 #####.floor()
 
-	query.filter(new joData.FilterClause('Price').floor().eq(2));
+	query.filter(new jo.FilterClause('Price').floor().eq(2));
 
 Output:
 
@@ -914,7 +965,7 @@ Output:
 
 #####.ceiling()
 
-	query.filter(new joData.FilterClause('Price').ceiling().eq(2));
+	query.filter(new jo.FilterClause('Price').ceiling().eq(2));
 
 Output:
 
@@ -945,9 +996,9 @@ Once everything is set up, it's a simple matter of calling .saveLocal() and .loa
 
 Calling .saveLocal() will stringify your joData object and save to to localStorage. You can pass in an optional string parameter to name the localStorage key.
 
-####joData.loadLocal(\[optional\] key)
+####jo.loadLocal(\[optional\] key)
 
-	joData.loadLocal()
+	jo.loadLocal()
 
 .loadlLocal() needs to be called off the joData object statically rather than off of an instantiated joData object. You can pass in an optional string parameter to tell it which localStorage key to try and load.
 

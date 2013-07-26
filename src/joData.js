@@ -1,8 +1,8 @@
 (function (window) {
     "use strict";
-    var joData, FilterObj, Helpers;
+    var jo, FilterObj, Helpers;
 
-    joData = function (baseUri) {
+    jo = function (baseUri) {
         if (!Array.remove) {
             Array.prototype.remove = function (from, to) {
                 if (typeof from !== 'number' || typeof to !== 'number')
@@ -170,7 +170,7 @@
                 loadPrecedenceGroup = function (precedenceGroup) {
                     var j, group, currentClause;
 
-                    group = new joData.PrecedenceGroup();
+                    group = new jo.PrecedenceGroup();
 
                     for (j = 0; j < precedenceGroup.clauses.length; j++) {
                         currentClause = precedenceGroup.clauses[j];
@@ -187,7 +187,7 @@
 
                     var key;
 
-                    newFilterClause = new joData.FilterClause();
+                    newFilterClause = new jo.FilterClause();
 
                     for (key in currentFilter) {
                         if (currentFilter.hasOwnProperty(key)) {
@@ -211,7 +211,7 @@
         };
     };
 
-    joData.prototype = {
+    jo.prototype = {
         baseUri: '',
         currentHashRoute: '',
         updateHashRoute: function (hashRoute) {
@@ -537,7 +537,7 @@
         }
     };
 
-    joData.loadLocal = function (storageKey) {
+    jo.loadLocal = function (storageKey) {
         var actualKey, jsonStr, json, joDataObj, key;
 
         actualKey = storageKey || 'joData.StorageKey';
@@ -549,7 +549,7 @@
         }
 
         json = JSON.parse(jsonStr);
-        joDataObj = new joData(json.baseUri);
+        joDataObj = new jo(json.baseUri);
         joDataObj.currentHashRoute = json.currentHashRoute;
 
         if (json.OrderBySettings !== null) {
@@ -641,9 +641,9 @@
         }
     };
 
-    joData.PrecedenceGroup = function (filterClause) {
-        if (!filterClause instanceof joData.FilterClause) {
-            throw 'filterClause must be of type joData.FilterClause!';
+    jo.PrecedenceGroup = function (filterClause) {
+        if (!filterClause instanceof jo.FilterClause) {
+            throw 'filterClause must be of type jo.FilterClause!';
         }
 
         this.clauses = [];
@@ -655,22 +655,22 @@
         return this;
     };
 
-    joData.PrecedenceGroup.prototype = {
+    jo.PrecedenceGroup.prototype = {
         clauses: [],
         isEmpty: function () {
             return this.clauses.length === 0;
         },
         andFilter: function (filterClause) {
-            if (!filterClause instanceof joData.FilterClause) {
-                throw 'filterClause must be of type joData.FilterClause!';
+            if (!filterClause instanceof jo.FilterClause) {
+                throw 'filterClause must be of type jo.FilterClause!';
             }
 
             this.clauses.push(new FilterObj(filterClause, 'and'));
             return this;
         },
         orFilter: function (filterClause) {
-            if (!filterClause instanceof joData.FilterClause) {
-                throw 'filterClause must be of type joData.FilterClause!';
+            if (!filterClause instanceof jo.FilterClause) {
+                throw 'filterClause must be of type jo.FilterClause!';
             }
 
             this.clauses.push(new FilterObj(filterClause, 'or'));
@@ -688,37 +688,37 @@
         }
     };
 
-    window.literal = function (stringLiteral) {
+    jo.literal = function (stringLiteral) {
         return "'" + stringLiteral.toString() + "'";
     };
 
-    window.datetime = function (datetime) {
+    jo.datetime = function (datetime) {
         return "datetime'" + datetime + "'";
     };
 
-    window.decimal = function (decimal) {
+    jo.decimal = function (decimal) {
         return decimal + 'm';
     };
 
-    window.guid = function (guid) {
+    jo.guid = function (guid) {
         return "guid'" + guid + "'";
     };
 
-    window.single = function (single) {
+    jo.single = function (single) {
         return single + 'f';
     };
 
-    window.double = function (double) {
+    jo.double = function (double) {
         return double + 'd';
     };
 
-    joData.Concat = function (value1, value2) {
+    jo.Concat = function (value1, value2) {
         this.LeftSide = value1;
         this.RightSide = value2;
         return this;
     };
 
-    joData.Concat.prototype = {
+    jo.Concat.prototype = {
         LeftSide: null,
         RightSide: null,
         toString: function () {
@@ -738,13 +738,13 @@
         }
     };
 
-    joData.FilterClause = function (property) {
+    jo.FilterClause = function (property) {
         this.Property = property;
         this.Components = [];
         return this;
     };
 
-    joData.FilterClause.prototype = {
+    jo.FilterClause.prototype = {
         Property: null,
         Value: null,
         IsClauseEmpty: true,
@@ -1001,6 +1001,6 @@
         }
     };
 
-    window.joData = joData;
+    window.jo = jo;
 
 } (window));
