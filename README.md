@@ -13,7 +13,7 @@ All methods in joData are chainable.
 
 ##NOTE:
 
-As of version 1.1, the joData object has been renamed jo.
+As of version 1.1, the joData object has been renamed jo. Also, all cast methods such as datetime or decimal are no attached to the jo object instead of the window object.
 
 ##Getting Started
 
