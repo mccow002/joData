@@ -657,6 +657,9 @@
 
     joData.PrecedenceGroup.prototype = {
         clauses: [],
+        isEmpty: function () {
+            return this.clauses.length === 0;
+        },
         andFilter: function (filterClause) {
             if (!filterClause instanceof joData.FilterClause) {
                 throw 'filterClause must be of type joData.FilterClause!';
