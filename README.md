@@ -969,11 +969,11 @@ Output:
 
 	$filter=ceiling(Price) eq 2
 	
-####Raw Parameters
+###Raw Parameters
 
 To add parameters onto the query outside of joData, you may use the Raw function.
 
-#####raw(parameter, value)
+####raw(parameter, value)
 
 	query.raw('ParameterName',"'ParameterValue'")
 
