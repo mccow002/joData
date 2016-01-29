@@ -6,41 +6,48 @@
 	<body>
 		<script>
 			(function () {
-			    //var test = new joData('http://foo.bar');
+			    var test = new jo('http://foo.bar');
+			    test.filter(new jo.FilterClause('DateAdded').eq(jo.datetime('13-03-01')));
 
-			    var j = new joData('http://foo.bar');
-			    j.filter(new joData.FilterClause('DateAdded').eq(datetime('13-03-01')));
+			    alert(test.toString());
 
-			    alert(j.toString());
+			    test.saveLocal();
 
-			    //alert(test.toString());
+			    var local = jo.loadLocal();
+			    test.defaultFilter(new jo.FilterClause('AccountId').eq(1));
+			    test.setOrderByDefault('AccountNumber', 'desc');
 
-			    //test.saveLocal();
+			    test.orderBy('AccountName').asc();
+			                    test.resetFilter();
+			                    test.orderBy('test')
+			                        .top(5)
+			                        .skip(10)
+			                        .select(['Name', 'Address'])
+			                        .orFilter(new jo.FilterClause()
+			                                            .substringof('dg', 'TestProp1')
+			                                            .eq(true))
+			                        .orFilter(new jo.FilterClause()
+			                                            .substringof('dg', 'TestProp2')
+			                                            .eq(true))
+			                    .orFilter(new jo.FilterClause()
+			                                            .substringof('dg', 'TestProp3')
+			                                            .eq(true));
 
-			    //var local = joData.loadLocal();
-			    //test.defaultFilter(new joData.FilterClause().Property('AccountId').Eq(1));
-			    //test.setOrderByDefault('AccountNumber', 'desc');
+			    test.resetOrderBy();
+			    test.resetSelect();
+			    test.resetFilter();
+			    alert("local: " + local.toString());
+				
 
-			    //test.orderBy('AccountName').asc();
-			    //                test.resetFilter();
-			    //                test.orderBy('test')
-			    //                    //.top(5)
-			    //                    //.skip(10)
-			    //                    //.select(['Name', 'Address'])
-			    //                    .orFilter(new joData.FilterClause()
-			    //                                        .Substringof('dg', 'TestProp1')
-			    //                                        .Eq(true))
-			    //                    .orFilter(new joData.FilterClause()
-			    //                                        .Substringof('dg', 'TestProp2')
-			    //                                        .Eq(true))
-			    //                .orFilter(new joData.FilterClause()
-			    //                                        .Substringof('dg', 'TestProp3')
-			    //                                        .Eq(true));
+			    // Raw Test
+			    test.raw("param1", 1);
+			    test.raw("param2", "two");
+			    test.raw(3, 3);
 
-			    //test.resetOrderBy();
-			    //test.resetSelect();
-			    //test.resetFilter();
-			    //alert(local.toString());
+			    test.expand("more");
+
+			    alert(test.toString());
+
 			})();
 		</script>
 	</body>
