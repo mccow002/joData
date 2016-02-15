@@ -1,6 +1,6 @@
 (function (window) {
     "use strict";
-    var jo, FilterObj, Helpers;
+    var jo, FilterObj, RawObj, Helpers;
 
     jo = function (baseUri) {
         if (!Array.remove) {
@@ -120,6 +120,35 @@
             },
             isSet: function () {
                 return this.InlineCount !== null || this.DefaultInlineCount !== null;
+            }
+        };
+
+        this.RawSettings = {
+            Parameters: [],
+            DefaultParameters: [],
+            toString: function () {
+                var i, raw;
+                raw = "";
+                if (this.Parameters.length > 0) {
+                    for (i = 0; i < this.Parameters.length; i++) {
+                        raw += '&' + this.Parameters[i].toString();
+                    }
+                }
+                return raw.substring(1);
+            },
+            reset: function () {
+                this.Parameters = [];
+            },
+            isSet: function () {
+                return this.Parameters.length > 0 || this.DefaultParameters.length > 0;
+            },
+            loadFromJson: function (rawSettings) {
+                var i, parameter;
+
+                for (i = 0; i < rawSettings.Parameters.length; i++) {
+                    parameter = rawSettings.Parameters[i];
+                    this.Parameters.push(new RawObj(parameter.rawParameter,parameter.rawParameterValue));
+                }
             }
         };
 
@@ -382,6 +411,10 @@
             this.InlineCountSettings.reset();
             return this;
         },
+        raw: function (parameter, parameterValue) {
+            this.RawSettings.Parameters.push(new RawObj(parameter,parameterValue));
+            return this;
+        },
         captureFilter: function () {
             this.FilterSettings.CapturedFilter = [];
             for (var i = 0; i < this.FilterSettings.Filters.length; i++) {
@@ -442,6 +475,10 @@
             url = this.baseUri;
             components = [];
 
+            if (this.RawSettings.isSet()) {
+                components.push(this.RawSettings.toString());
+            }
+
             if (this.OrderBySettings.isSet()) {
                 components.push(this.OrderBySettings.toString());
             }
@@ -488,10 +525,15 @@
             jsonObj.SelectSettings = null;
             jsonObj.ExpandSettings = null;
             jsonObj.FormatSettings = null;
+            jsonObj.RawSettings = null;
             jsonObj.InlineCountSettings = null;
             jsonObj.FilterSettings = null;
 
             jsonObj.defaults = this.defaults;
+
+            if (this.RawSettings.isSet()) {
+                jsonObj.RawSettings = this.RawSettings;
+            }
 
             if (this.OrderBySettings.isSet()) {
                 jsonObj.OrderBySettings = this.OrderBySettings;
@@ -608,11 +650,34 @@
             }
         }
 
+        if (json.RawSettings !== null) {
+            joDataObj.RawSettings.loadFromJson(json.RawSettings);
+        }
+
         if (json.FilterSettings !== null) {
             joDataObj.FilterSettings.loadFromJson(json.FilterSettings);
         }
 
         return joDataObj;
+    };
+
+    RawObj = function (rawParameter, rawParameterValue) {
+        this.rawParameter = null;
+        this.rawParameterValue = null;
+        if (rawParameter !== undefined && rawParameter !== null && rawParameterValue !== undefined && rawParameterValue !== null) {
+            this.rawParameter = rawParameter;
+            this.rawParameterValue = rawParameterValue;
+        }
+
+        return this;
+    };
+
+    RawObj.prototype = {
+        rawParameter: null,
+        rawParameterValue: null,
+        toString: function () {
+            return this.rawParameter + '=' + this.rawParameterValue;
+        }
     };
 
     FilterObj = function (filterObj, logicalOperator) {

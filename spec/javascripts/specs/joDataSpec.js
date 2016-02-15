@@ -941,6 +941,13 @@ describe('jo', function () {
         });
     });
 
+    describe('Raw Parameters', function() {
+        var j = new jo('http://foo.bar');
+        j.raw("parameter1", 1);
+        j.raw("parameter2", "two");
+        expect(j.toString()).toEqual("http://foo.bar?parameter1=1&parameter2=two");
+    });
+
     describe('Saving to local, the loading from local', function () {
         describe('Order By', function () {
             it('should cause an $orderby query string parameter to appear upon toString', function () {
@@ -1794,6 +1801,18 @@ describe('jo', function () {
 
                     expect(l.toString()).toEqual("http://foo.bar?$filter=ceiling(Price) eq 2");
                 });
+            });
+        });
+
+        describe('Raw', function () {
+            it('should cause a raw parameter on toString', function () {
+                var j = new jo('http://foo.bar');
+                j.raw("parameter",100);
+
+                j.saveLocal();
+                var l = jo.loadLocal();
+
+                expect(l.toString()).toEqual('http://foo.bar?parameter=100');
             });
         });
     });
