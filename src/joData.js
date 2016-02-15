@@ -141,6 +141,14 @@
             },
             isSet: function () {
                 return this.Parameters.length > 0 || this.DefaultParameters.length > 0;
+            },
+            loadFromJson: function (rawSettings) {
+                var i, parameter;
+
+                for (i = 0; i < rawSettings.Parameters.length; i++) {
+                    parameter = rawSettings.Parameters[i];
+                    this.Parameters.push(new RawObj(parameter.rawParameter,parameter.rawParameterValue));
+                }
             }
         };
 
@@ -643,11 +651,7 @@
         }
 
         if (json.RawSettings !== null) {
-            for (key in json.RawSettings) {
-                if (json.RawSettings.hasOwnProperty(key)) {
-                    joDataObj.RawSettings[key] = json.RawSettings[key];
-                }
-            }
+            joDataObj.RawSettings.loadFromJson(json.RawSettings);
         }
 
         if (json.FilterSettings !== null) {
