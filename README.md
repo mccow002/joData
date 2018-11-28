@@ -11,34 +11,136 @@ joData's goal is to implement
 
 All methods in joData are chainable.
 
-##NOTE:
+## NOTE:
 
 As of version 1.1, the joData object has been renamed jo. Also, all cast methods such as datetime or decimal are no attached to the jo object instead of the window object.
 
-##Getting Started
+- [joData](#jodata)
+  * [NOTE:](#note-)
+  * [Getting Started](#getting-started)
+    + [Creating a joData object](#creating-a-jodata-object)
+    + [.baseUri](#baseuri)
+    + [.toString()](#tostring--)
+    + [OrderBy](#orderby)
+      - [.orderBy(property)](#orderby-property-)
+      - [.asc(), .desc()](#asc----desc--)
+      - [.resetOrderBy()](#resetorderby--)
+      - [.setOrderByDefault(property, \[optional\] order)](#setorderbydefault-property----optional---order-)
+      - [.toggleOrderBy(property, \[optional\] callback)](#toggleorderby-property----optional---callback-)
+    + [Top](#top)
+      - [.top(number)](#top-number-)
+      - [.resetTop()](#resettop--)
+      - [.setTopDefault(top)](#settopdefault-top-)
+    + [Skip](#skip)
+      - [.skip(number)](#skip-number-)
+      - [.resetSkip()](#resetskip--)
+      - [.setSkipDefault(skip)](#setskipdefault-skip-)
+    + [Select](#select)
+      - [.select(array)](#select-array-)
+      - [.resetSelect()](#resetselect--)
+      - [.setSelectDefault(array)](#setselectdefault-array-)
+    + [Expand](#expand)
+      - [.expand(property)](#expand-property-)
+      - [.resetExpand()](#resetexpand--)
+      - [.setExpandDefault(property)](#setexpanddefault-property-)
+    + [Format](#format)
+      - [.format()](#format--)
+        * [.atom()](#atom--)
+        * [.xml()](#xml--)
+        * [.json()](#json--)
+        * [.custom(value)](#custom-value-)
+      - [.resetFormat()](#resetformat--)
+      - [.formatDefault()](#formatdefault--)
+    + [Inlinecount](#inlinecount)
+      - [.inlineCount()](#inlinecount--)
+        * [.allPages()](#allpages--)
+        * [.none()](#none--)
+      - [.resetInlineCount()](#resetinlinecount--)
+      - [.inlineCountDefault()](#inlinecountdefault--)
+    + [Filter](#filter)
+      - [.filter(clause)](#filter-clause-)
+      - [.andFilter(clause)](#andfilter-clause-)
+      - [.orFilter(clause)](#orfilter-clause-)
+      - [Mixing filter methods](#mixing-filter-methods)
+      - [Removing a Single Filter](#removing-a-single-filter)
+      - [.removeFilter(property)](#removefilter-property-)
+        * [.isEmpty()](#isempty--)
+      - [Capturing Filters](#capturing-filters)
+        * [.captureFilter(), .resetToCapturedFilter()](#capturefilter----resettocapturedfilter--)
+    + [Casts](#casts)
+      - [Datetime](#datetime)
+      - [Guid](#guid)
+      - [Decimal](#decimal)
+      - [Single](#single)
+      - [Double](#double)
+        * [.not()](#not--)
+        * [Precedence Groups](#precedence-groups)
+        * [new jo.PrecedenceGroup(filterClause)](#new-joprecedencegroup-filterclause-)
+        * [.andFilter(filterClause), .orFilter(filterClause)](#andfilter-filterclause---orfilter-filterclause-)
+        * [Mixing Filters and Precedence Groups](#mixing-filters-and-precedence-groups)
+      - [Settings Filter Defaults](#settings-filter-defaults)
+      - [.defaultFilter(clause), .defaultAndFilter(clause), .defaultOrFilter(clause)](#defaultfilter-clause---defaultandfilter-clause---defaultorfilter-clause-)
+      - [Arithmetic Methods](#arithmetic-methods)
+      - [String Functions](#string-functions)
+        * [substringof(value)](#substringof-value-)
+        * [substringof(value) - with toLower, toUpper, or trim](#substringof-value----with-tolower--toupper--or-trim)
+        * [endswith(value)](#endswith-value-)
+        * [startswith(value)](#startswith-value-)
+        * [length()](#length--)
+        * [indexof(value)](#indexof-value-)
+        * [replace(find, replace)](#replace-find--replace-)
+        * [substring(position, \[optional\] length)](#substring-position----optional---length-)
+        * [toLower(value)](#tolower-value-)
+        * [toUpper(value)](#toupper-value-)
+        * [trim(value)](#trim-value-)
+        * [.Concat(value1, value2)](#concat-value1--value2-)
+      - [Date Functions](#date-functions)
+        * [.day()](#day--)
+        * [.hour()](#hour--)
+        * [.minute()](#minute--)
+        * [.month()](#month--)
+        * [.second()](#second--)
+        * [.year()](#year--)
+      - [Math Functions](#math-functions)
+        * [.round()](#round--)
+        * [.floor()](#floor--)
+        * [.ceiling()](#ceiling--)
+  * [Saving Local](#saving-local)
+      - [.saveLocal(\[optional\] key)](#savelocal---optional---key-)
+      - [jo.loadLocal(\[optional\] key)](#joloadlocal---optional---key-)
+  * [Unsupported Features (for now)](#unsupported-features--for-now-)
+    + [Filter](#filter-1)
+      - [Type Functions](#type-functions)
+    + [Custom Query Options](#custom-query-options)
+  * [Road Map - Goals for the Future](#road-map---goals-for-the-future)
 
-###Creating a joData object
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+
+## Getting Started
+
+### Creating a joData object
 
 To create a joData query object, you instantiate it by passing your base uri into the constructor.
 
 	var query = new jo('http://test.com');
 	var query = new jo('http://test.com');
 
-###.baseUri
+### .baseUri
 
 The base uri passed in through the constructor can be accessed by calling
 
 	query.baseUri;
 
-###.toString()
+### .toString()
 
 To get the query in oData format, call toString off of your query object.
 
 	query.toString();
 
-###OrderBy
+### OrderBy
 
-####.orderBy(property)
+#### .orderBy(property)
 
 Order by is a singleton property, so you can call .orderBy as many times as you like and the result will always be the last one.
 
@@ -48,7 +150,7 @@ Output:
 
 	$orderby=PropertyName
 
-####.asc(), .desc()
+#### .asc(), .desc()
 
 You can add ascending or descending with the following:
 
@@ -63,13 +165,13 @@ will result in
 
 	$orderby=PropertyName desc
 
-####.resetOrderBy()
+#### .resetOrderBy()
 
 All OrderBy settings can be removed by calling:
 
 	query.resetOrderBy();
 
-####.setOrderByDefault(property, \[optional\] order)
+#### .setOrderByDefault(property, \[optional\] order)
 
 	query.setOrderByDefault('PropertyName');
 
@@ -96,7 +198,7 @@ Output:
 
 	$orderby=p1 desc
 
-####.toggleOrderBy(property, \[optional\] callback)
+#### .toggleOrderBy(property, \[optional\] callback)
 
 Toggles the order by value on a given property between desc and asc. If the orderby property has not been set yet, it will default to desc.
 
@@ -112,9 +214,9 @@ If called again, the result would be
 
 The callback is an optional parameter and will be called after the order property has been set.
 
-###Top
+### Top
 
-####.top(number)
+#### .top(number)
 
 Top is a singleton property, so you can call .top as many times as you like and the result will always be the last one.
 
@@ -124,13 +226,13 @@ Output:
 
 	$top=10
 
-####.resetTop()
+#### .resetTop()
 
 All Top settings can be removed by calling:
 
 	query.resetTop();
 
-####.setTopDefault(top)
+#### .setTopDefault(top)
 
 	query.setTopDefault(5);
 
@@ -156,9 +258,9 @@ Output:
 
 	$top=5
 
-###Skip
+### Skip
 
-####.skip(number)
+#### .skip(number)
 
 Skip is a singleton property, so you can call .skip as many times as you like and the result will always be the last one.
 
@@ -168,13 +270,13 @@ Output:
 
 	$skip=5
 
-####.resetSkip()
+#### .resetSkip()
 
 All Skip settings can be removed by calling:
 
 	query.resetSkip();
 
-####.setSkipDefault(skip)
+#### .setSkipDefault(skip)
 
 	query.setSkipDefault(5);
 
@@ -200,9 +302,9 @@ Output:
 
 	$skip=5
 
-###Select
+### Select
 
-####.select(array)
+#### .select(array)
 
 Select is a singleton property, so you can call .select as many times as you like and the result will always be the last one.
 
@@ -214,13 +316,13 @@ Output:
 
 	$select=Property1,Property2
 
-####.resetSelect()
+#### .resetSelect()
 
 All Select settings can be removed by calling:
 
 	query.resetSelect();
 
-####.setSelectDefault(array)
+#### .setSelectDefault(array)
 
 	query.setSelectDefault(['CustomerId', 'CustomerName']);
 
@@ -246,9 +348,9 @@ Output:
 
 	$select=CustomerId,CustomerName
 
-###Expand
+### Expand
 
-####.expand(property)
+#### .expand(property)
 
 Expand is a singleton property, so you can call .expand as many times as you like and the result will always be the last one.
 
@@ -258,13 +360,13 @@ Output:
 
 	$expand=Customer
 
-####.resetExpand()
+#### .resetExpand()
 
 The Expand settings can be removed by calling:
 
 	query.resetExpand();
 
-####.setExpandDefault(property)
+#### .setExpandDefault(property)
 
 	query.setExpandDefault('Customer');
 
@@ -290,15 +392,15 @@ Output:
 
 	$expand=Customer
 
-###Format
+### Format
 
-####.format()
+#### .format()
 
 Format is a singleton property, so you can call .format as many times as you like and the result will always be the last one.
 
 You must follow .format with a format method. The methods are:
 
-#####.atom()
+##### .atom()
 
 	query.format().atom();
 
@@ -306,7 +408,7 @@ Output:
 	
 	$format=atom
 
-#####.xml()
+##### .xml()
 
 	query.format().xml();
 
@@ -314,7 +416,7 @@ Output:
 	
 	$format=xml
 
-#####.json()
+##### .json()
 
 	query.format().json();
 
@@ -322,7 +424,7 @@ Output:
 	
 	$format=json
 
-#####.custom(value)
+##### .custom(value)
 
 	query.format().custom('text/csv');
 
@@ -330,11 +432,11 @@ Output:
 	
 	$format=text/csv
 
-####.resetFormat()
+#### .resetFormat()
 
 calling .resetFormat() will remove any format settings or restore the default.
 
-####.formatDefault()
+#### .formatDefault()
 
 Just like .format(), one of the 4 different format methods need to be called after calling .formatDefault()
 
@@ -364,15 +466,15 @@ Output:
 
 	$format=atom
 
-###Inlinecount
+### Inlinecount
 
-####.inlineCount()
+#### .inlineCount()
 
 Inlinecount is a singleton property, so you can call .inlinecount as many times as you like and the result will always be the last one.
 
 You must follow .inlineCount with an inlinecount method. The methods are:
 
-#####.allPages()
+##### .allPages()
 
 	query.inlineCount().allPages();
 
@@ -380,7 +482,7 @@ Output:
 	
 	$inlinecount=allpages
 
-#####.none()
+##### .none()
 
 	query.inlineCount().none();
 
@@ -388,11 +490,11 @@ Output:
 	
 	$inlinecount=none
 
-####.resetInlineCount()
+#### .resetInlineCount()
 
 calling .resetInlineCount() will remove any inline count settings or restore the defaults.
 
-####.inlineCountDefault()
+#### .inlineCountDefault()
 
 Just like .inlineCount(), one of the 2 inline count methods need to be called after calling .inlineCountDefault()
 
@@ -422,13 +524,13 @@ Output:
 
 	$inlinecount=none
 
-###Filter
+### Filter
 
-####.filter(clause)
+#### .filter(clause)
 
 Filter is not singleton, which allows you to add as many filter clauses as you would like.
 
-.filter takes in a [jo.FilterClause](#filter-clause) object.
+.filter takes in a [jo.FilterClause](# filter-clause) object.
 
 .filter works best for single filter clauses. If you need multiple filter clauses seperated by 'or' or 'and', see below.
 
@@ -448,11 +550,11 @@ Output:
 
 	$filter=PropertyName eq 5
 
-####.andFilter(clause)
+#### .andFilter(clause)
 
 Adds a filter clause using the 'and' operator. joData is smart enough to know that if this is the first clause in the filter, don't use the operator. This way you can loop through properties and not have to worry about using .filter for the first item and .addFilter for the rest.
 
-.andFilter takes in a [jo.FilterClause](#filter-clause) object.
+.andFilter takes in a [jo.FilterClause](# filter-clause) object.
 
 	query
 		.andFilter(new jo.FilterClause('Property1').eq(5))
@@ -462,11 +564,11 @@ Output:
 
 	$filter=Property1 eq 5 and Property2 eq 10
 
-####.orFilter(clause)
+#### .orFilter(clause)
 
 Same as andFilter, except seperates the clauses with 'or'.
 
-.orFilter takes in a [jo.FilterClause](#filter-clause) object.
+.orFilter takes in a [jo.FilterClause](# filter-clause) object.
 
 	query
 		.orFilter(new jo.FilterClause('Property1').eq(5))
@@ -476,7 +578,7 @@ Output:
 
 	$filter=Property1 eq 5 or Property2 eq 10
 			
-####Mixing filter methods
+#### Mixing filter methods
 
 You can mix the filter methods as you like.
 
@@ -489,9 +591,9 @@ Output:
 
 	$filter=p1 eq 1 and p2 eq 5 or p3 eq 10
 
-####Removing a Single Filter
+#### Removing a Single Filter
 
-####.removeFilter(property)
+#### .removeFilter(property)
 
 If you wish to remove a single filter, call .removeFilter and pass in the name of the property whose filter you wish to remove. Currently, this will only work with FilterClause. It does not work with Precedence Groups 
 or Conat.
@@ -506,9 +608,9 @@ The jo.FilterClause object represents an oData filter clause. It's constructor t
 
 	new jo.FilterClause('CustomerName');
 
-#####.isEmpty()
+##### .isEmpty()
 
-Used to test if the FilterClause object is actually populated and ready to use. Will not return true until one of the [Logical Operators](#logical-operators) have been called.
+Used to test if the FilterClause object is actually populated and ready to use. Will not return true until one of the [Logical Operators](# logical-operators) have been called.
 
 	var clause = new jo.FilterClause('CustomerId');
 	clause.isEmpty();
@@ -527,9 +629,9 @@ Output:
 	false
 
 
-####Capturing Filters
+#### Capturing Filters
 
-#####.captureFilter(), .resetToCapturedFilter()
+##### .captureFilter(), .resetToCapturedFilter()
 
 Capturing a filter will allow you to reset back to the captured filter.
 
@@ -564,11 +666,11 @@ To completely reset just call:
 	query.resetFilter();
 
 
-###Casts
+### Casts
 
 For any of the filter types listed below, you may need to cast a value to a certain type.
 
-####Datetime
+#### Datetime
 
 To cast datetime, use jo.datetime(value)
 
@@ -578,7 +680,7 @@ Output:
 
 	$filter=DateAdded eq datetime'2013-03-01'
 
-####Guid
+#### Guid
 
 To cast guid, use jo.guid(value)
 
@@ -588,7 +690,7 @@ Output:
 
 	$filter=CustomerId eq guid'3F2504E0-4F89-11D3-9A0C-0305E82C3301'
 
-####Decimal
+#### Decimal
 
 To cast to decimal, use jo.decimal(value)
 
@@ -598,7 +700,7 @@ Output:
 
 	$filter=Price eq 24.97m
 
-####Single
+#### Single
 
 To cast to decimal, use jo.single(value)
 
@@ -608,7 +710,7 @@ Output:
 
 	$filter=Price eq 24.97f
 
-####Double
+#### Double
 
 To cast to decimal, use jo.double(value)
 
@@ -640,7 +742,7 @@ Available Operators:
 * lt(value) - Less than
 * le(value) - Less than or equal
 
-#####.not()
+##### .not()
 
 The 'not' operator is a bit different. It can be followed by a function. So rather than taking in a value, it is chained to the filter clause.
 
@@ -662,9 +764,9 @@ Output:
 
 endswith return a bool, so there is no need to add parenthesis.
 
-#####Precedence Groups
+##### Precedence Groups
 
-#####new jo.PrecedenceGroup(filterClause)
+##### new jo.PrecedenceGroup(filterClause)
 
 Precedence Groups allow you to group filter clauses in parenthesis.
 
@@ -680,7 +782,7 @@ Output:
 
 	$filter=(Name eq 'Bob')
 
-#####.andFilter(filterClause), .orFilter(filterClause)
+##### .andFilter(filterClause), .orFilter(filterClause)
 
 Just like with the query filter, you can call andFilter or orFilter to add clauses to the group.
 
@@ -691,7 +793,7 @@ Output:
 
 	$filter=(Name eq 'Bob' or Name eq 'George')
 
-#####Mixing Filters and Precedence Groups
+##### Mixing Filters and Precedence Groups
 
 	query
 		.filter(new jo.FilterClause('Id').eq(1))
@@ -702,9 +804,9 @@ Output:
 
 	$filter=Id eq 1 and (startswith(Name,'a') eq true or startswith(Name,'b') eq true)
 
-####Settings Filter Defaults
+#### Settings Filter Defaults
 
-####.defaultFilter(clause), .defaultAndFilter(clause), .defaultOrFilter(clause)
+#### .defaultFilter(clause), .defaultAndFilter(clause), .defaultOrFilter(clause)
 
 Filter defaults work a little different than all the other defaults. Rather than overriding the default when .filter, .andFilter, or .orFilter is called, the defaults are merged.
 
@@ -746,7 +848,7 @@ Output:
 
 	$filter=Id eq 1
 
-####Arithmetic Methods
+#### Arithmetic Methods
 
 All arithmetic methods are available. This includes:
 
@@ -764,11 +866,11 @@ Output:
 
 	$filter=PropertyName add 5 eq 10
 
-####String Functions
+#### String Functions
 
 Supported String Methods:
 
-#####substringof(value)
+##### substringof(value)
 
 	query.filter(new jo.FilterClause('PropertyName').substringof('test').eq(true));
 
@@ -776,7 +878,7 @@ Output:
 
 	$filter=substringof('test',PropertyName) eq true
 
-#####substringof(value) - with toLower, toUpper, or trim
+##### substringof(value) - with toLower, toUpper, or trim
 
 If you wish your substring of to transform the value being searched:
 
@@ -788,7 +890,7 @@ Output
 
 This works for toLower(), toUpper(), and trim()
 
-#####endswith(value)
+##### endswith(value)
 
 	query.filter(new jo.FilterClause('PropertyName').endswith('test').eq(true));
 
@@ -796,7 +898,7 @@ Output:
 
 	$filter=endswith(PropertyName,'test') eq true
 
-#####startswith(value)
+##### startswith(value)
 
 	query.filter(new jo.FilterClause('PropertyName').startswith('test').eq(true));
 
@@ -804,7 +906,7 @@ Output:
 
 	$filter=startswith(PropertyName,'test') eq true
 
-#####length()
+##### length()
 
 	query.filter(new jo.FilterClause('PropertyName').length().eq(10));
 
@@ -812,7 +914,7 @@ Output:
 
 	$filter=length(PropertyName) eq 10
 
-#####indexof(value)
+##### indexof(value)
 
 	query.filter(new jo.FilterClause('PropertyName').indexof('test').eq(1));
 
@@ -820,7 +922,7 @@ Output:
 
 	$filter=indexof(PropertyName,'test') eq 1
 
-#####replace(find, replace)
+##### replace(find, replace)
 
 	query.filter(new jo.FilterClause('PropertyName').replace('test', 'bob').eq('bob'));
 
@@ -828,7 +930,7 @@ Output:
 
 	$filter=replace(PropertyName,'test','bob') eq 'bob'
 
-#####substring(position, \[optional\] length)
+##### substring(position, \[optional\] length)
 
 length is an options parameter.
 
@@ -846,7 +948,7 @@ Output:
 
 	$filter=substring(PropertyName,1,2) eq 'test'
 
-#####toLower(value)
+##### toLower(value)
 
 	query.filter(new jo.FilterClause('PropertyName').toLower().eq('test'));
 
@@ -854,7 +956,7 @@ Output:
 
 	$filter=tolower(PropertyName) eq 'test'
 
-#####toUpper(value)
+##### toUpper(value)
 
 	query.filter(new jo.FilterClause('PropertyName').toUpper().eq('TEST'));
 
@@ -862,7 +964,7 @@ Output:
 
 	$filter=toupper(PropertyName) eq 'TEST'
 
-#####trim(value)
+##### trim(value)
 
 	query.filter(new jo.FilterClause('PropertyName').trim().eq('test'));
 
@@ -870,7 +972,7 @@ Output:
 
 	$filter=trim(PropertyName) eq 'test'
 
-#####.Concat(value1, value2)
+##### .Concat(value1, value2)
 
 Concat is a bit different from other filter clauses. Concat can be nested, so it's possible to have 'concat(concat(City, ','), State) eq 'Birmingham, Alabama''
 
@@ -895,9 +997,9 @@ Output:
 
 	$filter=concat(concat(City,', '),State) eq 'Birmingham, Alabama'
 
-####Date Functions
+#### Date Functions
 
-#####.day()
+##### .day()
 
 	query.filter(new jo.FilterClause('Birthday').day().eq(2));
 
@@ -905,7 +1007,7 @@ Output:
 
 	$filter=day(Birthday) eq 2
 
-#####.hour()
+##### .hour()
 
 	query.filter(new jo.FilterClause('Birthday').hour().eq(2));
 
@@ -913,7 +1015,7 @@ Output:
 
 	$filter=hour(Birthday) eq 2
 
-#####.minute()
+##### .minute()
 
 	query.filter(new jo.FilterClause('Birthday').minute().eq(2));
 
@@ -921,7 +1023,7 @@ Output:
 
 	$filter=minute(Birthday) eq 2
 
-#####.month()
+##### .month()
 
 	query.filter(new jo.FilterClause('Birthday').month().eq(2));
 
@@ -929,7 +1031,7 @@ Output:
 
 	$filter=month(Birthday) eq 2
 
-#####.second()
+##### .second()
 
 	query.filter(new jo.FilterClause('Birthday').second().eq(2));
 
@@ -937,7 +1039,7 @@ Output:
 
 	$filter=second(Birthday) eq 2
 
-#####.year()
+##### .year()
 
 	query.filter(new jo.FilterClause('Birthday').year().eq(2));
 
@@ -945,9 +1047,9 @@ Output:
 
 	$filter=year(Birthday) eq 2
 
-####Math Functions
+#### Math Functions
 
-#####.round()
+##### .round()
 
 	query.filter(new jo.FilterClause('Price').round().eq(2));
 
@@ -955,7 +1057,7 @@ Output:
 
 	$filter=round(Price) eq 2
 
-#####.floor()
+##### .floor()
 
 	query.filter(new jo.FilterClause('Price').floor().eq(2));
 
@@ -963,7 +1065,7 @@ Output:
 
 	$filter=floor(Price) eq 2
 
-#####.ceiling()
+##### .ceiling()
 
 	query.filter(new jo.FilterClause('Price').ceiling().eq(2));
 
@@ -971,7 +1073,7 @@ Output:
 
 	$filter=ceiling(Price) eq 2
 
-##Saving Local
+## Saving Local
 
 joData allows you to save a joData instance to your browsers localStorage. Then when you return to that page, you can reload the joData object from local storage.
 
@@ -990,33 +1092,33 @@ The JSON object is a little less consistant. For browsers that don't support it 
 
 Once everything is set up, it's a simple matter of calling .saveLocal() and .loadLocal()
 
-####.saveLocal(\[optional\] key)
+#### .saveLocal(\[optional\] key)
 
 	query.saveLocal();
 
 Calling .saveLocal() will stringify your joData object and save to to localStorage. You can pass in an optional string parameter to name the localStorage key.
 
-####jo.loadLocal(\[optional\] key)
+#### jo.loadLocal(\[optional\] key)
 
 	jo.loadLocal()
 
 .loadlLocal() needs to be called off the joData object statically rather than off of an instantiated joData object. You can pass in an optional string parameter to tell it which localStorage key to try and load.
 
-##Unsupported Features (for now)
+## Unsupported Features (for now)
 
 These are the list of features joData currently does not support. Hopefully, these features are coming soon.
 
-###Filter
+### Filter
 
-####Type Functions
+#### Type Functions
 
 * IsOf
 
-###Custom Query Options
+### Custom Query Options
 
 joData currently does not support any custom query options
 
-##Road Map - Goals for the Future
+## Road Map - Goals for the Future
 
 * Paganition Extension - Writing an extension that will manage datagrid variables for you.
 * Backbone Pagination Plugin - Writing a plugin for backbone that will build up your fetch query to get datagrid pages
